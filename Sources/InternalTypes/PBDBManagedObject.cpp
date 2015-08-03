@@ -121,7 +121,7 @@ vector<PBDBManagedObjectCompareResult> PBDBManagedObject::compare(PBDBManagedObj
 				differences.push_back(PBDBManagedObjectCompareResult(PBDBManagedObjectCompareResult::AttributeDifference,
 						PBDBManagedObjectCompareResult::ManagedObjectParameter,
 						PBDBManagedObjectCompareResult::Modified,
-						this, moc,
+                        firstParameter, secondParameter,
 						diffs
 				));
 			}

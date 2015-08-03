@@ -80,7 +80,9 @@ DISTFILES += \
     UT/TestFiles/resources/out/textfile.txt \
     UT/TestFiles/resources/bomtest.xml \
     UT/TestFiles/resources/notXML.txt \
-    UT/TestFiles/PDDB/test_pddb_1.xml
+    UT/TestFiles/PDDB/test_pddb_1.xml \
+    UT/TestFiles/PDDB/test_pddb_4_old.xml \
+    UT/TestFiles/PDDB/test_pddb_4_new.xml
 
 RESOURCES += \
     source.qrc

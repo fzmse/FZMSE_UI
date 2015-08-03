@@ -104,7 +104,7 @@ TEST( PBDBManagedObjectCompare, CompareChangeInMocAttributeOnly)
     XMLDocument * docSecond = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_1_mocAttribChanged.xml");
 	XMLElement* secondMocElement = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) docSecond, "managedObject")[0];
 
-	PBDBManagedObject * mocFirst = new PBDBManagedObject(firstMocElement);
+    PBDBManagedObject * mocFirst = new PBDBManagedObject(firstMocElement);
 	PBDBManagedObject * mocSecond = new PBDBManagedObject(secondMocElement);
 
 	vector<PBDBManagedObjectCompareResult> differences = mocFirst->compare(mocSecond);
@@ -114,7 +114,6 @@ TEST( PBDBManagedObjectCompare, CompareChangeInMocAttributeOnly)
 	EXPECT_EQ(PBDBManagedObjectCompareResult::AttributeDifference, differences[0].getType());
 
 	EXPECT_EQ(1, differences[0].getAttributeDifferences().size());
-
 	delete mocFirst;
 	delete mocSecond;
 	delete docFirst;
@@ -185,9 +184,36 @@ TEST( PBDBManagedObjectCompare, CompareModifyParameterAttribute)
 	EXPECT_EQ(PBDBManagedObjectCompareResult::AttributeDifference, differences[0].getType());
 	EXPECT_EQ(PBDBManagedObjectCompareResult::Modified, differences[0].getOrigin());
 
+    cout << XmlElementReader::getName( differences[0].getSecondElement()->getElement() ) << endl;
+
+
 	delete mocFirst;
 	delete mocSecond;
 	delete docFirst;
 	delete docSecond;
+}
+
+TEST( PBDBManagedObjectCompare, CompareSpecificMOC)
+{
+    XMLDocument * docFirst = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_4_old.xml");
+    XMLElement* firstMocElement = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) docFirst, "managedObject")[0];
+
+    XMLDocument * docSecond = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_4_new.xml");
+    XMLElement* secondMocElement = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) docSecond, "managedObject")[0];
+
+    PBDBManagedObject * mocFirst = new PBDBManagedObject(firstMocElement);
+    PBDBManagedObject * mocSecond = new PBDBManagedObject(secondMocElement);
+
+    vector<PBDBManagedObjectCompareResult> differences = mocFirst->compare(mocSecond);
+
+    ASSERT_EQ(1, differences.size());
+    EXPECT_EQ(PBDBManagedObjectCompareResult::ManagedObjectParameter, differences[0].getScope());
+    EXPECT_EQ(PBDBManagedObjectCompareResult::AttributeDifference, differences[0].getType());
+    EXPECT_EQ(PBDBManagedObjectCompareResult::Modified, differences[0].getOrigin());
+
+    delete mocFirst;
+    delete mocSecond;
+    delete docFirst;
+    delete docSecond;
 }
 

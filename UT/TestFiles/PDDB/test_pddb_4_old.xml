@@ -1,0 +1,1939 @@
+  <managedObject class="BTSSCL" fullName="LTE BTS radio specific configuration " id="4054" topoId="3931" mohId="4156" hidden="false" create="true" update="true" delete="false">
+    <childManagedObject class="LCELL" maxOccurs="100"/>
+    <p name="actExtGpsOutputLnaPowerSupply" fullName="External GPS antenna LNA power supply" maxOccurs="1" id="348803" status="proposal" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </shortDesc>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <features>
+        <feature name="LTE1845 eNB SW support for FYGE" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE1845 eNB SW support for FYGE" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="actExtGpsOutputLnaPowerSupply" dataType="String"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <simpleType base="boolean">
+        <default value="false">
+          <description>
+            <para>Setting the parameter to 'true' makes sure that the antenna will get power and will provide signal to GPS receiver</para>
+          </description>
+        </default>
+      </simpleType>
+    </p>
+    <p name="actIntGpsOutputLnaPowerSupply" fullName="Internal GPS antenna LNA power supply" maxOccurs="1" id="345195" status="approved" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </shortDesc>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <interfaces>
+        <interface source="EM" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="actIntGpsOutputLnaPowerSupply" dataType="String"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <simpleType base="boolean">
+        <default value="false"/></simpleType>
+    </p>
+    <p name="actLocationLock" fullName="Activate Location Lock" maxOccurs="1" id="390588" status="proposal" releaseId="6409">
+      <description>
+        <para>This parameter activates/deactivates Location Lock feature on BTS.</para>
+      </description>
+      <shortDesc>
+        <para>This parameter activates/deactivates Location Lock feature on BTS.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>EFS Author: Brian Bauerschmidt</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <relatedParameters>
+        <pRef class="BTSSCL" name="locationLockConf" hidden="false" access="public"></pRef>
+        <description>
+          <para>If BTSSCL::actLocationLock is set to 'true', then the BTSSCL::locationLockConf structure must be configured.</para>
+        </description>
+      </relatedParameters>
+      <features>
+        <feature name="LTE2201 Flexi Zone BTS Location Lock" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE2201 Flexi Zone BTS Location Lock" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="actLocationLock" dataType="String"/></productData>
+      <history>
+        <description>
+          <para>6.05.2015 PRo: Changed to Mandatory - CCPM sync</para>
+        </description>
+      </history>
+      <simpleType base="boolean">
+        <default value="false">
+          <description>
+            <para>Feature is disabled</para>
+          </description>
+        </default>
+      </simpleType>
+    </p>
+    <p name="activeSWActivationTime" fullName="Active software activation time" maxOccurs="1" id="367178" status="proposal" releaseId="6409">
+      <description>
+        <para>The date and time when the currently active software release was activated.</para>
+        <para>The date and time are expressed in the NE's local time in the format "YYYY-MM-DDTHH:MM:SS.SSS[+-]hh:mm" where "hh:mm" is the offset from GMT.</para>
+      </description>
+      <shortDesc>
+        <para>The date and time when the currently active software release was activated.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Michael A. Wislek</para>
+      </additionalInfo>
+      <creation priority="Value set by the system"></creation>
+      <modification type="unmodifiable"></modification>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <interfaces>
+        <interface source="LTE BTS" target="EM" bidirectional="no"/>
+        <interface source="LTE BTS" target="RAC" bidirectional="no"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="activeSWActivationTime" dataType="String"/></productData>
+      <history>
+        <description>
+          <para>01.12.2014 LCh: CRL4328 Add SW Build Info to Configuration Parameters</para>
+        </description>
+      </history>
+      <simpleType base="string">
+        <minLength value="0"/>
+        <maxLength value="32"/></simpleType>
+    </p>
+    <p name="activeSWReleaseVersion" fullName="Active software release version" maxOccurs="1" id="367177" status="proposal" releaseId="6409">
+      <description>
+        <para>The version of the currently active software release.</para>
+      </description>
+      <shortDesc>
+        <para>The version of the currently active software release.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Michael A. Wislek</para>
+      </additionalInfo>
+      <creation priority="Value set by the system"></creation>
+      <modification type="unmodifiable"></modification>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <interfaces>
+        <interface source="LTE BTS" target="EM" bidirectional="no"/>
+        <interface source="LTE BTS" target="RAC" bidirectional="no"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="activeSWReleaseVersion" dataType="String"/></productData>
+      <history>
+        <description>
+          <para>01.12.2014 LCh: CRL4328 Add SW Build Info to Configuration Parameters</para>
+        </description>
+      </history>
+      <simpleType base="string">
+        <minLength value="0"/>
+        <maxLength value="255"/></simpleType>
+    </p>
+    <p name="alToggSuppList" fullName="Toggling alarm suppression list" maxOccurs="100" id="77410" status="approved" releaseId="6409">
+      <description>
+        <para>The alarms are suppressed based on the toggling alarm parameters. The toggling alarm parameters contain the amount of alarms in time (time and amount values ) for setting the toggling alarm condition and clearance duration time when the toggling alarm is no longer toggling (alarm either active or cleared). If the alarm is active, it is set active after toggling alarm is cleared.</para>
+      </description>
+      <shortDesc>
+        <para>The alarms are suppressed based on the toggling alarm parameters.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>Author: Antti Konttinen ; Param. SFS abbrev. name: -</para>
+      </additionalInfo>
+      <creation priority="optional"></creation>
+      <modification type="onLine"></modification>
+      <relatedParameters>
+        <pRef class="BTSSCL" name="faultName" hidden="false" access="public">
+          <pRefDesc>
+            <para>faultName must be unique in the list</para>
+          </pRefDesc>
+        </pRef>
+        <description>
+          <para>The configured values for faultName must be unique.</para>
+        </description>
+      </relatedParameters>
+      <features>
+        <feature name="LTE656 LTE Fault Management" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE656 LTE Fault Management" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <references>
+        <reference type="NSN reference" text="WBTS_OPR_61658" access="internal"/></references>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="alToggSuppList" dataType="String"/>
+        <property name="UG MOC" value="RL10 -&gt; RL20: 1) BTSSCL 2) BTSSC" dataType="String"/>
+        <property name="UG Structure" value="RL10 -&gt; RL20: 1) alToggSuppList 2) alToggSuppList" dataType="String"/>
+        <property name="UG operation" value="RL20 -&gt; RL30: no operation RL10 -&gt; RL20: 1) addStruct 2) delStruct" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+      <history>
+        <description>
+          <para>26.08.2011 FSc: PR 93286ESPE02: [BF]RL15_FM_Netact validate a plan which is not right of alToggSuppList on CM edit</para>
+        </description>
+      </history>
+      <complexType>
+        <p name="alToggAmount" fullName="Toggling alarm amount" maxOccurs="1" id="77411" status="approved" releaseId="6409">
+          <description>
+            <para>Toggling alarm amount defines the number of alarms limit in time (time and amount values) when the alarm is declared to be in toggling alarm condition.</para>
+          </description>
+          <shortDesc>
+            <para>Amount of toggling alarms.</para>
+          </shortDesc>
+          <additionalInfo access="internal">
+            <para>Author: Antti Konttinen ; Param. SFS abbrev. name: -</para>
+          </additionalInfo>
+          <creation priority="mandatory"></creation>
+          <modification type="onLine"></modification>
+          <parameterCategories>
+            <parameterCategory name="Basic parameters"/></parameterCategories>
+          <interfaces>
+            <interface source="EM" target="LTE BTS"/>
+            <interface source="LTE BTS" target="RAC"/>
+            <interface source="RAC" target="RACApp"/></interfaces>
+          <references>
+            <reference type="NSN reference" text="WBTS_OPR_61658" access="internal"/></references>
+          <productData name="LTE BTS">
+            <property name="C Type Name" value="alToggAmount" dataType="String"/>
+            <property name="UG MOC" value="RL10 -&gt; RL20: 1) BTSSCL 2) BTSSC" dataType="String"/>
+            <property name="UG Structure" value="RL10 -&gt; RL20: 1) alToggSuppList 2) alToggSuppList" dataType="String"/>
+            <property name="UG Param" value="RL10 -&gt; RL20: 1) alToggAmount 2) alToggAmount" dataType="String"/>
+            <property name="UG ParamValue" value="RL10 -&gt; RL20: 1) value of alToggAmount 2) -" dataType="String"/>
+            <property name="UG operation" value="RL20 -&gt; RL30: no operation RL10 -&gt; RL20: 1) addStructParam 2) delStructParam" dataType="String"/>
+            <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+          <history>
+            <description>
+              <para>03.03.2010: J.Mustajarvi Parameter author added</para>
+            </description>
+          </history>
+          <simpleType base="decimal">
+            <editing internalValue="= UI_value">
+              <range minIncl="1" maxIncl="100"/>
+              <default value="1"/></editing>
+          </simpleType>
+        </p>
+        <p name="alToggClearenceTime" fullName="Toggling clearance time" maxOccurs="1" id="77412" status="approved" releaseId="6409">
+          <description>
+            <para>Duration time when the toggling alarm is no longer toggling (alarm either active or cleared). If the alarm is active, it is set active after toggling alarm is cleared.</para>
+          </description>
+          <shortDesc>
+            <para>Duration time when the toggling alarm is no longer toggling (alarm either active or cleared).</para>
+          </shortDesc>
+          <additionalInfo access="internal">
+            <para>Author: Antti Konttinen ; Param. SFS abbrev. name: -</para>
+          </additionalInfo>
+          <creation priority="mandatory"></creation>
+          <modification type="onLine"></modification>
+          <parameterCategories>
+            <parameterCategory name="Basic parameters"/></parameterCategories>
+          <interfaces>
+            <interface source="EM" target="LTE BTS"/>
+            <interface source="LTE BTS" target="RAC"/>
+            <interface source="RAC" target="RACApp"/></interfaces>
+          <references>
+            <reference type="NSN reference" text="WBTS_OPR_61658" access="internal"/></references>
+          <productData name="LTE BTS">
+            <property name="C Type Name" value="alToggClearenceTime" dataType="String"/>
+            <property name="UG MOC" value="RL10 -&gt; RL20: 1) BTSSCL 2) BTSSC" dataType="String"/>
+            <property name="UG Structure" value="RL10 -&gt; RL20: 1) alToggSuppList 2) alToggSuppList" dataType="String"/>
+            <property name="UG Param" value="RL10 -&gt; RL20: 1) alToggClearenceTime 2) alToggClearenceTime" dataType="String"/>
+            <property name="UG ParamValue" value="RL10 -&gt; RL20: 1) value of alToggClearenceTime 2) -" dataType="String"/>
+            <property name="UG operation" value="RL20 -&gt; RL30: no operation RL10 -&gt; RL20: 1) addStructParam 2) delStructParam" dataType="String"/>
+            <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+          <history>
+            <description>
+              <para>03.03.2010: J.Mustajarvi Parameter author added</para>
+            </description>
+          </history>
+          <simpleType base="decimal">
+            <editing units="s" internalValue="= UI_value">
+              <range minIncl="1" maxIncl="86400"/>
+              <default value="1"/></editing>
+          </simpleType>
+        </p>
+        <p name="alToggConditonTime" fullName="Toggling alarm condition time" maxOccurs="1" id="77413" status="approved" releaseId="6409">
+          <description>
+            <para>Duration time when the alarm is toggling (alarm either active or cleared). The toggling alarm condition time is used to determine with toggling alarm amount the toggling condition.</para>
+          </description>
+          <shortDesc>
+            <para>Duration time when the alarm is toggling (alarm either active or cleared).</para>
+          </shortDesc>
+          <additionalInfo access="internal">
+            <para>Author: Antti Konttinen ; Param. SFS abbrev. name: -</para>
+          </additionalInfo>
+          <creation priority="mandatory"></creation>
+          <modification type="onLine"></modification>
+          <parameterCategories>
+            <parameterCategory name="Basic parameters"/></parameterCategories>
+          <interfaces>
+            <interface source="EM" target="LTE BTS"/>
+            <interface source="LTE BTS" target="RAC"/>
+            <interface source="RAC" target="RACApp"/></interfaces>
+          <references>
+            <reference type="NSN reference" text="WBTS_OPR_61658" access="internal"/></references>
+          <productData name="LTE BTS">
+            <property name="C Type Name" value="alToggConditonTime" dataType="String"/>
+            <property name="UG MOC" value="RL10 -&gt; RL20: 1) BTSSCL 2) BTSSC" dataType="String"/>
+            <property name="UG Structure" value="RL10 -&gt; RL20: 1) alToggSuppList 2) alToggSuppList" dataType="String"/>
+            <property name="UG Param" value="RL10 -&gt; RL20: 1) alToggConditonTime 2) alToggConditonTime" dataType="String"/>
+            <property name="UG ParamValue" value="RL10 -&gt; RL20: 1) value of alToggConditonTime 2) -" dataType="String"/>
+            <property name="UG operation" value="RL20 -&gt; RL30: no operation RL10 -&gt; RL20: 1) addStructParam 2) delStructParam" dataType="String"/>
+            <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+          <history>
+            <description>
+              <para>03.03.2010: J.Mustajarvi Parameter author added</para>
+            </description>
+          </history>
+          <simpleType base="decimal">
+            <editing units="s" internalValue="= UI_value">
+              <range minIncl="1" maxIncl="86400"/>
+              <default value="1"/></editing>
+          </simpleType>
+        </p>
+        <p name="faultName" fullName="BTS fault name" maxOccurs="1" id="77414" status="approved" releaseId="6409">
+          <description>
+            <para>BTS Fault name defined in RISE. The same name can be found in the BTS alarm documentation. This parameter includes also alarming resource and fault ID. Syntax used in enums: hw_faultId_faultName. NOTE: There are some special marks indicating usually dynamic part in the fault name. Special marks are removed in PDDB but they are visible for the operator.</para>
+          </description>
+          <shortDesc>
+            <para>BTS Fault name defined in RISE. This parameter includes also alarming resource and syntax used in enums: resource_faultName.</para>
+          </shortDesc>
+          <additionalInfo access="internal">
+            <para>Author: Antti Konttinen ; Param. SFS abbrev. name: -</para>
+            <para>RL50/RL35 alignment: deleted becasue not defined in RISE but in the list</para>
+            <para>1061600:FT_61600_Loss Of Carrier on unit U, interface IF;1061020:FT_61020_DSCP D signalled but not configured;1100037:FSM_37_Mains power break, running Battery Backup;1104035:FSM_4035_Configuration file is not supported;1106028:FSM_6028_50 of periodic CQI Resources occupied;1106200:FSM_6200_SCTP path failure;1106300:FSM_6300_eNB RESET S1;1106301:FSM_6301_MME RESET S1;1106302:FSM_6302_eNB RESET S1 RETRY OUT;1106305:FSM_6305_X2 Setup Failure from eNB;1106306:FSM_6306_X2 Setup Failure to eNB;1106309:FSM_6309_S1 Setup Failure from MME;1106310:FSM_6310_X2 Reset;1106313:FSM_6313_X2 Reset from eNB;</para>
+            <para>NOTE: The list is kept only for documentation purposes and are not handled in application anymore</para>
+          </additionalInfo>
+          <creation priority="mandatory"></creation>
+          <modification type="onLine"></modification>
+          <relatedParameters>
+            <pRef class="BTSSCL" name="alToggSuppList" hidden="false" access="public">
+              <pRefDesc>
+                <para>the faultName must be unique within alToggSuppList</para>
+              </pRefDesc>
+            </pRef>
+            <description>
+              <para>The configured faultName must be unique within alToggSuppList.</para>
+            </description>
+          </relatedParameters>
+          <parameterCategories>
+            <parameterCategory name="Basic parameters"/></parameterCategories>
+          <interfaces>
+            <interface source="EM" target="LTE BTS"/>
+            <interface source="LTE BTS" target="RAC"/>
+            <interface source="RAC" target="RACApp"/></interfaces>
+          <references>
+            <reference type="NSN reference" text="WBTS_OPR_61658" access="internal"/></references>
+          <productData name="LTE BTS">
+            <property name="C Type Name" value="faultName" dataType="String"/>
+            <property name="UG MOC" value="RL10 -&gt; RL20: 1) BTSSCL 2) BTSSC" dataType="String"/>
+            <property name="UG Structure" value="RL10 -&gt; RL20: 1) alToggSuppList 2) alToggSuppList" dataType="String"/>
+            <property name="UG Param" value="RL10 -&gt; RL20: 1) faultName 2) faultName" dataType="String"/>
+            <property name="UG ParamValue" value="RL10 -&gt; RL20: 1) value of faultName 2) -" dataType="String"/>
+            <property name="UG operation" value="RL20 -&gt; RL30: no operation RL10 -&gt; RL20: 1) addStructParam 2) delStructParam" dataType="String"/>
+            <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+          <history>
+            <description>
+              <para>03.03.2010: J.Mustajarvi Parameter author added</para>
+              <para>18.09.2010 FSc: PR 64121ESPE04 LTE656-a: Toggling Faults list should not contain alarm 61400 (FTM_LICENSE_MISSING), removed</para>
+              <para>22.11.2010 FSc: PR 69810ESPE04 EAC Toggling Fault Rule should apply to the whole range of EAC alarms</para>
+              <para>19.01.2011 FSc: undone PR 69810ESPE04 EAC Toggling Fault Rule should apply to the whole range of EAC alarms, BTSOM must handle those FSM and FR EAC as wildcard</para>
+              <para>26.08.2011 FSc: PR 93286ESPE02: [BF]RL15_FM_Netact validate a plan which is not right of alToggSuppList on CM edit</para>
+              <para>26.08.2011 FSc: PR 82104ESPE04: LTE424: Toggling Faults menu does not support "Transport layer connection failure in S1 interface (6202)"</para>
+              <para>20.09.2011 FSc: PR 95288ESPE02: RL30_FM: Toggling configuration for some RL30 faults is not possible</para>
+              <para>07.05.2012 FSc: PR 91711ESPE04: LTE656-a: RET alarms cannot be toggled, enumeration changes</para>
+              <para>26.07.2012 FSc: PR 81923ESPE01: RL25_LTE656_OMS can't receive tranisent alarms</para>
+              <para>16.05.2013 FSc: PR 42666ESPE05: LNT3.0_FM_ AlToggsupporlist_faultname of FSM_6262 are not consistency with RISE</para>
+              <para>16.05.2013 FSc: PR 42665ESPE05: LNT3.0_FM_ AlToggsupporlist_faultname of FSM_6261 are not consistency with RISE</para>
+              <para>28.05.2013 FSc: "FSM_6262_BTS vendor specific file fault" removed, this is static error and to be solved via new build only, not toggling</para>
+              <para>10.06.2013 FSc. PR 40600ESPE06: RISE-PDDB faultname alignment for toggling alarms in RL50, significant number of faults deleted (see additional information)</para>
+              <para>28.06.2013 FSc: PR 96902ESPE01: [LN5.0, LNT3.0] Fault 61020 need to be removed from BTSSCL-alToggSuppList-faultName, its not in RISE defined anymore</para>
+              <para>05.07.2013 FSc: PR 42665ESPE05: LNT3.0_FM_ AlToggsupporlist_faultname of FSM_6261 are not consistency with RISE, again name change due to SyVe concerns regarding understanding</para>
+              <para>16.01.2014 PRo: Enumeration values changed - FSM_6262_Trace session failure and FSM_6310_X2 Reset deleted</para>
+            </description>
+          </history>
+          <simpleType base="integer">
+            <enumeration value="1006150" text="FT_6150_GTP-U Path Failure"/>
+            <enumeration value="1061029" text="FT_61029_LOS on unit U, [ethernet] interface IF"/>
+            <enumeration value="1061050" text="FT_61050_Missing or non-compliant SFP module"/>
+            <enumeration value="1103000" text="FSM_3000_System Module failure"/>
+            <enumeration value="1103010" text="FSM_3010_RF Module failure"/>
+            <enumeration value="1103080" text="FSM_3080_BTS reference clock missing"/>
+            <enumeration value="1104011" text="FSM_4011_GPS Receiver alarm x"/>
+            <enumeration value="1104036" text="FSM_4036_Invalid Configuration file"/>
+            <enumeration value="1106202" text="FSM_6202_Transport layer connection failure S1 IF"/>
+            <enumeration value="1106203" text="FSM_6203_Transport layer connection failure X2 IF"/>
+            <enumeration value="1106204" text="FSM_6204_S1 SCTP path failure"/>
+            <enumeration value="1106261" text="FSM_6261_Failure in connection to OMS or 3rd party"/>
+            <enumeration value="1106303" text="FSM_6303_X2 Reset Retry Out"/>
+            <enumeration value="1106304" text="FSM_6304_X2 Setup Retry Out"/>
+            <enumeration value="1106308" text="FSM_6308_S1 Setup Retry Out"/>
+            <enumeration value="1106317" text="FSM_6317_S1 Reset Retry Out"/>
+            <enumeration value="1203010" text="FR_3010_RF Module failure"/></simpleType>
+        </p>
+        <p name="inUse" fullName="Suppression of toggling alarms in use" maxOccurs="1" id="77415" status="approved" releaseId="6409">
+          <description>
+            <para>Defines the toggling suppression used for this BTS fault and alarming HW resource pair.</para>
+          </description>
+          <shortDesc>
+            <para>Suppression of toggling alarms functionality in use.</para>
+          </shortDesc>
+          <additionalInfo access="internal">
+            <para>Author: Antti Konttinen ; Param. SFS abbrev. name: -</para>
+          </additionalInfo>
+          <creation priority="mandatory"></creation>
+          <modification type="onLine"></modification>
+          <parameterCategories>
+            <parameterCategory name="Basic parameters"/></parameterCategories>
+          <interfaces>
+            <interface source="EM" target="LTE BTS"/>
+            <interface source="LTE BTS" target="RAC"/>
+            <interface source="RAC" target="RACApp"/></interfaces>
+          <references>
+            <reference type="NSN reference" text="WBTS_OPR_61658" access="internal"/></references>
+          <productData name="LTE BTS">
+            <property name="C Type Name" value="inUse" dataType="String"/>
+            <property name="UG MOC" value="RL10 -&gt; RL20: 1) BTSSCL 2) BTSSC" dataType="String"/>
+            <property name="UG Structure" value="RL10 -&gt; RL20: 1) alToggSuppList 2) alToggSuppList" dataType="String"/>
+            <property name="UG Param" value="RL10 -&gt; RL20: 1) inUse 2) inUse" dataType="String"/>
+            <property name="UG ParamValue" value="RL10 -&gt; RL20: 1) value of inUse 2) -" dataType="String"/>
+            <property name="UG operation" value="RL20 -&gt; RL30: no operation RL10 -&gt; RL20: 1) addStructParam 2) delStructParam" dataType="String"/>
+            <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+          <history>
+            <description>
+              <para>03.03.2010: J.Mustajarvi Parameter author added</para>
+            </description>
+          </history>
+          <simpleType base="boolean">
+            <default value="false"/></simpleType>
+        </p>
+      </complexType>
+    </p>
+    <p name="btsId" fullName="BTS identifier" maxOccurs="1" id="77416" status="approved" releaseId="6409">
+      <description>
+        <para>Defines the BTS in question.</para>
+        <para>Note: This parameter cannot be changed by NetAct. Any change will be done using BTS SM.</para>
+      </description>
+      <shortDesc>
+        <para>Defines the BTS in question.</para>
+        <para>Note: This parameter cannot be changed by NetAct. Any change will be done using BTS SM.</para>
+      </shortDesc>
+      <creation priority="mandatory"></creation>
+      <modification type="BTS restart needed"></modification>
+      <relatedParameters>
+        <pRef class="LNBTS" name="lnBtsId" hidden="false" access="public">
+          <pRefDesc>
+            <para>btsId must be same as lnBtsId.</para>
+          </pRefDesc>
+        </pRef>
+        <pRef class="IPNO" name="btsId" hidden="false" access="public">
+          <pRefDesc>
+            <para>btsId must be same as btsid.</para>
+          </pRefDesc>
+        </pRef>
+        <pRef class="MRBTS" name="mrbtsId" hidden="false" access="public">
+          <pRefDesc>
+            <para>btsId must be same as mrbtsId.</para>
+          </pRefDesc>
+        </pRef>
+        <description>
+          <para>btsId must be same as LNBTS/lnBtsId, MRBTS/mrbtsId and IPNO/btsid.</para>
+        </description>
+      </relatedParameters>
+      <features>
+        <feature name="LTE145 LTE Configuration Management" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE145 LTE Configuration Management" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <references>
+        <reference type="NSN reference" text="Commissioning EFS / WBTS_OAM_41239" access="internal"/></references>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="btsId" dataType="String"/>
+        <property name="UG MOC" value="RL10 -&gt; RL20: 1) BTSSCL 2) BTSSC" dataType="String"/>
+        <property name="UG Param" value="RL10 -&gt; RL20: 1) btsId 2) btsId" dataType="String"/>
+        <property name="UG ParamValue" value="RL10 -&gt; RL20: 1) value of btsId 2) -" dataType="String"/>
+        <property name="UG operation" value="RL20 -&gt; RL30: no operation RL10 -&gt; RL20: 1) addParam 2) delParam" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+      <history>
+        <description>
+          <para>PR 48141ESPE04: value range changed from 24 bit to 20 bit</para>
+          <para>03.03.2010: J.Mustajarvi Parameter author added</para>
+          <para>PR 64637ESPE02: Kari Suutari-J&#228;&#228;sk&#246; parameter relation fields added.</para>
+          <para>17.06.2011 FSc: PR 89127ESPE02: No commissioning possible after change of BTS ID</para>
+        </description>
+      </history>
+      <simpleType base="decimal">
+        <editing internalValue="= UI_value">
+          <range minIncl="0" maxIncl="1048575"/></editing>
+      </simpleType>
+    </p>
+    <p name="btsName" fullName="BTS name" maxOccurs="1" id="77417" status="approved" releaseId="6409">
+      <description>
+        <para>This parameter can be used for identification of the BTS. It is used for planning purposes, i.e. to provide identification information of the site. It is not used for any Telecom purposes.</para>
+      </description>
+      <shortDesc>
+        <para>This parameter can be used for identification of the BTS. It is used for planning purposes, i.e. to provide identification information of the site. It is not used for any Telecom purposes.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>Parameter author: Kari Suutari-Jaasko</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <features>
+        <feature name="LTE145 LTE Configuration Management" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE145 LTE Configuration Management" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <references>
+        <reference type="NSN reference" text="Commissioning EFS / WBTS_OAM_37842" access="internal"/></references>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="btsName" dataType="String"/>
+        <property name="UG MOC" value="RL10 -&gt; RL20: 1) BTSSCL 2) BTSSC" dataType="String"/>
+        <property name="UG Param" value="RL10 -&gt; RL20: 1) btsName 2) btsName" dataType="String"/>
+        <property name="UG ParamValue" value="RL10 -&gt; RL20: 1) value of btsName 2) -" dataType="String"/>
+        <property name="UG operation" value="RL20 -&gt; RL30: no operation RL10 -&gt; RL20: 1) addParam 2) delParam" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+      <history>
+        <description>
+          <para>18.08.2009 CN3947_CR1619_CRL0076: range changed from 1..15 to 1..80</para>
+          <para>03.03.2010 J.Mustajarvi parameter author added.</para>
+          <para>22.02.2011 FSc: CN4503 CRL0367 TMO Request to change parameter modification type in RL30, set to 'on-line' modifiable</para>
+          <para>23.03.2012 FSc: NA05105554 BTS SM not showing parameter enbname correctly, PSD printableString removed</para>
+          <para>29.03.2012 FSc: PR NA05105554: BTS SM not showing parameter enbname correctly</para>
+        </description>
+      </history>
+      <simpleType base="string">
+        <minLength value="1"/>
+        <maxLength value="80"/></simpleType>
+      <validationPattern>ASCII_character{1,80}</validationPattern>
+      <regularExpression>([a-zA-Z0-9]|\(|\)|\+|,|-|\.|/|:|=|\?|'|"|!|@|#|\$|%|\^|&amp;|\*|_|;|&lt;|&gt;|\/|\\|\||\}|\{|\[|\]|`|~| ){1,80}</regularExpression>
+    </p>
+    <p name="btsSyncMode" fullName="Network synchronization mode" maxOccurs="1" id="93669" status="approved" releaseId="6409">
+      <description>
+        <para>This parameter specifies the synchronization mode of the eNB. </para>
+        <para>TD-LTE systems require a tight timing on air interface transmission synchronization. In all those cases phase synchronization should be selected.</para>
+        <para>If phase synchronization is selected, only synchronization reference sources which are capable to accuracy needed by phase synchronization shall be selected. To meet a relative phase accuracy compared to a PRTC, BTS can not come up without GPS or ToP-P connection existence and operation.</para>
+      </description>
+      <shortDesc>
+        <para>This parameter specifies the synchronization mode of the eNB. </para>
+        <para>TD-LTE systems require a tight timing on air interface transmission synchronization. In all those cases phase synchronization should be selected.</para>
+        <para>If phase synchronization is selected, only synchronization reference sources which are capable to accuracy needed by phase synchronization shall be selected. To meet a relative phase accuracy compared to a PRTC, BTS can not come up without GPS or ToP-P connection existence and operation.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Matthias Rudert</para>
+        <para>EFS Author: Jari Tiitinen</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="BTS restart needed"></modification>
+      <relatedParameters>
+        <pRef class="LNCEL" name="actOtdoa" hidden="false" access="public">
+          <pRefDesc>
+            <para>actOtdoa can only be set to 'true' if btsSyncMode is set to 'PhaseSync'</para>
+          </pRefDesc>
+        </pRef>
+        <pRef class="TOPP" name="actTopPhaseSynch" hidden="false" access="public">
+          <pRefDesc>
+            <para>if actTopPhaseSynch is set to 'true', btsSyncMode must be configured to 'PhaseSync'</para>
+          </pRefDesc>
+        </pRef>
+        <pRef class="LNCEL" name="actEicic" hidden="false" access="public">
+          <pRefDesc>
+            <para>actEicic can be set to 'true' only if btsSyncMode is set to 'PhaseSync':</para>
+          </pRefDesc>
+        </pRef>
+        <description>
+          <para>Either gpsInUse or gpsCtrlBlockForCoLocatedBts or actToPPhaseSynch must be 'true' if 'PhaseSync' is commissioned.</para>
+          <para>If  actTopPhaseSynch is set to 'true', btsSyncMode must be configured to 'PhaseSync'.</para>
+          <para>If btsSyncMode is set to 'PhaseSync'</para>
+          <para>- actOtdoa is allowed to be set to 'true' (when in addition gpsInUse or gpsCtrlBlockForCoLocatedBts is set to 'true')</para>
+          <para>- either gpsTotalAntennaLineDelay or gpsCableLength must be specified</para>
+          <para>- actEicic is allowed to be configured to 'true', in other cases the actEicic value must be configured to 'false'.</para>
+          <para> If actHybridSync is set to 'true' then btsSyncMode shall be set to 'PhaseSync'.</para>
+          <para>Please note: actTopPhaseSynch and actTopFreqSynch are configured in Transport domain and there is no validation over the domains.</para>
+        </description>
+      </relatedParameters>
+      <features>
+        <feature name="LTE80b Frame synchronized operation" type="standard"/>
+        <feature name="LTE891 Timing over Packet with phase synchronization" type="optional"/>
+        <feature name="LTE1710 Sync Hub Direct Forward" type="standard"/>
+        <feature name="LTE942 Hybrid Synchronization" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE80b Frame synchronized operation" type="standard"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE891 Timing over Packet with phase synchronization" type="optional"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE1710 Sync Hub Direct Forward" type="standard"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE942 Hybrid Synchronization" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="LTE BTS" target="EM"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="btsSyncMode" dataType="String"/>
+        <property name="UG MOC" value="RL20 -&gt; RL30: BTSSCL" dataType="String"/>
+        <property name="UG Param" value="RL20 -&gt; RL30: btsSyncMode" dataType="String"/>
+        <property name="UG ParamValue" value="RL20 -&gt; RL30: notUsed" dataType="String"/>
+        <property name="UG operation" value="RL20 -&gt; RL30: addParam" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+      <history>
+        <description>
+          <para>14.04.2011 FSc: PR 75350ESPE04 Failure in optical RP3 interface failure appears to all 3 cells in startup</para>
+          <para>09.11.2011 FSc: PR 70950ESPE01: LTE495 OTDOA new relatioship and correction to existing one is needed</para>
+          <para>17.11.2011 FSc: removal of relationship to maxPhaseDrifting, which is removed from RL40</para>
+          <para>04.05.2012 FSc: PR 77123ESPE01: LN4.0: Tuning algorithm change failure after GPS phase disconnected when TRS sync source available</para>
+          <para>14.06.2013 FSc: PR 127516ESPE02: RL50_CM: gpsInUse cross check not implemented</para>
+          <para>04.07.2013 FSc: LBT1133 CRL0448 Optional parameter Handling, removal of not used</para>
+          <para>19.01.2014 FSc: PR 102825ESPE01: Incorrect/missing synchronization PDDB parameter definitions for RL60 features LTE891, LTE1602-C and RP000539_10</para>
+          <para>31.03.2014 FSc: removal of FreqSync</para>
+          <para>11.09.2014 FSc: PR 147263ESPE02: [LTE1113] Update documentation and eNB policy check to include phase sync requirement</para>
+        </description>
+      </history>
+      <simpleType base="integer">
+        <enumeration value="1" text="PhaseSync"/>
+        <default value="1"/></simpleType>
+    </p>
+    <p name="btssclId" fullName="LTE BTS site identification" maxOccurs="1" id="77418" status="approved" releaseId="6409">
+      <description>
+        <para>LTE specific Base Station level radio parameters.</para>
+      </description>
+      <shortDesc>
+        <para>LTE specific Base Station level radio parameters.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>Parameter author: Kari Suutari-Jaasko. This parameter is only for distiquest name purpose not real parameter to configuration file.</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="unmodifiable"></modification>
+      <features>
+        <feature name="LTE145 LTE Configuration Management" type="standard"/>
+        <feature name="LTE447 SW support for RF sharing GSM-LTE" type="optional"/>
+        <feature name="LBT988 Multiradio Object Model Preparation" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE145 LTE Configuration Management" type="standard"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE447 SW support for RF sharing GSM-LTE" type="optional"/></featureItem>
+        <featureItem>
+          <featureComponent name="LBT988 Multiradio Object Model Preparation" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <references>
+        <reference type="NSN reference" text="Commissioning EFS / WBTS_OAM_40960" access="internal"/></references>
+      <productData name="RAC">
+        <property name="Planning IF Name" value="$instance" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="Planning IF Name" value="$instance" dataType="String"/>
+        <property name="MO MinOccurs" value="1" dataType="Number"/>
+        <property name="MO MaxOccurs" value="1" dataType="Number"/>
+        <property name="C Type Name" value="btsscId" dataType="String"/>
+        <property name="UG MOC" value="RL10 -&gt; RL20: BTSSCL" dataType="String"/>
+        <property name="UG Param" value="RL10 -&gt; RL20: btssclId // naming attribute" dataType="String"/>
+        <property name="UG ParamValue" value="RL10 -&gt; RL20: 1" dataType="String"/>
+        <property name="UG operation" value="RL10 -&gt; RL20: addClass" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+      <history>
+        <description>
+          <para>03.03.2010: J.Mustajarvi Parameter author added and Modification field value is changed from "BTS restart needed" to "Not Modifiable"</para>
+        </description>
+      </history>
+      <simpleType base="decimal">
+        <editing internalValue="= UI_value">
+          <range minIncl="1" maxIncl="1"/>
+          <default value="1"/></editing>
+      </simpleType>
+    </p>
+    <p name="ext1ppsClkOutOn" fullName="PPS synchronization output in use in HO mode" maxOccurs="1" id="103952" status="approved" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </shortDesc>
+      <creation priority="mandatory"></creation>
+      <modification type="unmodifiable"></modification>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <interfaces>
+        <interface source="EM" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="ext1ppsClkOutOn" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <simpleType base="boolean">
+        <default value="false"/></simpleType>
+    </p>
+    <p name="ext2M048ClkInUse" fullName="External 2.048MHz synchronisation in use" maxOccurs="1" id="77569" status="approved" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </shortDesc>
+      <creation priority="mandatory"></creation>
+      <modification type="unmodifiable"></modification>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <interfaces>
+        <interface source="EM" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="ext2M048ClkInUse" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <simpleType base="boolean">
+        <default value="false"/></simpleType>
+    </p>
+    <p name="ext2M048ClkOutOn" fullName="External 2.048 MHz synchronization output in HO mode" maxOccurs="1" id="104018" status="approved" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </shortDesc>
+      <creation priority="mandatory"></creation>
+      <modification type="unmodifiable"></modification>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <interfaces>
+        <interface source="EM" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="ext2M048ClkOutOn" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <simpleType base="boolean">
+        <default value="false"/></simpleType>
+    </p>
+    <p name="extGpsReceiverHoldoverMode" fullName="External GPS receiver Holdover Mode" maxOccurs="1" id="348804" status="proposal" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </shortDesc>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <features>
+        <feature name="LTE1845 eNB SW support for FYGE" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE1845 eNB SW support for FYGE" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="extGpsReceiverHoldoverMode" dataType="String"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <simpleType base="boolean">
+        <default value="false">
+          <description>
+            <para>HOLDOVER MODE is deactivated at external GPS receiver</para>
+          </description>
+        </default>
+      </simpleType>
+    </p>
+    <p name="glonassLeapSecondDate" fullName="GLONASS leap second date" maxOccurs="1" id="396688" status="proposal" releaseId="6409">
+      <description>
+        <para>This parameter sets the next date of the GLONASS leap second or the previous date of the GLONASS leap second if the next GLONASS leap second has not been announced.</para>
+        <para>The format is:</para>
+        <para>YYYY-MM-DD</para>
+        <para>This parameter must be set if GNSS Control Mode parameter is set to GLONASS only.</para>
+      </description>
+      <shortDesc>
+        <para>This parameter sets the next date of the GLONASS leap second or the previous date of the GLONASS leap second if the next GLONASS leap second has not been announced.</para>
+        <para>The format is:</para>
+        <para>YYYY-MM-DD</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: John Hoekstra</para>
+      </additionalInfo>
+      <creation priority="optional"></creation>
+      <modification type="onLine"></modification>
+      <relatedParameters>
+        <pRef class="BTSSCL" name="glonassOffsetAfter" hidden="false" access="public"></pRef>
+        <pRef class="BTSSCL" name="glonassOffsetBefore" hidden="false" access="public"></pRef>
+        <pRef class="GNSSI" name="gnssControlMode" hidden="false" access="public"></pRef>
+        <pRef class="GNSSE" name="gnssControlMode" hidden="false" access="public"></pRef>
+        <description>
+          <para>glonassLeapSecondDate is only required for one of the following conditions:</para>
+          <para>1. GNSSE/gnssControlMode = GLONASS only</para>
+          <para>2. GNSSI/gnssControlMode = GLONASS only</para>
+          <para>if glonassLeapSecondDate set to a valid date string then:</para>
+          <para>1. glonassOffsetAfter must be set to a valid integer value</para>
+          <para>2. glonassOffsetBefore must be set to a valid integer value</para>
+        </description>
+      </relatedParameters>
+      <relatedFunctions>
+        <function name="BTS Site Configuration"/></relatedFunctions>
+      <features>
+        <feature name="LTE2438 GNSS - Operation Mode and tracking" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE2438 GNSS - Operation Mode and tracking" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="glonassLeapSecondDate" dataType="String"/>
+        <property name="isVendorSpecific" value="false" dataType="Boolean"/></productData>
+      <simpleType base="string">
+        <minLength value="0"/>
+        <maxLength value="12"/></simpleType>
+    </p>
+    <p name="glonassOffsetAfter" fullName="GLONASS offset after leap second date" maxOccurs="1" id="396689" status="proposal" releaseId="6409">
+      <description>
+        <para>This parameter sets the offset (in seconds) between GPS and GLONASS time (without the timezone difference) introduced after the date/time specified in Leap Second Date.</para>
+        <para>This parameter must be set if GNSS Control Mode parameter is set to GLONASS only.</para>
+      </description>
+      <shortDesc>
+        <para>This parameter sets the offset (in seconds) between GPS and GLONASS time (without the timezone difference) introduced after the date/time specified in Leap Second Date.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: John Hoekstra</para>
+      </additionalInfo>
+      <creation priority="optional"></creation>
+      <modification type="onLine"></modification>
+      <relatedParameters>
+        <pRef class="BTSSCL" name="glonassLeapSecondDate" hidden="false" access="public"></pRef>
+        <pRef class="BTSSCL" name="glonassOffsetBefore" hidden="false" access="public"></pRef>
+        <pRef class="GNSSI" name="gnssControlMode" hidden="false" access="public"></pRef>
+        <pRef class="GNSSE" name="gnssControlMode" hidden="false" access="public"></pRef>
+        <description>
+          <para>glonassOffsetAfter is only required for one of the following conditions:</para>
+          <para>1. GNSSE/gnssControlMode = GLONASS only</para>
+          <para>2. GNSSI/gnssControlMode = GLONASS only</para>
+          <para>if glonassOffsetAfter set to a valid integer value then:</para>
+          <para>1. glonassLeapSecondDate must be set to a valid date string</para>
+          <para>2. glonassOffsetBefore must be set to a valid integer value</para>
+        </description>
+      </relatedParameters>
+      <relatedFunctions>
+        <function name="BTS Site Configuration"/></relatedFunctions>
+      <features>
+        <feature name="LTE2438 GNSS - Operation Mode and tracking" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE2438 GNSS - Operation Mode and tracking" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="glonassOffsetAfter" dataType="String"/>
+        <property name="isVendorSpecific" value="false" dataType="Boolean"/></productData>
+      <simpleType base="decimal">
+        <editing units="s" internalValue="= UI_value">
+          <range minIncl="-100" maxIncl="100"/></editing>
+      </simpleType>
+    </p>
+    <p name="glonassOffsetBefore" fullName="GLONASS offset before leap second date" maxOccurs="1" id="396690" status="proposal" releaseId="6409">
+      <description>
+        <para>This parameter sets offset (in seconds) between GPS and GLONASS time (without the timezone difference) before the date/time specified in Leap Second Date. </para>
+        <para>This parameter must be set if GNSS Control Mode parameter is set to GLONASS only.</para>
+      </description>
+      <shortDesc>
+        <para>This parameter sets offset (in seconds) between GPS and GLONASS time (without the timezone difference) before the date/time specified in Leap Second Date.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: John Hoekstra</para>
+      </additionalInfo>
+      <creation priority="optional"></creation>
+      <modification type="onLine"></modification>
+      <relatedParameters>
+        <pRef class="BTSSCL" name="glonassLeapSecondDate" hidden="false" access="public"></pRef>
+        <pRef class="BTSSCL" name="glonassOffsetAfter" hidden="false" access="public"></pRef>
+        <pRef class="GNSSI" name="gnssControlMode" hidden="false" access="public"></pRef>
+        <pRef class="GNSSE" name="gnssControlMode" hidden="false" access="public"></pRef>
+        <description>
+          <para>glonassOffsetBefore is only required for one of the following conditions:</para>
+          <para>1. GNSSE/gnssControlMode = GLONASS only</para>
+          <para>2. GNSSI/gnssControlMode = GLONASS only</para>
+          <para>if glonassOffsetBefore set to a valid integer value then:</para>
+          <para>1. glonassLeapSecondDate must be set to a valid date string</para>
+          <para>2. glonassOffsetAfter must be set to a valid integer value</para>
+        </description>
+      </relatedParameters>
+      <relatedFunctions>
+        <function name="BTS Site Configuration"/></relatedFunctions>
+      <features>
+        <feature name="LTE2438 GNSS - Operation Mode and tracking" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE2438 GNSS - Operation Mode and tracking" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="glonassOffsetBefore" dataType="String"/>
+        <property name="isVendorSpecific" value="false" dataType="Boolean"/></productData>
+      <simpleType base="decimal">
+        <editing units="s" internalValue="= UI_value">
+          <range minIncl="-100" maxIncl="100"/></editing>
+      </simpleType>
+    </p>
+    <p name="gpsCtrlBlockForCoLocatedBts" fullName="SyncHub Master BTS as reference source" maxOccurs="1" id="125602" status="proposal" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: K.Koller/K.Dolde</para>
+        <para>EFS Author: Juhani Mustaj&#228;rvi</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="unmodifiable"></modification>
+      <features>
+        <feature name="LTE612 Synchronization Hub for FSMr2" type="optional"/>
+        <feature name="LTE1698 1PPS&amp;ToD Sync Slave Mode of Operation" type="standard"/>
+        <feature name="LTE1257 Integrated GPS receiver on FSIH" type="standard"/>
+        <feature name="LTE1710 Sync Hub Direct Forward" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE612 Synchronization Hub for FSMr2" type="optional"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE1698 1PPS&amp;ToD Sync Slave Mode of Operation" type="standard"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE1257 Integrated GPS receiver on FSIH" type="standard"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE1710 Sync Hub Direct Forward" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="gpsCtrlBlockForCoLocatedBts" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <history>
+        <description>
+          <para>11.01.2012 FSc: PR NA05042263: FYGA module displayed at wrong FSME (LGU+), PR NA05003053: [RL30] GPS Receiver Alarm: Control Interface not available (LGU+), PR 91746ESPE02: RL15_SYN:FYGA view is not needed in SEM when GPS resource is not connected to FSME directly - final solution</para>
+          <para>04.05.2012 FSc: removal of the restriction for FSMr2 usage only</para>
+          <para>03.06.2013 FSc: PR 126813ESPE02: [LNT3.0]gpsCtrlBlockForCoLocatedBts need added in EFS OAM TDD thus when GPS is chained, FYGA would't be displayed, common for FDD and TDD</para>
+          <para>14.11.2013 FSc: description and relationship textual description update based on LTE1698</para>
+        </description>
+      </history>
+      <simpleType base="boolean">
+        <default value="false">
+          <description>
+            <para>normal BTS site with GPS</para>
+          </description>
+        </default>
+      </simpleType>
+    </p>
+    <p name="gpsInUse" fullName="GPS in use" maxOccurs="1" id="77570" status="approved" releaseId="6409">
+      <description>
+        <para>Defines the usage of the GPS. GPS is connected to the system module</para>
+      </description>
+      <shortDesc>
+        <para>Defines the usage of the GPS. GPS is connected to the system module</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Matthias Rudert</para>
+        <para>EFS Author: Kari Suutari-Jaasko</para>
+        <para>NSN reference:Commissioning EFS / WBTS_OAM_37842:internal</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="BTS restart needed"></modification>
+      <relatedParameters>
+        <pRef class="BTSSCL" name="gpsTotalAntennaLineDelay" hidden="false" access="public">
+          <pRefDesc>
+            <para>the setting of gpsTotalAntennaLineDelay is only valid if gpsInUse is set to 'true'</para>
+          </pRefDesc>
+        </pRef>
+        <pRef class="LNCEL" name="actOtdoa" hidden="false" access="public">
+          <pRefDesc>
+            <para>actOtdoa can only be set to 'true' if gpsInUse is set to 'true'</para>
+          </pRefDesc>
+        </pRef>
+        <description>
+          <para>The parameter specified if GPS is used. If the value is set to 'true' gpsTotalAntennaLineDelay will be used.</para>
+          <para>If gpsInUse is set to value 'true'</para>
+          <para>- actOtdoa is allowed to be set to 'true'</para>
+        </description>
+      </relatedParameters>
+      <relatedFunctions>
+        <function name="BTS Site Configuration"/></relatedFunctions>
+      <features>
+        <feature name="LTE145 LTE Configuration Management" type="standard"/>
+        <feature name="LTE891 Timing over Packet with phase synchronization" type="optional"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE145 LTE Configuration Management" type="standard"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE891 Timing over Packet with phase synchronization" type="optional"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="gpsInUse" dataType="String"/>
+        <property name="UG MOC" value="RL10 -&gt; RL20: 1) BTSSCL 2) BTSSC" dataType="String"/>
+        <property name="UG Param" value="RL10 -&gt; RL20: 1) gpsInUse 2) gpsInUse" dataType="String"/>
+        <property name="UG ParamValue" value="RL10 -&gt; RL20: 1) value of gpsInUse 2) -" dataType="String"/>
+        <property name="UG operation" value="RL20 -&gt; RL30: no operation RL10 -&gt; RL20: 1) addParam 2) delParam" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+      <history>
+        <description>
+          <para>30.11.2009 Wojciech Sommer PR 43311ESPE01: Modification field set as BTS Restart Needed</para>
+          <para>10.12.2009 Frank Schleuss, Relationships added for TDLTE911</para>
+          <para>3.8.2010 F.Schleuss: TD-Inc23v0.1: model changes of TD-Inc22 transfered to TD-Inc23</para>
+          <para>09.11.2011 FSc: PR 70950ESPE01: LTE495 OTDOA new relatioship and correction to existing one is needed</para>
+          <para>11.01.2012 FSc: PR NA05042263: FYGA module displayed at wrong FSME (LGU+), PR NA05003053: [RL30] GPS Receiver Alarm: Control Interface not available (LGU+), PR 91746ESPE02: RL15_SYN:FYGA view is not needed in SEM when GPS resource is not connected to FSME directly</para>
+          <para>24.02.2012 FSc: PR 89743ESPE04: FSMr3:Uplink combination mode can change MRC to IRC even if btsSyncMode is Frequency synchronization</para>
+          <para>07.09.2012 FSc: PR 96073ESPE04: LTE612: Parameter BTSSCL - ext1ppsClkOutOn for FMSr3 can be set even GPS is not sync source</para>
+          <para>29.01.2013 FSc: LBT1707 CRL0896 Allow LTE979 IRC also without GPS sync, removal of fix binding via relationships of IRS setting and GPS synchronization</para>
+          <para>03.06.2013 FSc: PR 126813ESPE02: [LNT3.0]gpsCtrlBlockForCoLocatedBts need added in EFS OAM TDD thus when GPS is chained, FYGA would't be displayed, common for FDD and TDD</para>
+          <para>14.06.2013 FSc: PR 127516ESPE02: RL50_CM: gpsInUse cross check not implemented</para>
+          <para>20.11.2013 FSc: LTE1606 FSMK dropped from RL60, parameter added back to content, change kept in module LTE_FDD/BTSSCL for later reuse, LBT2141 CRL1742 Removal of FSMK from RL60</para>
+          <para>24.01.2014 FSc: PR 102825ESPE01: Incorrect/missing synchronization PDDB parameter definitions for RL60 features LTE891, LTE1602-C and RP000539_10</para>
+        </description>
+      </history>
+      <simpleType base="boolean">
+        <default value="true"/></simpleType>
+    </p>
+    <p name="gpsTotalAntennaLineDelay" fullName="1PPS source line delay" maxOccurs="1" id="77573" status="proposal" releaseId="6409">
+      <description>
+        <para>This parameter specifies the line delay in the cable used between the GPS antenna and the Flexi Zone Micro eNB.</para>
+      </description>
+      <shortDesc>
+        <para>This parameter specifies the line delay in the cable used between the GPS antenna and the Flexi Zone Micro eNB.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Matthias Rudert</para>
+      </additionalInfo>
+      <creation priority="optional"></creation>
+      <modification type="BTS restart needed"></modification>
+      <relatedParameters>
+        <pRef class="BTSSCL" name="gpsInUse" hidden="false" access="public">
+          <pRefDesc>
+            <para>gpsTotalAntennaLineDelay can be configured if gpsInUse is set to 'true' (precondition is that btsSyncMode is set to PhaseSync)</para>
+          </pRefDesc>
+        </pRef>
+        <pRef class="BTSSCL" name="btsSyncMode" hidden="false" access="public">
+          <pRefDesc>
+            <para>if btsSyncMode is set to 'PhaseSync' and either gpsInUse or gpsCtrlBlockForCoLocatedBts is 'true', gpsTotalAntennaLineDelay must be configured</para>
+          </pRefDesc>
+        </pRef>
+        <pRef class="BTSSCL" name="gpsCtrlBlockForCoLocatedBts" hidden="false" access="public">
+          <pRefDesc>
+            <para>gpsTotalAntennaLineDelay can be configured if gpsCtrlBlockForCoLocatedBts is set to 'true' (precondition is that btsSyncMode is set to PhaseSync)</para>
+          </pRefDesc>
+        </pRef>
+        <description>
+          <para>gpsTotalAntennaLineDelay is used if gpsInUse is set to value 'true' or (if gpsCtrlBlockForCoLocatedBts is set to 'true' and btsSyncMode is set to 'PhaseSync').</para>
+        </description>
+      </relatedParameters>
+      <relatedFunctions>
+        <function name="BTS Site Configuration"/></relatedFunctions>
+      <features>
+        <feature name="TDLTE911 TDD Frame synchronized operation" type="optional"/>
+        <feature name="LTE80b Frame synchronized operation" type="standard"/>
+        <feature name="LTE612-b Synchronization Hub for FSMr3" type="optional"/>
+        <feature name="LTE1257 Integrated GPS receiver on FSIH" type="standard"/>
+        <feature name="LTE1710 Sync Hub Direct Forward" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="TDLTE911 TDD Frame synchronized operation" type="optional"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE80b Frame synchronized operation" type="standard"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE612-b Synchronization Hub for FSMr3" type="optional"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE1257 Integrated GPS receiver on FSIH" type="standard"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE1710 Sync Hub Direct Forward" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="LTE BTS" target="EM"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="gpsTotalAntennaLineDelay" dataType="String"/>
+        <property name="UG MOC" value="RL20 -&gt; RL30: BTSSCL" dataType="String"/>
+        <property name="UG Param" value="RL20 -&gt; RL30: gpsTotalAntennaLineDelay" dataType="String"/>
+        <property name="UG ParamValue" value="RL20 -&gt; RL30: 0" dataType="String"/>
+        <property name="UG operation" value="RL20 -&gt; RL30: addParam" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+      <history>
+        <description>
+          <para>20.01.2010 F.Schleuss: Based on new design information optional handling updated</para>
+          <para>08.03.2010 F.Schleuss: TD-Inc23v0.1: model changes of TD-Inc22 transfered to TD-Inc23</para>
+          <para>26.04.2010 FSc: Special value corrected</para>
+          <para>26.08.2011 FSc: CN4733: The support for 300m GPS cable length in RL15TD , text updated</para>
+          <para>22.05.2013 FSc: PR 126125ESPE02: [LNT3.1]When actBbuHotelling is set to value 'true' and bbuHotellingMode is set to 'slave' then syncPropagationEnabled shall be set to the value 'false'.</para>
+          <para>14.06.2013 FSc: PR 127516ESPE02: RL50_CM: gpsInUse cross check not implemented</para>
+          <para>04.07.2013 FSc: LBT1133 CRL0448 Optional parameter Handling, removal of not used</para>
+          <para>14.01.2014 BB: CRL5227 Change range of parameter gpsTotalAntennaLineDelay to 0...2000 in TDD system - TL15A</para>
+        </description>
+      </history>
+      <simpleType base="decimal">
+        <editing units="ns" internalValue="= UI_value">
+          <range minIncl="1" maxIncl="2000"/></editing>
+      </simpleType>
+    </p>
+    <p name="holdOverModeUsed" fullName="Holdover mode in temperature control" maxOccurs="1" id="77574" status="proposal" releaseId="6409">
+      <description>
+        <para>This parameter determines whether System Module fan speed is optimized by oscillator temperature or noise level.</para>
+      </description>
+      <shortDesc>
+        <para>Fan speed optimization in holdover state</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>Author: Matti Poukkula (Temp Mngmt) / Jari Tiitinen (Sync)</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="BTS restart needed"></modification>
+      <relatedParameters>
+        <pRef class="BTSSCL" name="btsSyncMode" hidden="false" access="public">
+          <pRefDesc>
+            <para>only if btsSyncMode is set to 'PhaseSync', holdOverModeUsed is allowed to be set to 'true'</para>
+          </pRefDesc>
+        </pRef>
+        <description>
+          <para>If btsSyncMode is set to 'PhaseSync', holdOverModeUsed is allowed to be set to 'true', in other cases the holdOverModeUsed must be configuerd to 'false'</para>
+        </description>
+      </relatedParameters>
+      <features>
+        <feature name="TDLTE911 TDD Frame synchronized operation" type="optional"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="TDLTE911 TDD Frame synchronized operation" type="optional"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="LTE BTS" target="EM"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <references>
+        <reference type="NSN reference" text="WBTS_OAM_37842" access="internal"/>
+        <reference type="NSN reference" text="WBTS_OPR_56878" access="internal"/>
+        <reference type="NSN reference" text="WBTS_OPR_56902" access="internal"/></references>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="holdOverModeUsed" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+      <history>
+        <description>
+          <para>24.01.2014 FSc: PR 102825ESPE01: Incorrect/missing synchronization PDDB parameter definitions for RL60 features LTE891, LTE1602-C and RP000539_10</para>
+        </description>
+      </history>
+      <simpleType base="boolean">
+        <default value="true"/></simpleType>
+    </p>
+    <p name="intGpsInUse" fullName="Internal GPS in use" maxOccurs="1" id="345194" status="proposal" releaseId="6409">
+      <description>
+        <para>This parameter defines if the fault management is enabled for indicating faults related to the internal GPS receiver.</para>
+        <para> Whenever an antenna is connected to the integrated GPS receiver, its GPS/1pps signal may be used for synchronising the BTS, independent from the setting of the parameter intGps InUse. </para>
+        <para>Therefore whenever an antenna is connected to the integrated GPS receiver this parameter must be set to TRUE</para>
+      </description>
+      <shortDesc>
+        <para>This parameter defines if the fault management is enabled for indicating faults related to the internal GPS receiver.</para>
+      </shortDesc>
+      <creation priority="mandatory"></creation>
+      <modification type="BTS restart needed"></modification>
+      <relatedParameters>
+        <pRef class="BTSSCL" name="gpsInUse" hidden="false" access="public">
+          <pRefDesc>
+            <para>if gpsInUse is set to 'false', intGpsInUse can be configured to 'true'</para>
+          </pRefDesc>
+        </pRef>
+        <pRef class="BTSSCL" name="gpsTotalAntennaLineDelay" hidden="false" access="public">
+          <pRefDesc>
+            <para>if gpsTotalAntennaLineDelay is specified, intGpsInUse can be configured to 'true'</para>
+          </pRefDesc>
+        </pRef>
+        <pRef class="LNCEL" name="actOtdoa" hidden="false" access="public">
+          <pRefDesc>
+            <para>actOtdoa is allowed to be configured to 'true' if intGpsInUse is set to 'true'</para>
+          </pRefDesc>
+        </pRef>
+        <pRef class="BTSSCL" name="gpsCtrlBlockForCoLocatedBts" hidden="false" access="public">
+          <pRefDesc>
+            <para>if gpsCtrlBlockForCoLocatedBts is set to 'false', intGpsInUse can be configured to 'true'</para>
+          </pRefDesc>
+        </pRef>
+        <description>
+          <para>intGpsInUse can only be configured to 'true' if</para>
+          <para>- gpsInUse is set to 'false'</para>
+          <para>- gpsCtrlBlockForCoLocatedBts is set to 'false'</para>
+          <para>- gpsTotalAntennaLineDelay is specified</para>
+          <para>If intGpsInUse is set to 'true' actOtdoa is allowed to be configured to 'true'.</para>
+        </description>
+      </relatedParameters>
+      <relatedFunctions>
+        <function name="BTS Site Configuration"/></relatedFunctions>
+      <features>
+        <feature name="LTE1257 Integrated GPS receiver on FSIH" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE1257 Integrated GPS receiver on FSIH" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="intGpsInUse" dataType="String"/></productData>
+      <simpleType base="boolean">
+        <default value="false"/></simpleType>
+    </p>
+    <p name="ledContrl" fullName="LED visibility control" maxOccurs="1" id="309878" status="draft" releaseId="6409">
+      <description>
+        <para>This parameter is used to control LED visibility.</para>
+        <para>When it is set to -1, LED will be OFF;</para>
+        <para>When it is set to 0, LED will be always ON;</para>
+        <para>When it is set to 1..720, LED will be ON for the time duration (in minutes)specified following power cycle or BTS reset.</para>
+      </description>
+      <shortDesc>
+        <para>This parameter is used to control LED visibility. </para>
+        <para>When it is set to -1, LED will be OFF;</para>
+        <para>When it is set to 0, LED will be always ON;</para>
+        <para>When it is set to 1..720, LED will be ON for the time duration (in minutes) specified following power cycle or BTS reset.</para>
+      </shortDesc>
+      <additionalInfo access="public">
+        <para>the parameter has been added to the unified module, but its related to FZM discrete model definition only, SW definitin in Macro doesn't know the parameter at all</para>
+      </additionalInfo>
+      <creation priority="optional"></creation>
+      <modification type="onLine"></modification>
+      <relatedFunctions>
+        <function name="Operability"/></relatedFunctions>
+      <features>
+        <feature name="LTE644 Configurable cell trace content" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE644 Configurable cell trace content" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <history>
+        <description>
+          <para>add per AR1030</para>
+        </description>
+      </history>
+      <simpleType base="decimal">
+        <editing units="min" internalValue="= UI_value">
+          <range minIncl="-1" maxIncl="720"/>
+          <default value="30">
+            <description>
+              <para>30 minutes</para>
+            </description>
+          </default>
+        </editing>
+      </simpleType>
+    </p>
+    <p name="locationLockConf" fullName="Location Lock Configuration" maxOccurs="1" id="390589" status="proposal" releaseId="6409">
+      <description>
+        <para>This parameter allows to set Location Lock configuration parameters on BTS.</para>
+      </description>
+      <shortDesc>
+        <para>This parameter allows to set Location Lock configuration parameters on BTS.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>EFS Author: Brian Bauerschmidt</para>
+      </additionalInfo>
+      <creation priority="optional"></creation>
+      <modification type="onLine"></modification>
+      <relatedParameters>
+        <pRef class="BTSSCL" name="actLocationLock" hidden="false" access="public"></pRef>
+        <description>
+          <para>If BTSSCL::actLocationLock is set to 'true', then the BTSSCL::locationLockConf structure must be configured.</para>
+        </description>
+      </relatedParameters>
+      <features>
+        <feature name="LTE2201 Flexi Zone BTS Location Lock" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE2201 Flexi Zone BTS Location Lock" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="locationLockConf" dataType="String"/></productData>
+      <complexType>
+        <p name="alarmingPeriod" fullName="Alarming Period" maxOccurs="1" id="390592" status="proposal" releaseId="6409">
+          <description>
+            <para>This parameter configures the reporting period (hours) of Location Lock violation alarm.</para>
+            <para>A value of 0 indicates that an alarm will only be generated once on detection of the Location Lock violation.</para>
+          </description>
+          <shortDesc>
+            <para>This parameter configures the reporting period (hours) of Location Lock violation alarm.</para>
+          </shortDesc>
+          <additionalInfo access="internal">
+            <para>EFS Author: Brian Bauerschmidt</para>
+          </additionalInfo>
+          <creation priority="mandatory"></creation>
+          <modification type="onLine"></modification>
+          <parameterCategories>
+            <parameterCategory name="Advanced parameters"/></parameterCategories>
+          <interfaces>
+            <interface source="EM" target="LTE BTS"/>
+            <interface source="LTE BTS" target="RAC"/>
+            <interface source="RAC" target="RACApp"/></interfaces>
+          <productData name="LTE BTS">
+            <property name="C Type Name" value="alarmingPeriod" dataType="String"/></productData>
+          <simpleType base="decimal">
+            <editing units="h" internalValue="= UI_value">
+              <range minIncl="1" maxIncl="120"/>
+              <default value="0"/></editing>
+            <special value="0" text="Report alarm only once on Location Lock violation"/></simpleType>
+        </p>
+        <p name="automaticDisable" fullName="Automatic Disable" maxOccurs="1" id="390593" status="proposal" releaseId="6409">
+          <description>
+            <para>This parameter activates/deactivates automatic BTS disable on Location Lock violation detection.</para>
+          </description>
+          <shortDesc>
+            <para>This parameter activates/deactivates automatic BTS disable on Location Lock violation detection.</para>
+          </shortDesc>
+          <additionalInfo access="internal">
+            <para>EFS Author: Brian Bauerschmidt</para>
+          </additionalInfo>
+          <creation priority="mandatory"></creation>
+          <modification type="onLine"></modification>
+          <parameterCategories>
+            <parameterCategory name="Advanced parameters"/></parameterCategories>
+          <interfaces>
+            <interface source="EM" target="LTE BTS"/>
+            <interface source="LTE BTS" target="RAC"/>
+            <interface source="RAC" target="RACApp"/></interfaces>
+          <productData name="LTE BTS">
+            <property name="C Type Name" value="automaticDisable" dataType="String"/></productData>
+          <simpleType base="boolean">
+            <default value="false">
+              <description>
+                <para>Do not disable BTS automatically on location lock violation.</para>
+              </description>
+            </default>
+          </simpleType>
+        </p>
+        <p name="detectionMethods" fullName="Detection Methods" maxOccurs="1" id="390590" status="proposal" releaseId="6409">
+          <description>
+            <para>This parameter configures one or more detection methods for Location Lock feature (multiple choice selection).</para>
+            <para>Bitmask with bits defined as follows: </para>
+            <para>0 - GNSS (use GPS/GLONASS); </para>
+            <para>1 - netRouting (use routing tables);</para>
+            <para>2 - netLocalAddresses (use local eNB IP addresses);</para>
+            <para>3 - netGatewayMAC (use gateway MAC address);</para>
+          </description>
+          <shortDesc>
+            <para>This parameter configures one or more detection methods for Location Lock feature (multiple choice selection).</para>
+          </shortDesc>
+          <additionalInfo access="internal">
+            <para>EFS Author: Brian Bauerschmidt</para>
+          </additionalInfo>
+          <creation priority="mandatory"></creation>
+          <modification type="onLine"></modification>
+          <parameterCategories>
+            <parameterCategory name="Advanced parameters"/></parameterCategories>
+          <interfaces>
+            <interface source="EM" target="LTE BTS"/>
+            <interface source="LTE BTS" target="RAC"/>
+            <interface source="RAC" target="RACApp"/></interfaces>
+          <productData name="LTE BTS">
+            <property name="C Type Name" value="detectionMethods" dataType="String"/></productData>
+          <simpleType base="integer">
+            <bit number="0" text="GNSS" default="1"/>
+            <bit number="1" text="netRouting" default="0"/>
+            <bit number="2" text="netLocalAddresses" default="0"/>
+            <bit number="3" text="netGatewayMAC" default="0"/>
+            <default value="1"/></simpleType>
+        </p>
+        <p name="gnssTriggerDistance" fullName="GNSS Trigger Distance" maxOccurs="1" id="390591" status="proposal" releaseId="6409">
+          <description>
+            <para>This parameter defines the distance (meters) from recorded GPS/GLONASS position that triggers Location Lock violation.</para>
+          </description>
+          <shortDesc>
+            <para>This parameter defines the distance (meters) from recorded GPS/GLONASS position that triggers Location Lock violation.</para>
+          </shortDesc>
+          <additionalInfo access="internal">
+            <para>EFS Author: Brian Bauerschmidt</para>
+          </additionalInfo>
+          <creation priority="mandatory"></creation>
+          <modification type="onLine"></modification>
+          <parameterCategories>
+            <parameterCategory name="Advanced parameters"/></parameterCategories>
+          <interfaces>
+            <interface source="EM" target="LTE BTS"/>
+            <interface source="LTE BTS" target="RAC"/>
+            <interface source="RAC" target="RACApp"/></interfaces>
+          <productData name="LTE BTS">
+            <property name="C Type Name" value="gnssTriggerDistance" dataType="String"/></productData>
+          <simpleType base="decimal">
+            <editing units="m" internalValue="= UI_value">
+              <range minIncl="10" maxIncl="1000"/>
+              <default value="50"/></editing>
+          </simpleType>
+        </p>
+      </complexType>
+    </p>
+    <p name="ppsTimingOffset" fullName="Air frame timing for 1PPS reference" maxOccurs="1" id="77575" status="approved" releaseId="6409">
+      <description>
+        <para>Different systems could have difference in the frame synchronization to GPS PPS timing pulse. </para>
+        <para>This parameter gives possiblity to adjust freely an air interface timing as for 1PPS synchronization pulse.</para>
+      </description>
+      <shortDesc>
+        <para>Defines the shift for air frame phase towards the 1PPS.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>Author: Jari Tiitinen (Sync)</para>
+        <para>Parameter value is giving as microseconds.</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="BTS restart needed"></modification>
+      <relatedParameters>
+        <pRef class="BTSSCL" name="btsSyncMode" hidden="false" access="public">
+          <pRefDesc>
+            <para>if btsSyncMode is set to 'PhaseSync', ppsTimingOffset is used</para>
+          </pRefDesc>
+        </pRef>
+        <description>
+          <para>Only if btsSyncMode is set to 'PhaseSync' the specified ppsTimingOffset is used.</para>
+        </description>
+      </relatedParameters>
+      <features>
+        <feature name="TDLTE911 TDD Frame synchronized operation" type="optional"/>
+        <feature name="LTE80b Frame synchronized operation" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="TDLTE911 TDD Frame synchronized operation" type="optional"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE80b Frame synchronized operation" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="LTE BTS" target="EM"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <references>
+        <reference type="NSN reference" text="WBTS_OPR_66310" access="internal"/></references>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="ppsTimingOffset" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+      <history>
+        <description>
+          <para>12.01.2011 FSc: PR65471ESPE02, value range extended from -5..0 to -5 ...5</para>
+          <para>24.02.2011: PR 58969ESPE01: The difference between 1PPS and RF signal is not constant with different ppsTimingOffset, value range reduced  -4.9 ...4.9us</para>
+          <para>16.09.2011 FSc: PR 82915ESPE04: [LTE153] Site Information Shows sheduler And synchronisation Typos</para>
+          <para>04.07.2013 FSc: LBT1133 CRL0448 Optional parameter Handling, change of relationship</para>
+        </description>
+      </history>
+      <simpleType base="decimal">
+        <editing divisor="100" units="&#181;s" internalValue="= UI_value * 100">
+          <range minIncl="-4900" maxIncl="4900" step="0.01"/>
+          <default value="0">
+            <description>
+              <para>no extra shift</para>
+            </description>
+          </default>
+        </editing>
+      </simpleType>
+    </p>
+    <p name="rfSharingEnabled" fullName="Rf sharing enabled" maxOccurs="1" id="82199" status="approved" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </shortDesc>
+      <creation priority="mandatory"></creation>
+      <modification type="unmodifiable"></modification>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <interfaces>
+        <interface source="EM" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="rfSharingEnabled" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <simpleType base="boolean">
+        <default value="false"/></simpleType>
+    </p>
+    <p name="syncPropagationEnabled" fullName="Forward synchronization in co-siting" maxOccurs="1" id="103953" status="proposal" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to &#8216;false&#8217;, handled via PSD</para>
+      </shortDesc>
+      <creation priority="mandatory"></creation>
+      <modification type="unmodifiable"></modification>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <interfaces>
+        <interface source="EM" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="LTE BTS" bidirectional="no"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="syncPropagationEnabled" dataType="String"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <simpleType base="boolean">
+        <default value="false"/></simpleType>
+    </p>
+    <p name="tdmSyncInUse" fullName="Transmission synchronization (TDM/SyncE/ToP) in use" maxOccurs="1" id="77571" status="approved" releaseId="6409">
+      <description>
+        <para>Defines the usage of the TDM synchronisation reference.</para>
+      </description>
+      <shortDesc>
+        <para>Defines the usage of the TDM synchronisation reference.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Matthias Rudert</para>
+        <para>EFS Author: Kari Suutari-Jaasko</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="BTS restart needed"></modification>
+      <relatedParameters>
+        <pRef class="BTSSCL" name="btsSyncMode" hidden="false" access="public">
+          <pRefDesc>
+            <para>if tdmInUse is 'true', btsSyncMode must be set to 'PhaseSync' (precondition: actTopPhaseSynch is 'true')</para>
+          </pRefDesc>
+        </pRef>
+        <description>
+          <para>If tdmSyncInUse is set to 'true' and additionally actTopPhaseSynch is set to 'true', btsSyncMode must be configured to 'PhaseSync'.</para>
+          <para>Please note: actTopPhaseSynch is configured in Transport domain and there is no validation over the domains.</para>
+        </description>
+      </relatedParameters>
+      <features>
+        <feature name="LTE710 Synchronization from PDH interface" type="standard"/>
+        <feature name="LTE891 Timing over Packet with phase synchronization" type="optional"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE710 Synchronization from PDH interface" type="standard"/></featureItem>
+        <featureItem>
+          <featureComponent name="LTE891 Timing over Packet with phase synchronization" type="optional"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="tdmSyncInUse" dataType="String"/>
+        <property name="isVendorSpecific" value="false" dataType="Boolean"/>
+        <property name="ownedByBTSOM" value="true" dataType="Boolean"/></productData>
+      <history>
+        <description>
+          <para>18.5.2009: New parameter for LTE710-a</para>
+          <para>03.03.2010: J.Mustajarvi Parameter author added</para>
+          <para>17.03.2010 J.Mustaj&#228;rvi: Modification field value changed from "Cell shutdown needed" to "BTS restart needed"</para>
+          <para>02.06.2010 FSc: PR 40054ESPE03: Transmission sync source naming on SEM</para>
+          <para>16.09.2011 FSc: PR 82915ESPE04: [LTE153] Site Information Shows sheduler And synchronisation Typos </para>
+          <para>24.01.2014 FSc: PR 102825ESPE01: Incorrect/missing synchronization PDDB parameter definitions for RL60 features LTE891, LTE1602-C and RP000539_10</para>
+        </description>
+      </history>
+      <simpleType base="boolean">
+        <default value="false"/></simpleType>
+    </p>
+  </managedObject>
+  <managedObject class="CADPR" fullName="Carrier Aggregation Default Profile" id="47540" mohId="47642" hidden="false" create="true" update="true" delete="true">
+    <p name="a6Offset" fullName="A6 offset" maxOccurs="1" id="351354" status="proposal" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to 3, handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to 3, handled via PSD</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Helmut Hofmeister</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <relatedFunctions>
+        <function name="Packet Scheduler Control"/></relatedFunctions>
+      <features>
+        <feature name="LTE2006 Flexible SCell selection" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE2006 Flexible SCell selection" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="a6Offset" dataType="String"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <simpleType base="decimal">
+        <editing divisor="2" units="dB" internalValue="= UI_value * 2">
+          <range minIncl="-15" maxIncl="15" step="0.5"/>
+          <default value="3"/></editing>
+      </simpleType>
+    </p>
+    <p name="a6ReportInterval" fullName="A6 report interval" maxOccurs="1" id="351357" status="proposal" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to 640, handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to 640, handled via PSD</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Helmut Hofmeister</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <relatedFunctions>
+        <function name="Packet Scheduler Control"/></relatedFunctions>
+      <features>
+        <feature name="LTE2006 Flexible SCell selection" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE2006 Flexible SCell selection" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="a6ReportInterval" dataType="String"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <history>
+        <description>
+          <para>08.05.2015 BB: PR044039: [FL15A][LTE2006] Parameters scellMeasCycle and a6ReportInterval should not allow setting "spare"</para>
+        </description>
+      </history>
+      <simpleType base="integer">
+        <enumeration value="120" text="120ms"/>
+        <enumeration value="240" text="240ms"/>
+        <enumeration value="480" text="480ms"/>
+        <enumeration value="640" text="640ms"/>
+        <enumeration value="1024" text="1024ms"/>
+        <enumeration value="2048" text="2048ms"/>
+        <enumeration value="5120" text="5120ms"/>
+        <enumeration value="10240" text="10240ms"/>
+        <enumeration value="60000" text="1min"/>
+        <enumeration value="360000" text="6min"/>
+        <enumeration value="720000" text="12min"/>
+        <enumeration value="1800000" text="30min"/>
+        <enumeration value="3600000" text="60min"/>
+        <default value="640"/></simpleType>
+    </p>
+    <p name="a6TimeToTrigger" fullName="A6 time to trigger" maxOccurs="1" id="351356" status="proposal" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to 320, handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to 320, handled via PSD</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Helmut Hofmeister</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <relatedFunctions>
+        <function name="Packet Scheduler Control"/></relatedFunctions>
+      <features>
+        <feature name="LTE2006 Flexible SCell selection" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE2006 Flexible SCell selection" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="a6TimeToTrigger" dataType="String"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <simpleType base="integer">
+        <enumeration value="0" text="0"/>
+        <enumeration value="40" text="40"/>
+        <enumeration value="64" text="64"/>
+        <enumeration value="80" text="80"/>
+        <enumeration value="100" text="100"/>
+        <enumeration value="128" text="128"/>
+        <enumeration value="160" text="160"/>
+        <enumeration value="256" text="256"/>
+        <enumeration value="320" text="320"/>
+        <enumeration value="480" text="480"/>
+        <enumeration value="512" text="512"/>
+        <enumeration value="640" text="640"/>
+        <enumeration value="1024" text="1024"/>
+        <enumeration value="1280" text="1280"/>
+        <enumeration value="2560" text="2560"/>
+        <enumeration value="5120" text="5120"/>
+        <default value="320"/></simpleType>
+    </p>
+    <p name="caDPrId" fullName="Carrier aggregation default profile identifier" maxOccurs="1" id="351358" status="proposal" releaseId="6409">
+      <description>
+        <para>This parameter is the naming attribute of the MOC CADPR.</para>
+        <para>It uniquely identifies an instance of the Carrier Aggregation Default Profile (CADPR).</para>
+      </description>
+      <shortDesc>
+        <para>This parameter is the naming attribute of the MOC CADPR.</para>
+        <para>It uniquely identifies an instance of the Carrier Aggregation Default Profile (CADPR).</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Helmut Hofmeister</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="unmodifiable"></modification>
+      <relatedParameters>
+        <pRef class="LNBTS" name="actDLCAggr" hidden="false" access="public"></pRef>
+        <description>
+          <para>If actDLCAggr is set to 'true', then exactly one instance of MOC CADPR must exist.</para>
+        </description>
+      </relatedParameters>
+      <relatedFunctions>
+        <function name="Operability"/></relatedFunctions>
+      <features>
+        <feature name="LTE2006 Flexible SCell selection" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE2006 Flexible SCell selection" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="Planning IF Name" value="$instance" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="Planning IF Name" value="$instance" dataType="String"/>
+        <property name="MO MinOccurs" value="0" dataType="Number"/>
+        <property name="MO MaxOccurs" value="1" dataType="Number"/>
+        <property name="C Type Name" value="caDPrId" dataType="String"/></productData>
+      <simpleType base="decimal">
+        <editing internalValue="= UI_value">
+          <range minIncl="0" maxIncl="0"/>
+          <default value="0"/></editing>
+      </simpleType>
+    </p>
+    <p name="disableSCellPDCCHOlLa" fullName="Disable PDCCH outer loop link adaptation in SCell" maxOccurs="1" id="351353" status="proposal" releaseId="6409">
+      <description>
+        <para>The parameter controls if PDCCH outer loop link adaptation shall be disabled in SCell for a UE with an activated SCell.</para>
+      </description>
+      <shortDesc>
+        <para>The parameter controls if PDCCH outer loop link adaptation shall be disabled in SCell for a UE with an activated SCell.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Helmut Hofmeister</para>
+        <para>EFS Author: Marko Saarinen</para>
+        <para>If disableSCellPDCCHOlLa is set to true, PDCCH OLLA will be disabled for a UE with an active SCell in its SCell (other UEs in this cell which do not have SCell activated/configured can use PDCCH OLLA depending on the setting of actOlLaPdcch in this cell). </para>
+        <para>If actOlLaPdcch in PCell and SCell is 'true' and disableSCellPDCCHOlLa is set to false, PDCCH OlLa in the SCell will be used for the UE with an active SCell and it will reuse the calculations of the PDCCH OlLa in the PCell of this UE.</para>
+        <para>If actOlLaPdcch in PCell or SCell is configured to 'false', PDCCH OlLa in SCell is never used and the configured value of disableSCellPDCCHOlLa is not considered by BTS SW.</para>
+        <para>The parameter shall be set to 'false' when it is expected that there is some correlation between pdcchCqiShift(t) in the pair of cells that are aggregated and it shall be set to 'true' otherwise.</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <relatedFunctions>
+        <function name="Packet Scheduler Control"/></relatedFunctions>
+      <features>
+        <feature name="LTE2006 Flexible SCell selection" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE2006 Flexible SCell selection" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="disableSCellPDCCHOlLa" dataType="String"/></productData>
+      <simpleType base="boolean">
+        <default value="false"/></simpleType>
+    </p>
+    <p name="enableA6Event" fullName="Enable measurements for A6 event" maxOccurs="1" id="363912" status="proposal" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to 'true', handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to 'true', handled via PSD</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Achim Wacker</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <features>
+        <feature name="LTE2006 Flexible SCell selection" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE2006 Flexible SCell selection" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="enableA6Event" dataType="String"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <simpleType base="boolean">
+        <default value="true"/></simpleType>
+    </p>
+    <p name="hysA6Offset" fullName="Related hysteresis of offset a6Offset neighbor cell" maxOccurs="1" id="351355" status="proposal" releaseId="6409">
+      <description>
+        <para>FZM: parameter is not shown at the GUI and set to 0, handled via PSD</para>
+      </description>
+      <shortDesc>
+        <para>FZM: parameter is not shown at the GUI and set to 0, handled via PSD</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Helmut Hofmeister</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <relatedFunctions>
+        <function name="Packet Scheduler Control"/></relatedFunctions>
+      <features>
+        <feature name="LTE2006 Flexible SCell selection" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE2006 Flexible SCell selection" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="annotation" value="CM UI invisible" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="hysA6Offset" dataType="String"/>
+        <property name="addDefaultNoGuiSupport" value="true" dataType="Boolean"/></productData>
+      <history>
+        <description>
+          <para>16.10.2014 BB: PR 148613ESPE02: LTE2006-A_hysA6Offset value is valid 5 times bigger than BTSSM value</para>
+        </description>
+      </history>
+      <simpleType base="decimal">
+        <editing divisor="2" units="dB" internalValue="= UI_value * 2">
+          <range minIncl="0" maxIncl="15" step="0.5"/>
+          <default value="0"/></editing>
+      </simpleType>
+    </p>
+  </managedObject>
