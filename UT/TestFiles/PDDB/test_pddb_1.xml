@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pdmeta version="2.6">
+  <header domain="LTE" product="LTE BTS" release="TLF16_1506_002" version="0.0" id="6289"></header>
+  <managedObject class="AMLEPR" fullName="Active Mode Load Equalization Profile" id="47232" mohId="47334" hidden="false" create="true" update="true" delete="true">
+    <p name="amlePrId" fullName="Active mode load equalization profile identifier" maxOccurs="1" id="347544" status="proposal" releaseId="6409">
+      <description>
+        <para>This parameter is the naming attribute of MOC AMLEPR and it uniquely identifies an instance of the Active Mode Load Equalization Profile (AMLEPR).</para>
+        <para>If the feature "Inter-frequency load equalization" is activated, a default AMLEPR profile with AMLEPR-amlePrId = 0 must exist.</para>
+      </description>
+      <shortDesc>
+        <para>This parameter is the naming attribute of MOC AMLEPR and it uniquely identifies an instance of the Active Mode Load Equalization Profile (AMLEPR).</para>
+        <para>If the feature "Inter-frequency load equalization" is activated, a default AMLEPR profile with AMLEPR-amlePrId = 0 must exist.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Helmut Hofmeister</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="unmodifiable"></modification>
+      <relatedParameters>
+        <pRef class="LNBTS" name="actAmle" hidden="false" access="public">
+          <pRefDesc>
+            <para>If actAmle is set to 'true', the active mode load balancing profile (AMLEPR) must be configured with amlePrId = 0</para>
+          </pRefDesc>
+        </pRef>
+        <description>
+          <para>If actAmle is configured to 'true' then the active mode load balancing profile (AMLEPR) with amlePrId = 0 must exist.</para>
+        </description>
+      </relatedParameters>
+      <relatedFunctions>
+        <function name="Operability"/></relatedFunctions>
+      <features>
+        <feature name="LTE1841 Load Balance with Equalization" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE1841 Load Balance with Equalization" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="RAC">
+        <property name="Planning IF Name" value="$instance" dataType="String"/></productData>
+      <productData name="LTE BTS">
+        <property name="Planning IF Name" value="$instance" dataType="String"/>
+        <property name="MO MinOccurs" value="0" dataType="Number"/>
+        <property name="MO MaxOccurs" value="16" dataType="Number"/>
+        <property name="C Type Name" value="amlePrId" dataType="String"/></productData>
+      <simpleType base="decimal">
+        <editing internalValue="= UI_value">
+          <range minIncl="0" maxIncl="15"/>
+          <default value="0"/></editing>
+      </simpleType>
+    </p>
+    <p name="cacHeadroom" fullName="Headroom in CAC" maxOccurs="1" id="347547" status="proposal" releaseId="6409">
+      <description>
+        <para>The active mode load equalization feature in direction to a certain target cell shall leave the 'active state', if the reported CAC value from this target cell is smaller than the CAC headroom for the target cells frequency layer.</para>
+      </description>
+      <shortDesc>
+        <para>The active mode load equalization feature in direction to a certain target cell shall leave the 'active state', if the reported CAC value from this target cell is smaller than the CAC headroom for the target cells frequency layer.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Helmut Hofmeister</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <features>
+        <feature name="LTE1841 Load Balance with Equalization" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE1841 Load Balance with Equalization" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="cacHeadroom" dataType="String"/></productData>
+      <simpleType base="decimal">
+        <editing units="%" internalValue="= UI_value">
+          <range minIncl="0" maxIncl="100"/>
+          <default value="0"/></editing>
+      </simpleType>
+    </p>
+    <p name="deltaCac" fullName="Difference in CAC of source and target cells" maxOccurs="1" id="347548" status="proposal" releaseId="6409">
+      <description>
+        <para>Active mode load equalization shall be applied only if the difference in composite available capacity (CAC) in source and target cells is above this target frequency-specific value.</para>
+      </description>
+      <shortDesc>
+        <para>Active mode load equalization shall be applied only if the difference in composite available capacity (CAC) in source and target cells is above this target frequency-specific value.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Helmut Hofmeister</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <features>
+        <feature name="LTE1841 Load Balance with Equalization" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE1841 Load Balance with Equalization" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="deltaCac" dataType="String"/></productData>
+      <simpleType base="decimal">
+        <editing units="%" internalValue="= UI_value">
+          <range minIncl="0" maxIncl="100"/>
+          <default value="20"/></editing>
+      </simpleType>
+    </p>
+    <p name="maxCacThreshold" fullName="Threshold for maximum CAC" maxOccurs="1" id="347549" status="proposal" releaseId="6409">
+      <description>
+        <para>Active mode load equalization shall be applied only if the composite available capacity (CAC) in the source cell falls below this target frequency-specific threshold.</para>
+      </description>
+      <shortDesc>
+        <para>Active mode load equalization shall be applied only if the composite available capacity (CAC) in the source cell falls below this target frequency-specific threshold.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Helmut Hofmeister</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <features>
+        <feature name="LTE1841 Load Balance with Equalization" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Advanced parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE1841 Load Balance with Equalization" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="maxCacThreshold" dataType="String"/></productData>
+      <simpleType base="decimal">
+        <editing units="%" internalValue="= UI_value">
+          <range minIncl="0" maxIncl="100"/>
+          <default value="100"/></editing>
+      </simpleType>
+    </p>
+    <p name="targetCarrierFreq" fullName="Target carrier frequency" maxOccurs="1" id="347545" status="proposal" releaseId="6409">
+      <description>
+        <para>This parameter describes the FDD/TDD EUTRA absolute radio frequency channel number (EARFCN) of the (downlink) frequency layer this inter-frequency load equalization profile (AMLEPR) is valid for.</para>
+      </description>
+      <shortDesc>
+        <para>This parameter describes the FDD/TDD EUTRA absolute radio frequency channel number (EARFCN) of the (downlink) frequency layer this inter-frequency load equalization profile (AMLEPR) is valid for.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Helmut Hofmeister</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <relatedParameters>
+        <pRef class="LNCEL" name="earfcn" hidden="false" access="public">
+          <pRefDesc>
+            <para>earfcn is not allowed to  be equal to targetCarrierFreq in any instance of the AMLEPR</para>
+          </pRefDesc>
+        </pRef>
+        <pRef class="AMLEPR" name="targetCarrierFreq" hidden="false" access="public">
+          <pRefDesc>
+            <para>targetCarrierFreq must be unique across all AMLEPR instances in LNCEL</para>
+          </pRefDesc>
+        </pRef>
+        <description>
+          <para>targetCarrierFreq must be unique across all AMLEPR instances in LNCEL</para>
+          <para>Parent LNCEL's carrier frequency info, LNCEL-earfcn is not allowed to  be equal to targetCarrierFreq in any instance of the AMLEPR underneath this parent LNCEL</para>
+        </description>
+      </relatedParameters>
+      <features>
+        <feature name="LTE1841 Load Balance with Equalization" type="standard"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE1841 Load Balance with Equalization" type="standard"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="targetCarrierFreq" dataType="String"/></productData>
+      <history>
+        <description>
+          <para>07.11.2014 BB: PR 122280ESPE04: [TL15 FSMF]: mult-cell LTE1841 AMLEPR parameter can not set correctly</para>
+        </description>
+      </history>
+      <simpleType base="decimal">
+        <editing internalValue="= UI_value">
+          <range minIncl="0" maxIncl="65535"/></editing>
+      </simpleType>
+    </p>
+  </managedObject>
+</pdmeta>

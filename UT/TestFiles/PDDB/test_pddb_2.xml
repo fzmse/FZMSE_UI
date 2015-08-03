@@ -1,0 +1,10 @@
+<relatedParameters>
+    <pRef class="LNBTS" name="actAmle" hidden="false" access="public">
+      <pRefDesc>
+        <para>If actAmle is set to 'true', the active mode load balancing profile (AMLEPR) must be configured with amlePrId = 0</para>
+      </pRefDesc>
+    </pRef>
+    <description>
+      <para>If actAmle is configured to 'true' then the active mode load balancing profile (AMLEPR) with amlePrId = 0 must exist.</para>
+    </description>
+</relatedParameters>

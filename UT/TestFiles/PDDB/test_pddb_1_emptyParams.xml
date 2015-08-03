@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pdmeta version="2.6">
+  <header domain="LTE" product="LTE BTS" release="TLF16_1506_002" version="0.0" id="6289"></header>
+  <managedObject class="AMLEPR" fullName="Active Mode Load Equalization Profile" id="47232" mohId="47334" hidden="false" create="true" update="true" delete="true">
+  	<p/>
+  </managedObject>
+</pdmeta>

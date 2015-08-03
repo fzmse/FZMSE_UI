@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/UT/TestFiles">
+        <file>UT/TestFiles/PDDB/test_pddb_1_emptyParams.xml</file>
+        <file>UT/TestFiles/PDDB/test_pddb_1_mocAttribChanged.xml</file>
+        <file>UT/TestFiles/PDDB/test_pddb_1_newParameter.xml</file>
+        <file>UT/TestFiles/PDDB/test_pddb_1_noParams.xml</file>
+        <file>UT/TestFiles/PDDB/test_pddb_1_paramAttribChange.xml</file>
+        <file>UT/TestFiles/PDDB/test_pddb_2.xml</file>
+        <file>UT/TestFiles/PDDB/test_pddb_3.xml</file>
+        <file>UT/TestFiles/GMC/notXML.txt</file>
+    </qresource>
+</RCC>
