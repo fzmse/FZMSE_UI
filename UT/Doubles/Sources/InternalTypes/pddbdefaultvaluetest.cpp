@@ -145,10 +145,25 @@ TEST( PDDBDefaultValue, GetEvaluatedValueFromComplexExpression)
 
     PDDBDefaultValue def = PDDBDefaultValue(testedParam);
 
-    //ASSERT_EQ("decimal", def.getTypeName());
     cout << def.getEvaluatedValue() << endl;
-    //ASSERT_EQ("30", def.getEvaluatedValue());
 
     delete testedParam;
+    delete doc;
+}
+
+
+TEST( PDDBDefaultValue, GetEvaluatedValueFromEnumeration)
+{
+    XMLDocument * doc = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_4_new.xml");
+    XMLElement* mocElement = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) doc, "managedObject")[0];
+
+    PDDBManagedObject * moc = new PDDBManagedObject(mocElement);
+    PDDBManagedObjectParameter * testedParam = moc->getParameters()[6];
+
+    PDDBDefaultValue def = PDDBDefaultValue(testedParam);
+
+    ASSERT_EQ("PhaseSync", def.getEvaluatedValue());
+
+    delete moc;
     delete doc;
 }

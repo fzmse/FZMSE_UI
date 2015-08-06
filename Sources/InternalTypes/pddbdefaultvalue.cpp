@@ -143,7 +143,12 @@ std::string PDDBDefaultValue::resolveEvaluatedValue(PDDBManagedObjectParameter *
     if ( this->enums.size() != 0 )
     {
         // Look for enums
-
+        for ( std::vector<std::pair<std::string, std::string> >::iterator it = this->enums.begin();
+              it != this->enums.end(); ++ it)
+        {
+            if ( (*it).first == this->value )
+                return (*it).second;
+        }
     }
 
     if ( this->evaluation != "" && this->value != "")
