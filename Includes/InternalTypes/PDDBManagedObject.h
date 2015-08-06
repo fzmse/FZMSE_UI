@@ -1,5 +1,5 @@
 /*
- * PBDBManagedObject.h
+ * PDDBManagedObject.h
  *
  *  Created on: 24 lip 2015
  *      Author: pkozuch
@@ -12,8 +12,8 @@
 
 #include "ManagedObjectRelativeElement.h"
 
-#include "PBDBManagedObjectParameter.h"
-#include "PBDBManagedObjectCompareResult.h"
+#include "PDDBManagedObjectParameter.h"
+#include "PDDBManagedObjectCompareResult.h"
 
 #include "Xml/XmlReader.h"
 #include "Xml/XmlElementReader.h"
@@ -22,23 +22,23 @@
 
 namespace InternalTypes
 {
-	class PBDBManagedObject : public ManagedObjectRelativeElement
+    class PDDBManagedObject : public ManagedObjectRelativeElement
 	{
 	public:
 
 		const std::string MANAGED_OBJECT_XML_NAME = "managedObject";
 		const std::string MANAGED_OBJECT_PARAMETER_XML_NAME = "p";
 
-		PBDBManagedObject(tinyxml2::XMLElement * e);
-		~PBDBManagedObject();
+        PDDBManagedObject(tinyxml2::XMLElement * e);
+        ~PDDBManagedObject();
 
-		std::vector<PBDBManagedObjectParameter*> getParameters();
-		std::vector<PBDBManagedObjectCompareResult> compare(PBDBManagedObject * moc);
+        std::vector<PDDBManagedObjectParameter*> getParameters();
+        std::vector<PDDBManagedObjectCompareResult> compare(PDDBManagedObject * moc);
 
 		bool isValidMocObject();
 	protected:
-		PBDBManagedObject();
-		std::vector<PBDBManagedObjectParameter*> parameters;
+        PDDBManagedObject();
+        std::vector<PDDBManagedObjectParameter*> parameters;
 
 		bool validMocObject;
 	};

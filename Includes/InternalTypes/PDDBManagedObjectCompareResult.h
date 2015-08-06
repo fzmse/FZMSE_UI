@@ -14,7 +14,7 @@
 
 namespace InternalTypes
 {
-	class PBDBManagedObjectCompareResult
+    class PDDBManagedObjectCompareResult
 	{
 	public:
 		enum DifferenceType
@@ -38,7 +38,7 @@ namespace InternalTypes
 			Removed
 		};
 
-		PBDBManagedObjectCompareResult( DifferenceType t, DifferenceScope s, DifferenceOrigin o,
+        PDDBManagedObjectCompareResult( DifferenceType t, DifferenceScope s, DifferenceOrigin o,
 				ManagedObjectRelativeElement * fEl, ManagedObjectRelativeElement * sEl,
 				std::vector<InternalTypes::AttributeDifference> attribDiffs =
 						std::vector<InternalTypes::AttributeDifference>()

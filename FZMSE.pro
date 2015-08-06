@@ -15,7 +15,6 @@ DEFINES += PROJECT_PATH="\"$PWD\""
 DEFINES += BUILD_PATH="\"$OUT_PWD\""
 
 SOURCES += main.cpp \
-        mainwindow.cpp \
         Includes/TinyXML/tinyxml2.cpp \
         Sources/Xml/XmlReader.cpp \
         Sources/Xml/XmlElementReader.cpp \
@@ -23,19 +22,19 @@ SOURCES += main.cpp \
         Sources/InternalTypes/Attribute.cpp \
         Sources/InternalTypes/AttributeDifference.cpp \
         Sources/InternalTypes/ManagedObjectRelativeElement.cpp \
-        Sources/InternalTypes/PBDBManagedObject.cpp \
-        Sources/InternalTypes/PBDBManagedObjectCompareResult.cpp \
-        Sources/InternalTypes/PBDBManagedObjectParameter.cpp \
         UT/Doubles/Sources/mainTest.cpp \
         UT/Doubles/Sources/Xml/XmlReaderTest.cpp \
         UT/Doubles/Sources/Xml/XmlElementReaderTest.cpp \
         UT/Doubles/Sources/Xml/XmlWrapperTest.cpp \
-        UT/Doubles/Sources/InternalTypes/PBDBManagedObjectTest.cpp \
-        UT/Doubles/Sources/InternalTypes/PBDBManagedObjectParameterTest.cpp \
         UT/Doubles/Sources/Gui/appGuiTest.cpp \
-        Sources/Gui/appGui.cpp
+        Sources/Gui/appGui.cpp \
+    Sources/InternalTypes/PDDBManagedObject.cpp \
+    Sources/InternalTypes/PDDBManagedObjectCompareResult.cpp \
+    Sources/InternalTypes/PDDBManagedObjectParameter.cpp \
+    UT/Doubles/Sources/InternalTypes/PDDBManagedObjectParameterTest.cpp \
+    UT/Doubles/Sources/InternalTypes/PDDBManagedObjectTest.cpp
 
-HEADERS  += mainwindow.h \
+HEADERS  += \
         Includes/TinyXML/tinyxml2.h \
         Includes/Xml/XmlReader.h \
         Includes/Xml/XmlElementReader.h \
@@ -44,11 +43,12 @@ HEADERS  += mainwindow.h \
         Includes/InternalTypes/AttributeDifference.h \
         Includes/InternalTypes/GMCManagedObject.h \
         Includes/InternalTypes/ManagedObjectRelativeElement.h \
-        Includes/InternalTypes/PBDBManagedObject.h \
-        Includes/InternalTypes/PBDBManagedObjectCompareResult.h \
-        Includes/InternalTypes/PBDBManagedObjectParameter.h \
         Includes/Utilities/UtilVector.hpp\
-        Includes/Gui/appGui.h
+        Includes/Gui/appGui.h \
+    Includes/InternalTypes/PDDBDefaultValue.h \
+    Includes/InternalTypes/PDDBManagedObject.h \
+    Includes/InternalTypes/PDDBManagedObjectParameter.h \
+    Includes/InternalTypes/PDDBManagedObjectCompareResult.h
 
 
 FORMS    += mainwindow.ui

@@ -1,18 +1,18 @@
 /*
- * PBDBManagedObject.cpp
+ * PDDBManagedObject.cpp
  *
  *  Created on: 24 lip 2015
  *      Author: pkozuch
  */
 
-#include "InternalTypes/PBDBManagedObject.h"
+#include "InternalTypes/PDDBManagedObject.h"
 
 using namespace std;
 
 using namespace InternalTypes;
 using namespace tinyxml2;
 
-PBDBManagedObject::PBDBManagedObject(XMLElement * e)
+PDDBManagedObject::PDDBManagedObject(XMLElement * e)
 	: ManagedObjectRelativeElement::ManagedObjectRelativeElement(e)
 {
 	this->validMocObject = false;
@@ -26,7 +26,7 @@ PBDBManagedObject::PBDBManagedObject(XMLElement * e)
 			for ( vector<XMLElement * >::iterator it = pElements.begin(); it != pElements.end(); ++ it )
 			{
 				if ( XmlElementReader::getName(*it) == MANAGED_OBJECT_PARAMETER_XML_NAME )
-					this->parameters.push_back( new PBDBManagedObjectParameter(*it) );
+                    this->parameters.push_back( new PDDBManagedObjectParameter(*it) );
 			}
 
 		}
@@ -34,28 +34,28 @@ PBDBManagedObject::PBDBManagedObject(XMLElement * e)
 	}
 }
 
-PBDBManagedObject::~PBDBManagedObject()
+PDDBManagedObject::~PDDBManagedObject()
 {
-	for ( vector<PBDBManagedObjectParameter *>::iterator it = this->parameters.begin();
+    for ( vector<PDDBManagedObjectParameter *>::iterator it = this->parameters.begin();
 			it != this->parameters.end(); ++ it )
 	{
 		delete (*it);
 	}
 }
 
-bool PBDBManagedObject::isValidMocObject()
+bool PDDBManagedObject::isValidMocObject()
 {
 	return this->validMocObject;
 }
 
-vector<PBDBManagedObjectParameter *> PBDBManagedObject::getParameters()
+vector<PDDBManagedObjectParameter *> PDDBManagedObject::getParameters()
 {
 	return this->parameters;
 }
 
-inline PBDBManagedObjectParameter* getParameterByNameFrom(std::string name, vector<PBDBManagedObjectParameter*> list)
+inline PDDBManagedObjectParameter* getParameterByNameFrom(std::string name, vector<PDDBManagedObjectParameter*> list)
 {
-	for ( vector<PBDBManagedObjectParameter*>::iterator it = list.begin();
+    for ( vector<PDDBManagedObjectParameter*>::iterator it = list.begin();
 		it != list.end(); ++ it )
 	{
 		if ( (*it)->getParameterName() == name )
@@ -64,9 +64,9 @@ inline PBDBManagedObjectParameter* getParameterByNameFrom(std::string name, vect
 	return NULL;
 }
 
-vector<PBDBManagedObjectCompareResult> PBDBManagedObject::compare(PBDBManagedObject * moc)
+vector<PDDBManagedObjectCompareResult> PDDBManagedObject::compare(PDDBManagedObject * moc)
 {
-	vector<PBDBManagedObjectCompareResult> differences;
+    vector<PDDBManagedObjectCompareResult> differences;
 
 	// checkMoc
 	vector<Attribute> firstMocAttributes = this->getAttributes();
@@ -78,37 +78,37 @@ vector<PBDBManagedObjectCompareResult> PBDBManagedObject::compare(PBDBManagedObj
 	{
 		vector<AttributeDifference> diffs = AttributeDifference::getDifferentVectorsOfAttributes(firstMocAttributes,
 						secondMocAttributes);
-		differences.push_back(PBDBManagedObjectCompareResult(PBDBManagedObjectCompareResult::AttributeDifference,
-				PBDBManagedObjectCompareResult::ManagedObject,
-				PBDBManagedObjectCompareResult::Modified,
+        differences.push_back(PDDBManagedObjectCompareResult(PDDBManagedObjectCompareResult::AttributeDifference,
+                PDDBManagedObjectCompareResult::ManagedObject,
+                PDDBManagedObjectCompareResult::Modified,
 				this, moc,
 				diffs
 		));
 	}
 
 	// get parameters difference list
-	vector<PBDBManagedObjectParameter*> firstParameters = this->getParameters();
-	vector<PBDBManagedObjectParameter*> secondParameters = moc->getParameters();
+    vector<PDDBManagedObjectParameter*> firstParameters = this->getParameters();
+    vector<PDDBManagedObjectParameter*> secondParameters = moc->getParameters();
 
-	for ( vector<PBDBManagedObjectParameter*>::iterator it = firstParameters.begin();
+    for ( vector<PDDBManagedObjectParameter*>::iterator it = firstParameters.begin();
 			it != firstParameters.end(); ++ it )
 	{
 		// find parameter by class
-		PBDBManagedObjectParameter* match = getParameterByNameFrom((*it)->getParameterName(), secondParameters);
+        PDDBManagedObjectParameter* match = getParameterByNameFrom((*it)->getParameterName(), secondParameters);
 		if ( match == NULL )
 		{
 			// removed
-			differences.push_back(PBDBManagedObjectCompareResult(PBDBManagedObjectCompareResult::AttributeDifference,
-							PBDBManagedObjectCompareResult::ManagedObjectParameter,
-							PBDBManagedObjectCompareResult::Removed,
+            differences.push_back(PDDBManagedObjectCompareResult(PDDBManagedObjectCompareResult::AttributeDifference,
+                            PDDBManagedObjectCompareResult::ManagedObjectParameter,
+                            PDDBManagedObjectCompareResult::Removed,
 							(*it), match
 				));
 		}
 		else
 		{
 			// -------------------->             check for modified
-			PBDBManagedObjectParameter* firstParameter = (*it);
-			PBDBManagedObjectParameter* secondParameter = match;
+            PDDBManagedObjectParameter* firstParameter = (*it);
+            PDDBManagedObjectParameter* secondParameter = match;
 
 			vector<Attribute> firstMocParameterAttributes = firstParameter->getAttributes();
 			vector<Attribute> secondMocParameterAttributes = secondParameter->getAttributes();
@@ -118,9 +118,9 @@ vector<PBDBManagedObjectCompareResult> PBDBManagedObject::compare(PBDBManagedObj
 			{
 				vector<AttributeDifference> diffs = AttributeDifference::getDifferentVectorsOfAttributes(firstMocParameterAttributes,
 						secondMocParameterAttributes);
-				differences.push_back(PBDBManagedObjectCompareResult(PBDBManagedObjectCompareResult::AttributeDifference,
-						PBDBManagedObjectCompareResult::ManagedObjectParameter,
-						PBDBManagedObjectCompareResult::Modified,
+                differences.push_back(PDDBManagedObjectCompareResult(PDDBManagedObjectCompareResult::AttributeDifference,
+                        PDDBManagedObjectCompareResult::ManagedObjectParameter,
+                        PDDBManagedObjectCompareResult::Modified,
                         firstParameter, secondParameter,
 						diffs
 				));
@@ -134,16 +134,16 @@ vector<PBDBManagedObjectCompareResult> PBDBManagedObject::compare(PBDBManagedObj
 		}
 	}
 
-	for ( vector<PBDBManagedObjectParameter*>::iterator it = secondParameters.begin();
+    for ( vector<PDDBManagedObjectParameter*>::iterator it = secondParameters.begin();
 					it != secondParameters.end(); ++ it )
 	{
-		PBDBManagedObjectParameter* match = getParameterByNameFrom((*it)->getParameterName(), firstParameters);
+        PDDBManagedObjectParameter* match = getParameterByNameFrom((*it)->getParameterName(), firstParameters);
 		if ( match == NULL )
 		{
 			// added
-			differences.push_back(PBDBManagedObjectCompareResult(PBDBManagedObjectCompareResult::AttributeDifference,
-						PBDBManagedObjectCompareResult::ManagedObjectParameter,
-						PBDBManagedObjectCompareResult::Added,
+            differences.push_back(PDDBManagedObjectCompareResult(PDDBManagedObjectCompareResult::AttributeDifference,
+                        PDDBManagedObjectCompareResult::ManagedObjectParameter,
+                        PDDBManagedObjectCompareResult::Added,
 						match, (*it)
 			));
 		}

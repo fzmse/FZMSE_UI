@@ -1,18 +1,18 @@
 /*
- * PBDBManagedObjectParameter.cpp
+ * PDDBManagedObjectParameter.cpp
  *
  *  Created on: 24 lip 2015
  *      Author: pkozuch
  */
 #pragma once
 
-#include "InternalTypes/PBDBManagedObjectParameter.h"
+#include "InternalTypes/PDDBManagedObjectParameter.h"
 
 using namespace InternalTypes;
 using namespace tinyxml2;
 using namespace std;
 
-PBDBManagedObjectParameter::PBDBManagedObjectParameter(XMLElement * e)
+PDDBManagedObjectParameter::PDDBManagedObjectParameter(XMLElement * e)
 	: ManagedObjectRelativeElement::ManagedObjectRelativeElement(e)
 {
 	this->validMocParameter = false;
@@ -27,18 +27,18 @@ PBDBManagedObjectParameter::PBDBManagedObjectParameter(XMLElement * e)
 	}
 }
 
-PBDBManagedObjectParameter::~PBDBManagedObjectParameter()
+PDDBManagedObjectParameter::~PDDBManagedObjectParameter()
 {
 
 }
 
 
-vector<ManagedObjectRelativeElement* > PBDBManagedObjectParameter::getProperties()
+vector<ManagedObjectRelativeElement* > PDDBManagedObjectParameter::getProperties()
 {
 	return this->properties;
 }
 
-std::string PBDBManagedObjectParameter::getParameterName()
+std::string PDDBManagedObjectParameter::getParameterName()
 {
 	return XmlElementReader::getAttributeByName(this->element, "name");
 }

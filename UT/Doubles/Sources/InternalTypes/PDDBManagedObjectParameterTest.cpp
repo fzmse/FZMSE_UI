@@ -5,7 +5,7 @@
 
 #include <Xml/XmlWrapper.h>
 
-#include "InternalTypes/PBDBManagedObject.h"
+#include "InternalTypes/PDDBManagedObject.h"
 
 using namespace tinyxml2;
 using namespace std;
@@ -15,12 +15,12 @@ using namespace InternalTypes;
 static std::string dir = "D:/Projects/FZMSE/FZMSE/";
 
 
-TEST(PBDBManagedObjectParameter, GetProperties)
+TEST(PDDBManagedObjectParameter, GetProperties)
 {
     XMLDocument * doc = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_1.xml");
     XMLElement* mocElement = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) doc, "managedObject")[0];
 
-	PBDBManagedObject * moc = new PBDBManagedObject(mocElement);
+    PDDBManagedObject * moc = new PDDBManagedObject(mocElement);
 
 	vector<ManagedObjectRelativeElement*> properties = moc->getParameters()[0]->getProperties();
 	ASSERT_EQ(14, properties.size());

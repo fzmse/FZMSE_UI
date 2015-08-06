@@ -14,11 +14,11 @@
 
 namespace InternalTypes
 {
-	class PBDBManagedObjectParameter : public ManagedObjectRelativeElement
+    class PDDBManagedObjectParameter : public ManagedObjectRelativeElement
 	{
 	public:
-		PBDBManagedObjectParameter( tinyxml2::XMLElement * pElement );
-		virtual ~PBDBManagedObjectParameter();
+        PDDBManagedObjectParameter( tinyxml2::XMLElement * pElement );
+        virtual ~PDDBManagedObjectParameter();
 
 		bool isValidMocParameter();
 		std::vector<ManagedObjectRelativeElement *> getProperties();
