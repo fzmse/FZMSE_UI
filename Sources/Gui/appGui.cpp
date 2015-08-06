@@ -1,5 +1,4 @@
 #include <QtWidgets>
-
 #include "Gui/appGui.h"
 #include <cstring>
 
@@ -53,7 +52,7 @@ appGUI::appGUI()
     setUnifiedTitleAndToolBarOnMac(true);
 }
 
-void appGUI::openOldPDDB()
+void appGUI::loadPathTo(const QString &type)
 {
     QString filePath = QFileDialog::getOpenFileName(
                 this,
@@ -61,45 +60,16 @@ void appGUI::openOldPDDB()
                 "",
                 tr("XML (*.xml)"));
 
-    reader = new XmlReader(XmlWrapper::loadDocument(filePath.toStdString()));
+    std::string stdFilePath = filePath.toStdString();
 
-    std::string xml = elementReader->getXML(reader->getCurrElement());
-
-    QString qXml = QString::fromStdString(xml);
-
-    upperListView->addItem(qXml);
-
-//    QFile file(filePath);
-
-//    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-//       return;
-
-//    upperListView->clear();
-//    QTextStream in(&file);
-//    while (!in.atEnd())
-//    {
-       // upperListView->addItem(in.readLine());
-//    }
-}
-
-void appGUI::openNewPDDB()
-{
-    QString filePath = QFileDialog::getOpenFileName(
-                this,
-                tr("Open file"),
-                "",
-                tr("XML (*.xml)"));
-
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-       return;
-
-    bottomListView->clear();
-    QTextStream in(&file);
-    while (!in.atEnd())
-    {
-        bottomListView->addItem(in.readLine());
-    }
+    if (type == "oldPDDB")
+        oldPDDBPath = stdFilePath;
+    else if (type == "newPDDB")
+        newPDDBPath = stdFilePath;
+    else if (type == "oldGMC")
+        oldGMCPath = stdFilePath;
+    else if (type == "newGMC")
+        newGMCPath = stdFilePath;
 }
 
 void appGUI::save()
@@ -132,18 +102,79 @@ void appGUI::clean()
 
 void appGUI::compare()
 {
+    if (!(oldPDDBPath.empty() || newPDDBPath.empty() || oldGMCPath.empty()))
+    {
 
+    }
+}
+
+QList<QStandardItem *> appGUI::listResultType(const QString &name,
+                                           const QString &added,
+                                           const QString &removed,
+                                           const QString &modified)
+{
+    QList<QStandardItem *> rowItems;
+    rowItems << new QStandardItem(name);
+    rowItems << new QStandardItem(added);
+    rowItems << new QStandardItem(removed);
+    rowItems << new QStandardItem(modified);
+    return rowItems;
+}
+
+QList<QStandardItem *> appGUI::listMOCTemplate(const QString &className)
+{
+    QList<QStandardItem *> rowItems;
+    rowItems << new QStandardItem(className);
+    return rowItems;
+}
+
+QList<QStandardItem *> appGUI::subListResultTypes(const QString &name, const QString &count)
+{
+    QList<QStandardItem *> rowItems;
+    rowItems << new QStandardItem(name);
+    rowItems << new QStandardItem(count);
+    return rowItems;
+}
+
+QList<QString *> appGUI::listOfLabels(const int &n)
+{
+    QList<QString *> labels;
+    for (int i = 0; i < n; i++)
+        labels << new QString("");
+    return labels;
+}
+
+void appGUI::createLoadPathActions()
+{
+    QSignalMapper * mapper = new QSignalMapper(this);
+
+    openOldPDDBAct = new QAction(tr("Open old PDDB"), this);
+    openOldPDDBAct->setStatusTip(tr("Open old PDDB file "));
+    connect(openOldPDDBAct, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+
+    openNewPDDBAct = new QAction(tr("Open new PDDB"), this);
+    openNewPDDBAct->setStatusTip(tr("Open new PDDB file "));
+    connect(openNewPDDBAct, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+
+    openOldGMCAct = new QAction(tr("Open old GMC"), this);
+    openOldGMCAct->setStatusTip(tr("Open old GMC file "));
+    connect(openOldGMCAct, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+
+    openNewGMCAct = new QAction(tr("Open new GMC"), this);
+    openNewGMCAct->setStatusTip(tr("Open new GMC file "));
+    connect(openNewGMCAct, SIGNAL(triggered(bool)), mapper, SLOT(map()));
+
+    mapper->setMapping(openOldPDDBAct, "oldPDDB");
+    mapper->setMapping(openNewPDDBAct, "newPDDB");
+    mapper->setMapping(openOldGMCAct,  "oldGMC");
+    mapper->setMapping(openNewGMCAct,  "newGMC");
+
+    connect (mapper, SIGNAL(mapped(QString)), this, SLOT(loadPathTo(QString)));
 }
 
 void appGUI::createActions()
 {
-    openOldPDDBAct = new QAction(tr("Open old PDDB"), this);
-    openOldPDDBAct->setStatusTip(tr("Open old PDDB file "));
-    connect(openOldPDDBAct, SIGNAL(triggered(bool)), this, SLOT(openOldPDDB()));
-
-    openNewPDDBAct = new QAction(tr("Open new PDDB"), this);
-    openNewPDDBAct->setStatusTip(tr("Open new PDDB file "));
-    connect(openNewPDDBAct, SIGNAL(triggered(bool)), this, SLOT(openNewPDDB()));
+    createLoadPathActions();
 
     saveFileAct = new QAction(tr("Save file"), this);
     saveFileAct->setShortcut(QKeySequence::Save);
@@ -164,6 +195,8 @@ void appGUI::createMenus()
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(openOldPDDBAct);
     fileMenu->addAction(openNewPDDBAct);
+    fileMenu->addAction(openOldGMCAct);
+    fileMenu->addAction(openNewGMCAct);
     fileMenu->addAction(saveFileAct);
     fileMenu->addSeparator();
 
@@ -183,6 +216,8 @@ void appGUI::createToolBar()
     fileToolBar = addToolBar(tr("&File"));
     fileToolBar->addAction(openOldPDDBAct);
     fileToolBar->addAction(openNewPDDBAct);
+    fileToolBar->addAction(openOldGMCAct);
+    fileToolBar->addAction(openNewGMCAct);
     fileToolBar->addAction(saveFileAct);
 
     raportToolBar = addToolBar(tr("&Raport"));
@@ -199,15 +234,52 @@ void appGUI::createDockWindows()
 {
     QDockWidget *dock = new QDockWidget(tr("Compare Result"), this);
     dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
-    resultList = new QListWidget(dock);
+    resultTreeView = new QTreeView(dock);
 
-    dock->setWidget(resultList);
+    resultStandardModel = new QStandardItemModel;
+    QStringList headers;
+    headers << "Name";
+    headers << "Count";
+    headers << "";
+    headers << "";
+    resultStandardModel->setHorizontalHeaderLabels(headers);
+    QStandardItem * item = resultStandardModel->invisibleRootItem();
+
+    QList<QStandardItem *> mockList = listResultType("Managed Object Class : ", "" , "", "");
+
+    QList<QStandardItem *> addedList = subListResultTypes("Added", " ");
+    QList<QStandardItem *> removedList = subListResultTypes("Removed", " ");
+    QList<QStandardItem *> modifiedList = subListResultTypes("Modified", " ");
+
+    item->appendRow(mockList);
+
+    mockList.first()->appendRow(addedList);
+    mockList.first()->appendRow(removedList);
+    mockList.first()->appendRow(modifiedList);
+
+    resultTreeView->setModel(resultStandardModel);
+    resultTreeView->expandAll();
+
+    dock->setWidget(resultTreeView);
 
     addDockWidget(Qt::RightDockWidgetArea, dock);
     viewMenu->addAction(dock->toggleViewAction());
 
+}
 
-    connect(resultList, SIGNAL(currentTextChanged(QString)),
-            this, SLOT(insertCompareResult(QString)));
+std::vector<QString> appGUI::parseXmlByEndLine(std::string XML)
+{
+    std::string delimiter = "\n";
+    std::vector<QString> result;
+    std::string::size_type pos = 0;
+    std::string::size_type prev = 0;
 
+    while ((pos = XML.find(delimiter, prev)) != std::string::npos)
+    {
+        result.push_back(QString::fromStdString(XML.substr(prev, pos - prev)));
+        prev = pos + 1;
+    }
+    result.push_back(QString::fromStdString(XML.substr(prev)));
+
+    return result;
 }
