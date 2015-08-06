@@ -1,0 +1,53 @@
+    <p name="actERabModify" fullName="Activate E-RAB modification" maxOccurs="1" id="115944" status="approved" tgppName="E-RAB MODIFY REQUEST" releaseId="6409">
+      <description>
+        <para>This parameter activates the E-RAB Modification by the S1AP message E-RAB MODIFY REQUEST.</para>
+      </description>
+      <shortDesc>
+        <para>This parameter activates the E-RAB Modification by the S1AP message E-RAB MODIFY REQUEST.</para>
+      </shortDesc>
+      <additionalInfo access="internal">
+        <para>SFS Author: Andreas Bufe</para>
+        <para>EFS Author: Erc&#252;ment Canver</para>
+        <para>NSN reference: TF_LTE_SFS_BEARERMAN.1496:internal</para>
+      </additionalInfo>
+      <creation priority="mandatory"></creation>
+      <modification type="onLine"></modification>
+      <relatedParameters>
+        <pRef class="LNBTS" name="actNonGbrServiceDiff" hidden="false" access="public">
+          <pRefDesc>
+            <para>only if actNonGbrServiceDiff is set to 'true' actERabModify can be set to 'true'</para>
+          </pRefDesc>
+        </pRef>
+        <description>
+          <para>actERabModify can only be set to 'true' if actNonGbrServiceDiff is set to 'true'.</para>
+        </description>
+      </relatedParameters>
+      <relatedFunctions>
+        <function name="Bearer Management"/></relatedFunctions>
+      <features>
+        <feature name="LTE519 E-RAB Modifcation without GBR modification" type="optional"/></features>
+      <parameterCategories>
+        <parameterCategory name="Basic parameters"/></parameterCategories>
+      <relatedFeatures>
+        <featureItem>
+          <featureComponent name="LTE519 E-RAB Modifcation without GBR modification" type="optional"/></featureItem>
+      </relatedFeatures>
+      <interfaces>
+        <interface source="EM" target="LTE BTS"/>
+        <interface source="LTE BTS" target="RAC"/>
+        <interface source="RAC" target="RACApp"/></interfaces>
+      <references>
+        <reference type="3GPP Reference" text="TS36.413" access="public"/></references>
+      <productData name="LTE BTS">
+        <property name="C Type Name" value="actERabModify" dataType="String"/></productData>
+      <simpleType base="boolean">
+      <editing units="min" internalValue="= UI_value * 20 / 3 - 8 * ( 4 / 6 )">
+                <range minIncl="-1" maxIncl="720"/>
+                <default value="30">
+                  <description>
+                    <para>30 minutes</para>
+                  </description>
+                </default>
+              </editing>
+              </simpleType>
+    </p>

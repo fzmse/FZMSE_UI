@@ -32,7 +32,14 @@ SOURCES += main.cpp \
     Sources/InternalTypes/PDDBManagedObjectCompareResult.cpp \
     Sources/InternalTypes/PDDBManagedObjectParameter.cpp \
     UT/Doubles/Sources/InternalTypes/PDDBManagedObjectParameterTest.cpp \
-    UT/Doubles/Sources/InternalTypes/PDDBManagedObjectTest.cpp
+    UT/Doubles/Sources/InternalTypes/PDDBManagedObjectTest.cpp \
+    Sources/InternalTypes/PDDBDefaultValue.cpp \
+    UT/Doubles/Sources/InternalTypes/PDDBDefaultValueTest.cpp \
+    Includes/ExpressionParser/error.cpp \
+    Includes/ExpressionParser/functions.cpp \
+    Includes/ExpressionParser/parser.cpp \
+    Includes/ExpressionParser/variablelist.cpp \
+    UT/Doubles/Sources/Utilities/UtilExpressionParserTest.cpp
 
 HEADERS  += \
         Includes/TinyXML/tinyxml2.h \
@@ -44,11 +51,18 @@ HEADERS  += \
         Includes/InternalTypes/GMCManagedObject.h \
         Includes/InternalTypes/ManagedObjectRelativeElement.h \
         Includes/Utilities/UtilVector.hpp\
+        Includes/Utilities/UtilExpressionParser.hpp\
         Includes/Gui/appGui.h \
     Includes/InternalTypes/PDDBDefaultValue.h \
     Includes/InternalTypes/PDDBManagedObject.h \
     Includes/InternalTypes/PDDBManagedObjectParameter.h \
-    Includes/InternalTypes/PDDBManagedObjectCompareResult.h
+    Includes/InternalTypes/PDDBManagedObjectCompareResult.h \
+    Includes/ExpressionParser/constants.h \
+    Includes/ExpressionParser/error.h \
+    Includes/ExpressionParser/functions.h \
+    Includes/ExpressionParser/parser.h \
+    Includes/ExpressionParser/variablelist.h \
+    Includes/Utilities/UtilStrings.hpp
 
 
 FORMS    += mainwindow.ui
@@ -82,7 +96,10 @@ DISTFILES += \
     UT/TestFiles/resources/notXML.txt \
     UT/TestFiles/PDDB/test_pddb_1.xml \
     UT/TestFiles/PDDB/test_pddb_4_old.xml \
-    UT/TestFiles/PDDB/test_pddb_4_new.xml
+    UT/TestFiles/PDDB/test_pddb_4_new.xml \
+    Includes/Utilities/UtilExpressionParser \
+    UT/TestFiles/PDDB/test_pddb_5_paramCustomUIValue.xml
+
 
 RESOURCES += \
     source.qrc

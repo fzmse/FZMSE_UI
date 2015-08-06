@@ -22,7 +22,7 @@ PDDBManagedObject::PDDBManagedObject(XMLElement * e)
 		{
 			this->validMocObject = true;
 
-			vector<XMLElement * > pElements = XmlReader::getElementsWithSpecificNameAndAttribute(e, "");
+            vector<XMLElement * > pElements = XmlReader::getChildren(e, MANAGED_OBJECT_PARAMETER_XML_NAME);
 			for ( vector<XMLElement * >::iterator it = pElements.begin(); it != pElements.end(); ++ it )
 			{
 				if ( XmlElementReader::getName(*it) == MANAGED_OBJECT_PARAMETER_XML_NAME )

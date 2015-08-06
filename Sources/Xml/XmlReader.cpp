@@ -34,7 +34,6 @@ XMLElement* XmlReader::getCurrElement()
 std::vector<XMLElement*> XmlReader::getChildren(std::string tag)
 {
     std::vector<XMLElement*> result;
-    std::cout << this->currElement;
     if(this->currElement != NULL)
     {
         result = getChildren(this->currElement, tag);
@@ -92,7 +91,8 @@ bool isElementSearchMatch(XMLElement * e, std::string name, std::string attribut
 		return true;
 	else
 	{
-		if ( XmlElementReader::getName(e) == name )
+        std::string currName = XmlElementReader::getName(e);
+        if ( currName == name )
 		{
 			if ( attributeName == "" )
 				return true;
