@@ -1,9 +1,11 @@
 
 #include <QMainWindow>
-#include "TinyXML/tinyxml2.h"
 #include "Xml/XmlReader.h"
 #include "Xml/XmlElementReader.h"
 #include "Xml/XmlWrapper.h"
+#include "Includes/Gui/resultItemModel.h"
+#include "Includes/InternalTypes/PDDBManagedObject.h"
+#include "InternalTypes/pddbdocument.h"
 
 class QAction;
 class QListWidget;
@@ -46,7 +48,7 @@ private:
 
     QListWidget * upperListView;
     QListWidget * bottomListView;
-    QListWidget * resultList;
+//    QListWidget * resultList;
     QGroupBox * centralGroup;
     QGroupBox * centralButtonSubGroup;
     QMenu * fileMenu;
@@ -64,10 +66,12 @@ private:
     QAction * displayHelpAct;
     QPushButton * clearListsBut;
     QPushButton * compareBut;
-
+    QDockWidget * dock;
     QTreeView * resultTreeView;
     QStandardItemModel * resultStandardModel;
     QStandardItemModel * subModel;
+
+    resultItemModel * resultModel;
 
     QList<QString *> listOfLabels(const int& n);
 

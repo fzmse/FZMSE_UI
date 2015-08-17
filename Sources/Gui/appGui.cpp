@@ -2,6 +2,9 @@
 #include "Gui/appGui.h"
 #include <cstring>
 
+using namespace InternalTypes;
+//using namespace tinyxml2;
+
 appGUI::appGUI()
 {
     resize(QDesktopWidget().availableGeometry(this).size() * 0.7);
@@ -104,6 +107,11 @@ void appGUI::compare()
 {
     if (!(oldPDDBPath.empty() || newPDDBPath.empty() || oldGMCPath.empty()))
     {
+        shared_ptr<PDDBDocument> docFirst = make_shared<PDDBDocument>(oldPDDBPath);
+        shared_ptr<PDDBDocument> docSecound = make_shared<PDDBDocument>(newPDDBPath);
+
+
+        std::vector<PDDBManagedObjectCompareResult> differences = PDDBDocument::compareDocuments(docFirst.get(), docSecound.get());
 
     }
 }
@@ -232,33 +240,34 @@ void appGUI::createStatusBar()
 
 void appGUI::createDockWindows()
 {
-    QDockWidget *dock = new QDockWidget(tr("Compare Result"), this);
+    dock = new QDockWidget(tr("Compare Result"), this);
     dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
     resultTreeView = new QTreeView(dock);
 
-    resultStandardModel = new QStandardItemModel;
-    QStringList headers;
-    headers << "Name";
-    headers << "Count";
-    headers << "";
-    headers << "";
-    resultStandardModel->setHorizontalHeaderLabels(headers);
-    QStandardItem * item = resultStandardModel->invisibleRootItem();
+    resultModel = new resultItemModel();
+    resultModel->setRoot();
+//    QStringList headers;
+//    headers << "Name";
+//    headers << "Count";
+//    headers << "";
+//    headers << "";
+//    //resultList->setHorizontalHeaderLabels(headers);
+//    //QStandardItem * item = resultList->invisibleRootItem();
 
-    QList<QStandardItem *> mockList = listResultType("Managed Object Class : ", "" , "", "");
+//    QList<QStandardItem *> mockList = listResultType("Managed Object Class : ", "" , "", "");
 
-    QList<QStandardItem *> addedList = subListResultTypes("Added", " ");
-    QList<QStandardItem *> removedList = subListResultTypes("Removed", " ");
-    QList<QStandardItem *> modifiedList = subListResultTypes("Modified", " ");
+//    QList<QStandardItem *> addedList = subListResultTypes("Added", " ");
+//    QList<QStandardItem *> removedList = subListResultTypes("Removed", " ");
+//    QList<QStandardItem *> modifiedList = subListResultTypes("Modified", " ");
 
-    item->appendRow(mockList);
+//    //item->appendRow(mockList);
 
-    mockList.first()->appendRow(addedList);
-    mockList.first()->appendRow(removedList);
-    mockList.first()->appendRow(modifiedList);
+//    mockList.first()->appendRow(addedList);
+//    mockList.first()->appendRow(removedList);
+//    mockList.first()->appendRow(modifiedList);
 
-    resultTreeView->setModel(resultStandardModel);
-    resultTreeView->expandAll();
+//    resultTreeView->setModel(resultModel);
+//    resultTreeView->expandAll();
 
     dock->setWidget(resultTreeView);
 

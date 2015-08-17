@@ -43,7 +43,9 @@ SOURCES += main.cpp \
     UT/Doubles/Sources/Utilities/UtilExpressionParserTest.cpp \
     Sources/InternalTypes/PDDBSimpleTypeValue.cpp \
     Sources/InternalTypes/PDDBComplexTypeValue.cpp \
-    Sources/InternalTypes/PDDBDocument.cpp
+    Sources/InternalTypes/PDDBDocument.cpp \
+    Sources/Gui/resultItemModel.cpp \
+    Sources/Gui/resultItem.cpp
 
 HEADERS  += \
         Includes/TinyXML/tinyxml2.h \
@@ -70,8 +72,9 @@ HEADERS  += \
     Includes/InternalTypes/PDDBSimpleTypeValue.h \
     Includes/InternalTypes/PDDBComplexTypeValue.h \
     Includes/Utilities/UtilPDDBHelper.hpp \
-    Includes/InternalTypes/PDDBDocument.h
-
+    Includes/InternalTypes/PDDBDocument.h \
+    Includes/Gui/resultItemModel.h \
+    Includes/Gui/resultItem.h
 
 FORMS    += mainwindow.ui
 
@@ -107,13 +110,7 @@ DISTFILES += \
     UT/TestFiles/PDDB/test_pddb_4_new.xml \
     Includes/Utilities/UtilExpressionParser \
     UT/TestFiles/PDDB/test_pddb_5_paramCustomUIValue.xml \
-    ../../../userdata/pkozuch/Desktop/GMC - Doc/PBDB and GMC Files/PDDB-LTE_BTS-TLF16_1506_002-0.0-report.xml \
-    ../../../userdata/pkozuch/Desktop/GMC - Doc/PBDB and GMC Files/PDDB-LTE_BTS-TLF16_1507_001-0.0-report.xml \
     UT/TestFiles/PDDB/pddb1506.xml \
     UT/TestFiles/PDDB/pddb1507.xml \
     UT/TestFiles/PDDB/pddb150702.xml
-
-
-RESOURCES += \
-    source.qrc
 
