@@ -19,14 +19,71 @@ PDDBManagedObjectCompareResult::PDDBManagedObjectCompareResult(
         PDDBManagedObjectCompareResult::DifferenceOrigin o,
 		ManagedObjectRelativeElement* fEl,
 		ManagedObjectRelativeElement* sEl,
-		std::vector<InternalTypes::AttributeDifference> attribDiffs)
+        std::vector<InternalTypes::AttributeDifference> attribDiffs,
+        std::vector<PDDBManagedObjectCompareResult::ChangeInMocParameterElement> changes,
+        ManagedObjectRelativeElement * fComplexParEl,
+        ManagedObjectRelativeElement * sComplexParEl )
 {
 	this->type = t;
 	this->scope = s;
 	this->origin = o;
 	this->firstElement = fEl;
 	this->secondElement = sEl;
+
+    this->firstElementComplexTypeParameter = fComplexParEl;
+    this->secondElementComplexTypeParameter = sComplexParEl;
+
 	this->attribDiffs = attribDiffs;
+
+    this->changesInParam = changes;
+
+    this->valid = true;
+}
+
+PDDBManagedObjectCompareResult PDDBManagedObjectCompareResult::createParamChanged(ManagedObjectRelativeElement * fEl,
+                                                                 ManagedObjectRelativeElement * sEl,
+                                                                 std::vector<ChangeInMocParameterElement> changes)
+{
+    return PDDBManagedObjectCompareResult(PDDBManagedObjectCompareResult::ContentDifference,
+                                          PDDBManagedObjectCompareResult::ManagedObjectParameter,
+                                          PDDBManagedObjectCompareResult::Modified,
+                                          fEl, sEl,
+                                          std::vector<InternalTypes::AttributeDifference>(),
+                                          changes
+                                          );
+}
+
+PDDBManagedObjectCompareResult PDDBManagedObjectCompareResult::createComplexParamCompareResult(PDDBManagedObjectCompareResult::DifferenceOrigin origin,
+                                                                                               ManagedObjectRelativeElement * fEl,
+                                                                                               ManagedObjectRelativeElement * fComplexParEl,
+                                                                                               ManagedObjectRelativeElement * sEl,
+                                                                                               ManagedObjectRelativeElement * sComplexParEl,
+                                                                                               std::vector<ChangeInMocParameterElement> changes)
+{
+    return PDDBManagedObjectCompareResult(PDDBManagedObjectCompareResult::ContentDifference,
+                                          PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter,
+                                          origin,
+                                          fEl, sEl,
+                                          std::vector<InternalTypes::AttributeDifference>(),
+                                          changes,
+                                          fComplexParEl,
+                                          sComplexParEl
+                                          );
+}
+
+bool PDDBManagedObjectCompareResult::isValid()
+{
+    return this->valid;
+}
+
+PDDBManagedObjectCompareResult::PDDBManagedObjectCompareResult()
+{
+    this->valid = false;
+}
+
+std::vector<PDDBManagedObjectCompareResult::ChangeInMocParameterElement> PDDBManagedObjectCompareResult::getChangesInParameter()
+{
+    return this->changesInParam;
 }
 
 ManagedObjectRelativeElement* PDDBManagedObjectCompareResult::getFirstElement()
@@ -59,3 +116,15 @@ std::vector<InternalTypes::AttributeDifference>
 {
 	return this->attribDiffs;
 }
+
+
+InternalTypes::ManagedObjectRelativeElement * InternalTypes::PDDBManagedObjectCompareResult::getFirstElementComplexTypeParameter()
+{
+    return this->firstElementComplexTypeParameter;
+}
+
+InternalTypes::ManagedObjectRelativeElement * InternalTypes::PDDBManagedObjectCompareResult::getSecondElementComplexTypeParameter()
+{
+    return this->secondElementComplexTypeParameter;
+}
+

@@ -169,7 +169,7 @@ TEST(XML_READER, deferentElements)
 	delete doc;
 }
 
-TEST(XML_READER, GetParentElement)
+TEST(XML_READER, getParentElement)
 {
     XMLDocument * doc = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_2.xml");
 	XmlReader * reader = new XmlReader(doc);
@@ -187,4 +187,6 @@ TEST(XML_READER, GetParentElement)
 	delete reader;
 	delete doc;
 }
+
+
 

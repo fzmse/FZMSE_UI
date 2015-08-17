@@ -3,6 +3,8 @@
 #include "TinyXML/tinyxml2.h"
 
 #include "InternalTypes/PDDBDefaultValue.h"
+#include "InternalTypes/PDDBSimpleTypeValue.h"
+#include "InternalTypes/PDDBComplexTypeValue.h"
 #include "InternalTypes/PDDBManagedObject.h"
 
 #include "Xml/XmlWrapper.h"
@@ -16,7 +18,7 @@ using namespace InternalTypes;
 static std::string dir = "D:/Projects/FZMSE/FZMSE/";
 
 
-TEST( PDDBDefaultValue, DefaultValueTypeTest)
+TEST( PDDBSimpleTypeValue, DefaultValueTypeTest)
 {
     XMLDocument * doc = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_4_new.xml");
     XMLElement* mocElement = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) doc, "managedObject")[0];
@@ -24,15 +26,15 @@ TEST( PDDBDefaultValue, DefaultValueTypeTest)
     PDDBManagedObject * moc = new PDDBManagedObject(mocElement);
     PDDBManagedObjectParameter * testedParam = moc->getParameters()[0];
 
-    PDDBDefaultValue def = PDDBDefaultValue(testedParam);
+    PDDBSimpleTypeValue * def = (PDDBSimpleTypeValue * )testedParam->getPDDBValue();
 
-    ASSERT_EQ("boolean", def.getTypeName());
+    ASSERT_EQ("boolean", def->getTypeName());
     delete moc;
     delete doc;
 }
 
 
-TEST( PDDBDefaultValue, GetEnumerations)
+TEST( PDDBSimpleTypeValue, GetEnumerations)
 {
     XMLDocument * doc = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_4_new.xml");
     XMLElement* mocElement = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) doc, "managedObject")[0];
@@ -43,11 +45,11 @@ TEST( PDDBDefaultValue, GetEnumerations)
     vector<PDDBManagedObjectParameter*> params = moc->getParameters();
 
 
-    PDDBDefaultValue def = PDDBDefaultValue(testedParam);
+    PDDBSimpleTypeValue * def = (PDDBSimpleTypeValue * )testedParam->getPDDBValue();
 
-    ASSERT_EQ("integer", def.getTypeName());
+    ASSERT_EQ("integer", def->getTypeName());
 
-    vector<pair<string, string> > enums = def.getEnums();
+    vector<pair<string, string> > enums = def->getEnums();
     ASSERT_EQ(1, enums.size());
 
     ASSERT_EQ("1", enums[0].first);
@@ -57,7 +59,7 @@ TEST( PDDBDefaultValue, GetEnumerations)
 }
 
 
-TEST( PDDBDefaultValue, GetRange)
+TEST( PDDBSimpleTypeValue, GetRange)
 {
     XMLDocument * doc = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_4_new.xml");
     XMLElement* mocElement = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) doc, "managedObject")[0];
@@ -67,11 +69,11 @@ TEST( PDDBDefaultValue, GetRange)
 
     vector<PDDBManagedObjectParameter*> params = moc->getParameters();
 
-    PDDBDefaultValue def = PDDBDefaultValue(testedParam);
+    PDDBSimpleTypeValue * def = (PDDBSimpleTypeValue * )testedParam->getPDDBValue();
 
-    ASSERT_EQ("decimal", def.getTypeName());
+    ASSERT_EQ("decimal", def->getTypeName());
 
-    vector<pair<string, string> > range = def.getRange();
+    vector<pair<string, string> > range = def->getRange();
     ASSERT_EQ(1, range.size());
 
     ASSERT_EQ("0", range[0].first);
@@ -80,7 +82,7 @@ TEST( PDDBDefaultValue, GetRange)
     delete doc;
 }
 
-TEST( PDDBDefaultValue, GetEvaluation)
+TEST( PDDBSimpleTypeValue, GetEvaluation)
 {
     XMLDocument * doc = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_4_new.xml");
     XMLElement* mocElement = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) doc, "managedObject")[0];
@@ -90,18 +92,18 @@ TEST( PDDBDefaultValue, GetEvaluation)
 
     vector<PDDBManagedObjectParameter*> params = moc->getParameters();
 
-    PDDBDefaultValue def = PDDBDefaultValue(testedParam);
+    PDDBSimpleTypeValue * def = (PDDBSimpleTypeValue * )testedParam->getPDDBValue();
 
-    ASSERT_EQ("decimal", def.getTypeName());
+    ASSERT_EQ("decimal", def->getTypeName());
 
-    string eval = def.getEvaluation();
+    string eval = def->getEvaluation();
     ASSERT_EQ("= UI_value", eval);
 
     delete moc;
     delete doc;
 }
 
-TEST( PDDBDefaultValue, GetRawDefaultValue)
+TEST( PDDBSimpleTypeValue, GetRawDefaultValue)
 {
     XMLDocument * doc = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_4_new.xml");
     XMLElement* mocElement = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) doc, "managedObject")[0];
@@ -109,17 +111,17 @@ TEST( PDDBDefaultValue, GetRawDefaultValue)
     PDDBManagedObject * moc = new PDDBManagedObject(mocElement);
     PDDBManagedObjectParameter * testedParam = moc->getParameters()[0];
 
-    PDDBDefaultValue def = PDDBDefaultValue(testedParam);
+    PDDBSimpleTypeValue * def = (PDDBSimpleTypeValue * )testedParam->getPDDBValue();
 
-    ASSERT_EQ("boolean", def.getTypeName());
+    ASSERT_EQ("boolean", def->getTypeName());
 
-    ASSERT_EQ("false", def.getValue());
+    ASSERT_EQ("false", def->getValue());
 
     delete moc;
     delete doc;
 }
 
-TEST( PDDBDefaultValue, GetEvaluatedValueFromExpression)
+TEST( PDDBSimpleTypeValue, GetEvaluatedValueFromExpression)
 {
     XMLDocument * doc = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_4_new.xml");
     XMLElement* mocElement = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) doc, "managedObject")[0];
@@ -127,32 +129,32 @@ TEST( PDDBDefaultValue, GetEvaluatedValueFromExpression)
     PDDBManagedObject * moc = new PDDBManagedObject(mocElement);
     PDDBManagedObjectParameter * testedParam = moc->getParameters()[14];
 
-    PDDBDefaultValue def = PDDBDefaultValue(testedParam);
+    PDDBSimpleTypeValue * def = (PDDBSimpleTypeValue * )testedParam->getPDDBValue();
 
-    ASSERT_EQ("decimal", def.getTypeName());
+    ASSERT_EQ("decimal", def->getTypeName());
 
-    ASSERT_EQ("30", def.getEvaluatedValue());
+    ASSERT_EQ("30", def->getEvaluatedValue());
 
     delete moc;
     delete doc;
 }
 
-TEST( PDDBDefaultValue, GetEvaluatedValueFromComplexExpression)
+TEST( PDDBSimpleTypeValue, GetEvaluatedValueFromComplexExpression)
 {
     XMLDocument * doc = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_5_paramCustomUIValue.xml");
 
-    PDDBManagedObjectParameter * testedParam = new PDDBManagedObjectParameter((XMLElement*)doc);
+    PDDBManagedObjectParameter * testedParam = new PDDBManagedObjectParameter((XMLElement*)doc->FirstChild(), NULL);
 
-    PDDBDefaultValue def = PDDBDefaultValue(testedParam);
+    PDDBSimpleTypeValue * def = (PDDBSimpleTypeValue * )testedParam->getPDDBValue();
 
-    cout << def.getEvaluatedValue() << endl;
+    cout << def->getEvaluatedValue() << endl;
 
     delete testedParam;
     delete doc;
 }
 
 
-TEST( PDDBDefaultValue, GetEvaluatedValueFromEnumeration)
+TEST( PDDBSimpleTypeValue, GetEvaluatedValueFromEnumeration)
 {
     XMLDocument * doc = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_4_new.xml");
     XMLElement* mocElement = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) doc, "managedObject")[0];
@@ -160,10 +162,54 @@ TEST( PDDBDefaultValue, GetEvaluatedValueFromEnumeration)
     PDDBManagedObject * moc = new PDDBManagedObject(mocElement);
     PDDBManagedObjectParameter * testedParam = moc->getParameters()[6];
 
-    PDDBDefaultValue def = PDDBDefaultValue(testedParam);
+    PDDBSimpleTypeValue * def = (PDDBSimpleTypeValue * )testedParam->getPDDBValue();
 
-    ASSERT_EQ("PhaseSync", def.getEvaluatedValue());
+    ASSERT_EQ("PhaseSync", def->getEvaluatedValue());
 
     delete moc;
     delete doc;
 }
+
+
+TEST( PDDBComplexTypeValue, CheckIfParsedCorrectly)
+{
+    XMLDocument * doc = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_4_new.xml");
+    vector<XMLElement*> results = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) doc, "p", "name", "alToggSuppList");
+    XMLElement* mocElement = results[0];
+    PDDBManagedObjectParameter * mocParam = new PDDBManagedObjectParameter(mocElement, NULL);
+
+    ASSERT_EQ ( true, mocParam->getPDDBValue()->isComplexType());
+
+    PDDBComplexTypeValue * v = (PDDBComplexTypeValue* )mocParam->getPDDBValue();
+
+    ASSERT_EQ(5, v->getValueParameters().size());
+
+    delete mocParam;
+    delete doc;
+}
+
+TEST( PDDBComplexTypeValue, CheckIfSubParametersFromComplexTypeAreValid)
+{
+    XMLDocument * doc = XmlWrapper::loadDocument(dir+"UT/TestFiles/PDDB/test_pddb_4_new.xml");
+    vector<XMLElement*> results = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*) doc, "p", "name", "alToggSuppList");
+    XMLElement* mocElement = results[0];
+    PDDBManagedObjectParameter * mocParam = new PDDBManagedObjectParameter(mocElement, NULL);
+
+    ASSERT_EQ ( true, mocParam->getPDDBValue()->isComplexType());
+
+    PDDBComplexTypeValue * v = (PDDBComplexTypeValue* )mocParam->getPDDBValue();
+
+    ASSERT_EQ(5, v->getValueParameters().size());
+
+    std::vector<PDDBManagedObjectParameter *> subParams = v->getValueParameters();
+
+    EXPECT_EQ("1", ((PDDBSimpleTypeValue*)subParams[0]->getPDDBValue())->getEvaluatedValue());
+    EXPECT_EQ("1", ((PDDBSimpleTypeValue*)subParams[1]->getPDDBValue())->getEvaluatedValue());
+    EXPECT_EQ("1", ((PDDBSimpleTypeValue*)subParams[2]->getPDDBValue())->getEvaluatedValue());
+    EXPECT_EQ("", ((PDDBSimpleTypeValue*)subParams[3]->getPDDBValue())->getEvaluatedValue()); // not specified
+    EXPECT_EQ("false", ((PDDBSimpleTypeValue*)subParams[4]->getPDDBValue())->getEvaluatedValue());
+
+    delete mocParam;
+    delete doc;
+}
+

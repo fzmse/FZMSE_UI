@@ -6,6 +6,8 @@
 
 QT       += core gui
 
+QMAKE_CXXFLAGS += -std=c++11
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 TARGET = FZMSE
@@ -33,13 +35,15 @@ SOURCES += main.cpp \
     Sources/InternalTypes/PDDBManagedObjectParameter.cpp \
     UT/Doubles/Sources/InternalTypes/PDDBManagedObjectParameterTest.cpp \
     UT/Doubles/Sources/InternalTypes/PDDBManagedObjectTest.cpp \
-    Sources/InternalTypes/PDDBDefaultValue.cpp \
     UT/Doubles/Sources/InternalTypes/PDDBDefaultValueTest.cpp \
     Includes/ExpressionParser/error.cpp \
     Includes/ExpressionParser/functions.cpp \
     Includes/ExpressionParser/parser.cpp \
     Includes/ExpressionParser/variablelist.cpp \
-    UT/Doubles/Sources/Utilities/UtilExpressionParserTest.cpp
+    UT/Doubles/Sources/Utilities/UtilExpressionParserTest.cpp \
+    Sources/InternalTypes/PDDBSimpleTypeValue.cpp \
+    Sources/InternalTypes/PDDBComplexTypeValue.cpp \
+    Sources/InternalTypes/PDDBDocument.cpp
 
 HEADERS  += \
         Includes/TinyXML/tinyxml2.h \
@@ -62,7 +66,11 @@ HEADERS  += \
     Includes/ExpressionParser/functions.h \
     Includes/ExpressionParser/parser.h \
     Includes/ExpressionParser/variablelist.h \
-    Includes/Utilities/UtilStrings.hpp
+    Includes/Utilities/UtilStrings.hpp \
+    Includes/InternalTypes/PDDBSimpleTypeValue.h \
+    Includes/InternalTypes/PDDBComplexTypeValue.h \
+    Includes/Utilities/UtilPDDBHelper.hpp \
+    Includes/InternalTypes/PDDBDocument.h
 
 
 FORMS    += mainwindow.ui
@@ -78,7 +86,7 @@ INCLUDEPATH += $$PWD/C:/Qt/5.5/mingw492_32/include/gtest
 DEPENDPATH += $$PWD/C:/Qt/5.5/mingw492_32/include/gtest
 
 DISTFILES += \
-    UT/TestFiles/GMC/notXML.txt \
+    UT/TestFiles/GMC/gmc150602.xml \
     UT/TestFiles/PDDB/test_pddb_2.xml \
     UT/TestFiles/PDDB/test_pddb_1_emptyParams.xml \
     UT/TestFiles/PDDB/test_pddb_1_mocAttribChanged.xml \
@@ -98,7 +106,12 @@ DISTFILES += \
     UT/TestFiles/PDDB/test_pddb_4_old.xml \
     UT/TestFiles/PDDB/test_pddb_4_new.xml \
     Includes/Utilities/UtilExpressionParser \
-    UT/TestFiles/PDDB/test_pddb_5_paramCustomUIValue.xml
+    UT/TestFiles/PDDB/test_pddb_5_paramCustomUIValue.xml \
+    ../../../userdata/pkozuch/Desktop/GMC - Doc/PBDB and GMC Files/PDDB-LTE_BTS-TLF16_1506_002-0.0-report.xml \
+    ../../../userdata/pkozuch/Desktop/GMC - Doc/PBDB and GMC Files/PDDB-LTE_BTS-TLF16_1507_001-0.0-report.xml \
+    UT/TestFiles/PDDB/pddb1506.xml \
+    UT/TestFiles/PDDB/pddb1507.xml \
+    UT/TestFiles/PDDB/pddb150702.xml
 
 
 RESOURCES += \

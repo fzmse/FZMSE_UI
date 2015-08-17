@@ -124,7 +124,10 @@ void getElementsWithSpecificNameAndAttributeRecursive( XMLElement * e, std::stri
 	}
 }
 
-std::vector<XMLElement *> XmlReader::getElementsWithSpecificNameAndAttribute(XMLElement * e, std::string name, std::string attributeName, std::string attributeValue)
+std::vector<XMLElement *> XmlReader::getElementsWithSpecificNameAndAttribute(XMLElement * e,
+                                                                             std::string name,
+                                                                             std::string attributeName,
+                                                                             std::string attributeValue)
 {
 	std::vector<XMLElement *> results;
 
@@ -143,6 +146,69 @@ std::vector<XMLElement *> XmlReader::getElementsWithSpecificNameAndAttribute(XML
 
 	return results;
 }
+
+
+XMLElement * getFirstElementWithSpecificNameAndAttributeRecursive( XMLElement * e, std::string name)
+{
+    if ( e != NULL )
+    {
+        for( XMLElement* node= e->FirstChildElement(); node; node = node->NextSiblingElement() )
+        {
+            if ( node != NULL )
+            {
+                if ( isElementSearchMatch(node, name, "", "") )
+                    return node;
+                XMLElement * fEl = getFirstElementWithSpecificNameAndAttributeRecursive(node, name);
+                if ( fEl != NULL )
+                    return fEl;
+            }
+        }
+    }
+}
+
+tinyxml2::XMLElement * XmlReader::getFirstElementWithSpecificNameAndAttribute(tinyxml2::XMLElement * e,
+                                                                                       std::string name)
+
+{
+
+    for( XMLElement* node= e->FirstChildElement(); node; node = node->NextSiblingElement() )
+    {
+        if ( node != NULL )
+        {
+            if ( isElementSearchMatch(node, name, "", "") )
+                return node;
+            XMLElement * fEl = getFirstElementWithSpecificNameAndAttributeRecursive(node, name);
+            if ( fEl != NULL )
+                return fEl;
+        }
+    }
+
+    return NULL;
+}
+
+
+
+std::vector<XMLElement *> XmlReader::getElementsWithSpecificNameAndAttributeFromChildrenLevel(XMLElement * e,
+                                                                                              std::string name,
+                                                                                              std::string attributeName,
+                                                                                              std::string attributeValue)
+{
+    std::vector<XMLElement *> results;
+
+    int depth = 0;
+
+    for( XMLElement* node= e->FirstChildElement(); node; node = node->NextSiblingElement() )
+    {
+        if ( node != NULL )
+        {
+            if ( isElementSearchMatch(node, name, attributeName, attributeValue) )
+                results.push_back(node);
+        }
+    }
+
+    return results;
+}
+
 
 void fetchLower(XMLElement * e, std::vector<XMLElement *> & results)
 {

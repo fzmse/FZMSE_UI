@@ -41,7 +41,7 @@
       <productData name="LTE BTS">
         <property name="C Type Name" value="actERabModify" dataType="String"/></productData>
       <simpleType base="boolean">
-      <editing units="min" internalValue="= UI_value * 20 / 3 - 8 * ( 4 / 6 )">
+      <editing units="min" internalValue="= UI_value * 20 / 3 - 8 * ( 4 / 6 + UI_value) - UI_value">
                 <range minIncl="-1" maxIncl="720"/>
                 <default value="30">
                   <description>

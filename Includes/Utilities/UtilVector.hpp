@@ -38,6 +38,15 @@ inline bool isVectorsIdentical(std::vector<T> a, std::vector<T> b)
 	return true;
 }
 
+template <typename T>
+inline bool vectorContains(std::vector<T> a, T item)
+{
+    for (  typename std::vector<T>::iterator it = a.begin(); it != a.end(); it ++)
+        if ( (*it) == item )
+            return true;
+    return false;
+}
+
 
 
 

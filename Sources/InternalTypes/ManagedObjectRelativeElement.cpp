@@ -15,9 +15,11 @@ ManagedObjectRelativeElement::ManagedObjectRelativeElement(XMLElement * e)
 {
 	this->element = e;
 
-	vector<pair<string, string> > a = XmlElementReader::getAttributes(e);
-	for ( vector<pair<string, string> >::iterator it = a.begin(); it != a.end(); ++ it )
-		this->attributes.push_back(*it);
+// // UNCOMMENT IF WE WANT ATTRIBUTES SAVED
+
+//	vector<pair<string, string> > a = XmlElementReader::getAttributes(e);
+//	for ( vector<pair<string, string> >::iterator it = a.begin(); it != a.end(); ++ it )
+//		this->attributes.push_back(*it);
 }
 
 ManagedObjectRelativeElement::~ManagedObjectRelativeElement()

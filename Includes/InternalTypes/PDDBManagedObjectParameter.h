@@ -10,24 +10,76 @@
 #include <vector>
 
 #include "TinyXML/tinyxml2.h"
+
+#include "PDDBManagedObject.h"
+
 #include "ManagedObjectRelativeElement.h"
+#include "PDDBDefaultValue.h"
+#include "PDDBManagedObjectCompareResult.h"
 
 namespace InternalTypes
 {
     class PDDBManagedObjectParameter : public ManagedObjectRelativeElement
 	{
 	public:
-        PDDBManagedObjectParameter( tinyxml2::XMLElement * pElement );
+        PDDBManagedObjectParameter( tinyxml2::XMLElement * pElement, ManagedObjectRelativeElement * parentMoc = NULL );
         virtual ~PDDBManagedObjectParameter();
+
+        ManagedObjectRelativeElement * getMocParent();
+
+        PDDBDefaultValue * getPDDBValue();
 
 		bool isValidMocParameter();
 		std::vector<ManagedObjectRelativeElement *> getProperties();
-		std::string getParameterName();
+
+        std::string getDescription();
+        std::string getCreationPriority();
+        bool isVendorSpecific();
+        std::string getMoMinOccurs();
+        std::string getRelatedParametersRawXml();
+        std::string getName();
+        std::string getMaxOccurs();
+
+        bool isSimpleTypeList();
+
+        std::string getPropertyXMLByTagName(std::string tag);
+
+        std::vector<PDDBManagedObjectCompareResult> compareTo(PDDBManagedObjectParameter * p);
 
 	protected:
-		std::vector<ManagedObjectRelativeElement* > properties;
+
+        ManagedObjectRelativeElement * parentMoc;
+
+        PDDBDefaultValue * pddbValue;
+
+        std::string retrieveParameterName();
+        PDDBDefaultValue * retrieveDefaultValue();
+        std::string retrieveDescription();
+        std::string retrieveCreationPriority();
+        bool retrieveIsVendorSpecific();
+        std::string retrieveMoMinOccurs();
+        std::string retrieveRelatedParametersRawXml();
+        std::string retrieveMaxOccurs();
+
+        std::vector<ManagedObjectRelativeElement* > properties;
 		bool validMocParameter;
 
+        std::string description;
+        std::string creationPriority;
+        std::string moMinOccurs;
+
+        std::string relatedParametersRawXml;
+
+        std::string name;
+
+        std::string relatedFeaturesRawXml;
+        std::string historyRawXml;
+
+        std::string maxOccurs;
+
+        bool simpleTypeList;
+
+        bool vendorSpecific;
 
 	};
 }
