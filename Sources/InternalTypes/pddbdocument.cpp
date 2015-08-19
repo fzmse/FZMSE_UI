@@ -103,3 +103,5 @@ std::vector<PDDBManagedObjectCompareResult> PDDBDocument::compareDocuments( PDDB
     }
     return results;
 }
+
+
