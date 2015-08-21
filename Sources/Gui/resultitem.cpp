@@ -1,6 +1,8 @@
 
 #include "Includes/Gui/resultItem.h"
 
+using namespace InternalTypes;
+
 resultItem::resultItem(const QList<QVariant> &data,
                            resultItem *parent)
 {
@@ -8,22 +10,18 @@ resultItem::resultItem(const QList<QVariant> &data,
     this->itemData = data;
 }
 
-resultItem::resultItem(const QList<QVariant> &data,
-                       InternalTypes::PDDBManagedObjectCompareResult resultObj,
+resultItem::resultItem(PDDBManagedObjectCompareResult resultObj,
                        resultItem *parent)
 {
     this->resultObj = resultObj;
     this->parentItem = parent;
-
-    if (data.empty())
-        setData();
-    else
-        this->itemData = data;
+    setData();
 }
 
 resultItem::~resultItem()
 {
-    qDeleteAll(itemList);
+//    if (!itemList.empty())
+//        qDeleteAll(itemList);
 }
 
 void resultItem::appendItem(resultItem *item)
@@ -56,6 +54,16 @@ resultItem * resultItem::parent()
     return parentItem;
 }
 
+void resultItem::setParetn(resultItem *item)
+{
+    parentItem = item;
+}
+
+QString resultItem::getLocation()
+{
+    return itemData.value(2).toString();
+}
+
 int resultItem::row() const
 {
     if (parentItem)
@@ -66,10 +74,151 @@ int resultItem::row() const
 
 void resultItem::setData()
 {
-    std::string className = XmlElementReader::getAttributeByName(this->resultObj.getFirstElement()->getElement(),"class");
-    QVariant qVarClassName;
-    qVarClassName.setValue(QString::fromStdString(className));
-//    QVariant QVarOrigin;
-//    QVarOrigin.setValue(this->resultObj.getOrigin());
-    itemData << qVarClassName;
+    QString description;
+    switch(resultObj.getOrigin())
+    {
+    case PDDBManagedObjectCompareResult::Added:
+        if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameter )
+        {
+            itemData << "Parameter" << "Added";
+            description.append("[ ");
+            if ( ((PDDBManagedObjectParameter*)resultObj.getSecondElement())->getMocParent() != NULL )
+            {
+                description.append(QString::fromStdString(((PDDBManagedObject*)((PDDBManagedObjectParameter*)resultObj.getSecondElement())->getMocParent())->getClassName()));
+                description.append(" -> ");
+            }
+            description.append(QString::fromStdString(XmlElementReader::getAttributeByName(resultObj.getSecondElement()->getElement(), "name")));
+            description.append(" ]");
+            itemData << description;
+        }
+        else if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObject )
+        {
+            itemData << "Managed Object" << "Added";
+            description.append("[ ");
+            description.append(QString::fromStdString(((PDDBManagedObject*)resultObj.getSecondElement())->getClassName()));
+            description.append(" ]");
+            itemData << description;
+
+        }
+        else if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
+        {
+            itemData << "Parameter" << "Added";
+            description.append("[ ");
+            if ( ((PDDBManagedObjectParameter*)resultObj.getSecondElement())->getMocParent() != NULL )
+            {
+                description.append(QString::fromStdString(((PDDBManagedObject*)((PDDBManagedObjectParameter*)resultObj.getSecondElement())->getMocParent())->getClassName()));
+                description.append(" -> ");
+            }
+            description.append(QString::fromStdString(XmlElementReader::getAttributeByName(resultObj.getSecondElement()->getElement(), "name"))) ;
+            description.append(" -> ");
+            description.append(QString::fromStdString(XmlElementReader::getAttributeByName(resultObj.getSecondElementComplexTypeParameter()->getElement(), "name"))) ;
+            description.append(" ]");
+            itemData << description;
+        }
+        break;
+    case PDDBManagedObjectCompareResult::Removed:
+        if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameter )
+        {
+            itemData << "Parameter" << "Removed";
+            description.append("[ ");
+            if ( ((PDDBManagedObjectParameter*)resultObj.getFirstElement())->getMocParent() != NULL )
+            {
+                PDDBManagedObject* mocObj = (PDDBManagedObject*)((PDDBManagedObjectParameter*)resultObj.getFirstElement())->getMocParent();
+                description.append(QString::fromStdString(mocObj->getClassName()));
+                description.append(" -> ");
+            }
+            description.append(QString::fromStdString(XmlElementReader::getAttributeByName(resultObj.getFirstElement()->getElement(), "name")));
+            description.append(" ]");
+            itemData << description;
+        }
+
+        else if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObject )
+        {
+            itemData << "Managed Object" << "Removed";
+            description.append("[ ");
+            description.append(QString::fromStdString(((PDDBManagedObject*)resultObj.getFirstElement())->getClassName()));
+            description.append(" ]");
+            itemData << description;
+        }
+
+        else if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
+        {
+            itemData << "Parameter" << "Removed";
+            description.append("[ ");
+            if ( ((PDDBManagedObjectParameter*)resultObj.getFirstElement())->getMocParent() != NULL )
+            {
+                PDDBManagedObject* mocObj = (PDDBManagedObject*)((PDDBManagedObjectParameter*)resultObj.getFirstElement())->getMocParent();
+                description.append(QString::fromStdString(mocObj->getClassName()));
+                description.append(" -> ");
+            }
+            description.append(QString::fromStdString(XmlElementReader::getAttributeByName(resultObj.getFirstElement()->getElement(), "name")));
+            description.append(" -> ");
+            description.append(QString::fromStdString(XmlElementReader::getAttributeByName(resultObj.getFirstElementComplexTypeParameter()->getElement(), "name")));
+            description.append(" ]");
+            itemData << description;
+        }
+        break;
+    case PDDBManagedObjectCompareResult::Modified:
+        {
+            itemData << "Parameter" << "Modified";
+            description.append("[ ");
+            if ( ((PDDBManagedObjectParameter*)resultObj.getFirstElement())->getMocParent() != NULL )
+            {
+                description.append(QString::fromStdString(((PDDBManagedObject*)((PDDBManagedObjectParameter*)resultObj.getFirstElement())->getMocParent())->getClassName()));
+                description.append(" -> ");
+            }
+            description.append(QString::fromStdString(XmlElementReader::getAttributeByName(resultObj.getFirstElement()->getElement(), "name")));
+            if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
+            {
+                description.append(" -> ");
+                description.append(QString::fromStdString(XmlElementReader::getAttributeByName(resultObj.getFirstElementComplexTypeParameter()->getElement(), "name")));
+            }
+            description.append(" ]");
+            itemData << description;
+            QString specification;
+
+            vector<PDDBManagedObjectCompareResult::ChangeInMocParameterElement> changes = resultObj.getChangesInParameter();
+            for ( vector<PDDBManagedObjectCompareResult::ChangeInMocParameterElement>::iterator itParChange = changes.begin();
+                  itParChange != changes.end(); itParChange ++)
+            {
+                switch (*itParChange)
+                {
+                case PDDBManagedObjectCompareResult::Description:
+                    specification.append("Description, ");
+                break;
+                case PDDBManagedObjectCompareResult::SimpleTypeValue:
+                    specification.append("SimpleType value changed, ");
+                break;
+                case PDDBManagedObjectCompareResult::SimpleTypeValue_RangeChanged:
+                    specification.append("Range Changed, ");
+                break;
+                case PDDBManagedObjectCompareResult::VendorSpecific:
+                    specification.append("Vendor Specific, ");
+                break;
+                case PDDBManagedObjectCompareResult::CreationPriority:
+                    specification.append("Creation Priority, ");
+                break;
+                case PDDBManagedObjectCompareResult::MoMinOccurs:
+                    specification.append("Mo MinOccurs, ");
+                break;
+                case PDDBManagedObjectCompareResult::RelatedParameters:
+                    specification.append("Related Parameters, ");
+                break;
+                case PDDBManagedObjectCompareResult::SimpleToComplex:
+                    specification.append("SimpleValue changed to ComplexValue, ");
+                break;
+                case PDDBManagedObjectCompareResult::ComplexToSimple:
+                    specification.append("ComplexValue changed to SimpleValue, ");
+                break;
+                case PDDBManagedObjectCompareResult::ComplexTypeValue:
+                    specification.append("ComplexType value changed");
+                break;
+
+                }
+            }
+            itemData << specification;
+        }
+        break;
+    }
+    //qDebug() << itemData;
 }

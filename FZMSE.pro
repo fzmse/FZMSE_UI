@@ -45,7 +45,8 @@ SOURCES += main.cpp \
     Sources/InternalTypes/PDDBComplexTypeValue.cpp \
     Sources/InternalTypes/PDDBDocument.cpp \
     Sources/Gui/resultItemModel.cpp \
-    Sources/Gui/resultItem.cpp
+    Sources/Gui/resultItem.cpp \
+    Sources/Gui/xmlhighlighter.cpp
 
 HEADERS  += \
         Includes/TinyXML/tinyxml2.h \
@@ -74,7 +75,8 @@ HEADERS  += \
     Includes/Utilities/UtilPDDBHelper.hpp \
     Includes/InternalTypes/PDDBDocument.h \
     Includes/Gui/resultItemModel.h \
-    Includes/Gui/resultItem.h
+    Includes/Gui/resultItem.h \
+    Includes/Gui/xmlhighlighter.h
 
 FORMS    += mainwindow.ui
 
@@ -112,5 +114,6 @@ DISTFILES += \
     UT/TestFiles/PDDB/test_pddb_5_paramCustomUIValue.xml \
     UT/TestFiles/PDDB/pddb1506.xml \
     UT/TestFiles/PDDB/pddb1507.xml \
-    UT/TestFiles/PDDB/pddb150702.xml
+    UT/TestFiles/PDDB/pddb150702.xml \
+    Includes/Gui/lineTextEdit
 
