@@ -128,5 +128,7 @@ DISTFILES += \
     UT/TestFiles/PDDB/pddb1506.xml \
     UT/TestFiles/PDDB/pddb1507.xml \
     UT/TestFiles/PDDB/pddb150702.xml \
-    UT/TestFiles/PDDB/pddb1507_mychanges.xml
+    UT/TestFiles/PDDB/pddb1507_mychanges.xml \
+    UT/TestFiles/PDDB/FL161506.xml \
+    UT/TestFiles/PDDB/FL161507.xml
 
