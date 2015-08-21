@@ -37,10 +37,11 @@ namespace InternalTypes
         bool isVendorSpecific();
         std::string getMoMinOccurs();
         std::string getRelatedParametersRawXml();
+        std::vector< std::pair < std::string , std::string > > getRelatedParameters();
         std::string getName();
         std::string getMaxOccurs();
 
-        bool isSimpleTypeList();
+        bool isList();
 
         std::string getPropertyXMLByTagName(std::string tag);
 
@@ -59,6 +60,7 @@ namespace InternalTypes
         bool retrieveIsVendorSpecific();
         std::string retrieveMoMinOccurs();
         std::string retrieveRelatedParametersRawXml();
+        std::vector< std::pair < std::string , std::string > > retrieveRelatedParameters();
         std::string retrieveMaxOccurs();
 
         std::vector<ManagedObjectRelativeElement* > properties;
@@ -69,6 +71,7 @@ namespace InternalTypes
         std::string moMinOccurs;
 
         std::string relatedParametersRawXml;
+        std::vector< std::pair < std::string , std::string > > relatedParameters;
 
         std::string name;
 
@@ -77,7 +80,7 @@ namespace InternalTypes
 
         std::string maxOccurs;
 
-        bool simpleTypeList;
+        bool list;
 
         bool vendorSpecific;
 

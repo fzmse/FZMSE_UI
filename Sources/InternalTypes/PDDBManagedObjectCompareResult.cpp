@@ -13,6 +13,9 @@
 using namespace InternalTypes;
 using namespace std;
 
+int PDDBManagedObjectCompareResult::idCounter = 0;
+
+
 PDDBManagedObjectCompareResult::PDDBManagedObjectCompareResult(
         PDDBManagedObjectCompareResult::DifferenceType t,
         PDDBManagedObjectCompareResult::DifferenceScope s,
@@ -38,6 +41,13 @@ PDDBManagedObjectCompareResult::PDDBManagedObjectCompareResult(
     this->changesInParam = changes;
 
     this->valid = true;
+
+    this->id = idCounter ++;
+}
+
+int PDDBManagedObjectCompareResult::getId()
+{
+    return this->id;
 }
 
 PDDBManagedObjectCompareResult PDDBManagedObjectCompareResult::createParamChanged(ManagedObjectRelativeElement * fEl,
@@ -126,5 +136,16 @@ InternalTypes::ManagedObjectRelativeElement * InternalTypes::PDDBManagedObjectCo
 InternalTypes::ManagedObjectRelativeElement * InternalTypes::PDDBManagedObjectCompareResult::getSecondElementComplexTypeParameter()
 {
     return this->secondElementComplexTypeParameter;
+}
+
+bool InternalTypes::PDDBManagedObjectCompareResult::containsChange( PDDBManagedObjectCompareResult::ChangeInMocParameterElement c )
+{
+    for ( std::vector<PDDBManagedObjectCompareResult::ChangeInMocParameterElement>::iterator it = this->changesInParam.begin();
+          it != this->changesInParam.end(); it ++)
+    {
+        if ( *it == c )
+            return true;
+    }
+    return false;
 }
 

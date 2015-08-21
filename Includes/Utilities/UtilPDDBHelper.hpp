@@ -5,6 +5,8 @@
 #include <InternalTypes/PDDBManagedObjectParameter.h>
 #include <InternalTypes/PDDBManagedObject.h>
 
+#include "InternalTypes/GMCAction.h"
+
 inline std::string getDifferencesText(std::vector<InternalTypes::PDDBManagedObjectCompareResult> d)
 {
     using namespace InternalTypes;
@@ -184,6 +186,123 @@ inline std::string getDifferencesText(std::vector<InternalTypes::PDDBManagedObje
             break;
         }
         message += lineMessage;
+        message += '\n';
+    }
+    return message;
+}
+
+inline InternalTypes::PDDBManagedObjectCompareResult getCompareResultById(std::vector<InternalTypes::PDDBManagedObjectCompareResult>  v, int id)
+{
+    for ( std::vector<InternalTypes::PDDBManagedObjectCompareResult>::iterator it = v.begin(); it != v.end(); it ++ )
+        if ( (*it).getId() == id )
+            return *it;
+}
+
+inline std::string getDifferencesText(std::vector<InternalTypes::GMCAction> d, std::vector<InternalTypes::PDDBManagedObjectCompareResult> cmpResults)
+{
+    using namespace InternalTypes;
+
+    std::string message = "";
+
+    for ( vector<GMCAction>::iterator it = d.begin(); it != d.end(); it ++ )
+    {
+        std::string lineMessage = "";
+        GMCAction r = *it;
+        if ( r.isReaderInteractionRequired() )
+            lineMessage += "[!] ";
+        switch(r.getActionType())
+        {
+        case GMCAction::Add:
+            if ( r.getChangeScope() == GMCAction::ManagedObjectParameter )
+            {
+
+                lineMessage += "Parameter [";
+                if ( ((PDDBManagedObjectParameter*)r.getItem())->getMocParent() != NULL )
+                {
+                    lineMessage += ((PDDBManagedObject*)((PDDBManagedObjectParameter*)r.getItem())->getMocParent())->getClassName();
+                    lineMessage += " -> ";
+                }
+                lineMessage += XmlElementReader::getAttributeByName(r.getItem()->getElement(), "name") ;
+                lineMessage += "]";
+
+                int lineSize = lineMessage.size();
+                for ( int i = 83 - lineSize; i >=0; i -- )
+                    lineMessage += " ";
+
+                lineMessage += "add ";
+            }
+            if ( r.getChangeScope() == PDDBManagedObjectCompareResult::ManagedObject )
+            {
+                lineMessage += "Managed Object [ ";
+                lineMessage += ((PDDBManagedObject*)r.getItem())->getClassName();
+                lineMessage += " ]";
+                int lineSize = lineMessage.size();
+                for ( int i = 83 - lineSize; i >=0; i -- )
+                    lineMessage += " ";
+
+                lineMessage += "add ";
+            }
+
+            break;
+        case GMCAction::Remove:
+            if ( r.getChangeScope() == PDDBManagedObjectCompareResult::ManagedObjectParameter )
+            {
+                lineMessage += "Parameter [";
+                if ( ((PDDBManagedObjectParameter*)r.getItem())->getMocParent() != NULL )
+                {
+                    PDDBManagedObject* mocObj = (PDDBManagedObject*)((PDDBManagedObjectParameter*)r.getItem())->getMocParent();
+                    lineMessage += mocObj->getClassName();
+                    lineMessage += " -> ";
+                }
+                lineMessage += XmlElementReader::getAttributeByName(r.getItem()->getElement(), "name");
+                lineMessage += "]";
+
+                int lineSize = lineMessage.size();
+                for ( int i = 83 - lineSize; i >=0; i -- )
+                    lineMessage += " ";
+
+                lineMessage += "remove";
+            }
+
+            if ( r.getChangeScope() == PDDBManagedObjectCompareResult::ManagedObject )
+            {
+                lineMessage += "Managed Object [ ";
+                lineMessage += ((PDDBManagedObject*)r.getItem())->getClassName();
+                lineMessage += " ]";
+                int lineSize = lineMessage.size();
+                for ( int i = 83 - lineSize; i >=0; i -- )
+                    lineMessage += " ";
+
+                lineMessage += "remove";
+            }
+
+
+            break;
+        case GMCAction::Modify:
+            {
+                lineMessage += "Parameter [";
+                if ( ((PDDBManagedObjectParameter*)r.getItem())->getMocParent() != NULL )
+                {
+                    lineMessage += ((PDDBManagedObject*)((PDDBManagedObjectParameter*)r.getItem())->getMocParent())->getClassName();
+                    lineMessage += " -> ";
+                }
+                lineMessage += XmlElementReader::getAttributeByName(r.getItem()->getElement(), "name");
+
+                lineMessage += "]";
+
+                int lineSize = lineMessage.size();
+                for ( int i = 85 - lineSize; i >=0; i -- )
+                    lineMessage += " ";
+
+                lineMessage += "modify ";
+
+            }
+            break;
+        }
+
+        message += lineMessage;
+        message += " ";
+        message += r.getHelpNote();
         message += '\n';
     }
     return message;

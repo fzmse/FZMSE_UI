@@ -47,6 +47,16 @@ SOURCES += main.cpp \
     Sources/Gui/resultItemModel.cpp \
     Sources/Gui/resultItem.cpp \
     Sources/Gui/xmlhighlighter.cpp
+    Sources/InternalTypes/GMCDocument.cpp \
+    Sources/InternalTypes/GMCManagedObject.cpp \
+    UT/Doubles/Sources/InternalTypes/GMCDocumentTest.cpp \
+    Sources/InternalTypes/GMCManagedObjectParameter.cpp \
+    UT/Doubles/Sources/InternalTypes/GMCManagedObjectParameterTest.cpp \
+    Sources/InternalTypes/GMCParameterSingleValue.cpp \
+    Sources/InternalTypes/GMCParameterDefaultValue.cpp \
+    Sources/InternalTypes/GMCParameterListValue.cpp \
+    Sources/InternalTypes/GMCAction.cpp
+
 
 HEADERS  += \
         Includes/TinyXML/tinyxml2.h \
@@ -77,6 +87,12 @@ HEADERS  += \
     Includes/Gui/resultItemModel.h \
     Includes/Gui/resultItem.h \
     Includes/Gui/xmlhighlighter.h
+    Includes/InternalTypes/GMCDocument.h \
+    Includes/InternalTypes/GMCManagedObjectParameter.h \
+    Includes/InternalTypes/GMCParameterDefaultValue.h \
+    Includes/InternalTypes/GMCParameterSingleValue.h \
+    Includes/InternalTypes/GMCParameterListValue.h \
+    Includes/InternalTypes/GMCAction.h
 
 FORMS    += mainwindow.ui
 
@@ -116,4 +132,5 @@ DISTFILES += \
     UT/TestFiles/PDDB/pddb1507.xml \
     UT/TestFiles/PDDB/pddb150702.xml \
     Includes/Gui/lineTextEdit
+    UT/TestFiles/PDDB/pddb1507_mychanges.xml
 

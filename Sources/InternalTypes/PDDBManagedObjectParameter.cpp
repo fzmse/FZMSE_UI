@@ -46,9 +46,12 @@ PDDBManagedObjectParameter::PDDBManagedObjectParameter(XMLElement * e, ManagedOb
         // retrieve relatedParameters raw xml
         this->relatedParametersRawXml = retrieveRelatedParametersRawXml();
 
+        // retrieve relatedParameters
+        this->relatedParameters = retrieveRelatedParameters();
+
         // retrieve maxOccurs Attribute
         this->maxOccurs = retrieveMaxOccurs();
-        this->simpleTypeList = this->maxOccurs.size() > 0 && this->maxOccurs != "1";
+        this->list = this->maxOccurs.size() > 0 && this->maxOccurs != "1";
 
     }
 }
@@ -216,9 +219,9 @@ std::string PDDBManagedObjectParameter::getName()
 }
 
 
-bool PDDBManagedObjectParameter::isSimpleTypeList()
+bool PDDBManagedObjectParameter::isList()
 {
-    return this->simpleTypeList;
+    return this->list;
 }
 
 std::string PDDBManagedObjectParameter::getMaxOccurs()
@@ -229,6 +232,33 @@ std::string PDDBManagedObjectParameter::getMaxOccurs()
 std::string PDDBManagedObjectParameter::retrieveMaxOccurs()
 {
     return XmlElementReader::getAttributeByName(this->element, "maxOccurs");
+}
+
+
+std::vector< std::pair < std::string , std::string > > PDDBManagedObjectParameter::getRelatedParameters()
+{
+    return this->relatedParameters;
+}
+
+std::vector< std::pair < std::string , std::string > > PDDBManagedObjectParameter::retrieveRelatedParameters()
+{
+    std::vector< std::pair < std::string , std::string > > results;
+    if ( this->relatedParametersRawXml != "" )
+    {
+        std::vector<XMLElement *> elems = XmlReader::getElementsWithSpecificNameAndAttributeFromChildrenLevel(this->getElement(), "relatedParameters");
+        if ( elems.size() > 0 )
+        {
+            auto pRefs = XmlReader::getElementsWithSpecificNameAndAttribute(elems[0], "pRef");
+            for ( vector<XMLElement*>::iterator it = pRefs.begin(); it != pRefs.end(); it ++  )
+            {
+                pair<string, string> relPar;
+                relPar.first = XmlElementReader::getAttributeByName(*it, "class");
+                relPar.second = XmlElementReader::getAttributeByName(*it, "name");
+                results.push_back(relPar);
+            }
+        }
+    }
+    return results;
 }
 
 // Compares the two MOC Parameters and returns differences

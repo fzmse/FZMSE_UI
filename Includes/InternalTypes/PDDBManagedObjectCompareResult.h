@@ -86,6 +86,8 @@ namespace InternalTypes
         ManagedObjectRelativeElement * getFirstElementComplexTypeParameter();
         ManagedObjectRelativeElement * getSecondElementComplexTypeParameter();
 
+        int getId();
+
         bool isValid();
 
 		DifferenceType getType();
@@ -98,7 +100,12 @@ namespace InternalTypes
 
         std::vector<ChangeInMocParameterElement> getChangesInParameter();
 
+        bool containsChange( ChangeInMocParameterElement c );
+
 	protected:
+
+        static int idCounter;
+        int id;
 
         bool valid;
 

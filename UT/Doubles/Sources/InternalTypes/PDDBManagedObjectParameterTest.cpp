@@ -91,11 +91,19 @@ TEST(PDDBManagedObjectParameter, GetMaxOccurs)
     PDDBDocument * doc = new PDDBDocument(dir+"UT/TestFiles/PDDB/test_pddb_1.xml");
 
     ASSERT_EQ("1", doc->getManagedObjects()[0]->getParameters()[0]->getMaxOccurs());
-    ASSERT_EQ(false, doc->getManagedObjects()[0]->getParameters()[0]->isSimpleTypeList());
+    ASSERT_EQ(false, doc->getManagedObjects()[0]->getParameters()[0]->isList());
 
     delete doc;
 }
 
+TEST(PDDBManagedObjectParameter, GetRelatedParams)
+{
+    PDDBDocument * doc = new PDDBDocument(dir+"UT/TestFiles/PDDB/test_pddb_1.xml");
+
+    ASSERT_EQ(1, doc->getManagedObjects()[0]->getParameters()[0]->getRelatedParameters().size());
+
+    delete doc;
+}
 
 TEST(PDDBManagedObjectParameter, Compare01_DescriptionAndRelatedParametersChanged)
 {
