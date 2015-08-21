@@ -6,7 +6,9 @@
 #include "Includes/Gui/resultItemModel.h"
 #include "Includes/InternalTypes/PDDBManagedObject.h"
 #include "InternalTypes/pddbdocument.h"
+#include "Includes/Gui/xmlhighlighter.h"
 
+class QLabel;
 class QAction;
 class QListWidget;
 class QListView;
@@ -17,6 +19,7 @@ class QTextEdit;
 class QTreeView;
 class QStandardItemModel;
 class QStandardItem;
+class QTextCursor;
 
 class appGUI : public QMainWindow
 {
@@ -24,31 +27,34 @@ class appGUI : public QMainWindow
 
 public:
     appGUI();
-
-
     void createLoadPathActions();
     std::vector<QString> parseXmlByEndLine(std::string XML);
+    void colorTextDifferences();
+    void setLabels(QString desc);
+
 private slots:
-    void loadPathTo(const QString&);
+    void loadPathToDoc(const QString&);
     void save();
     void generateRaport();
     void help();
     void clean();
-    void compare();
-    void insertCompareResult(const QString &result);
+    void comparePDDB();
+    void showSelectedPDDBResult();
 
 private:
     void createActions();
     void createMenus();
     void createToolBar();
     void createStatusBar();
-    void createDockWindows();
+    void createPDDBResultDock();
+    void createPDDBDescriptionDock();
+    void createPDDBResultView();
 
-    enum { };
 
-    QListWidget * upperListView;
-    QListWidget * bottomListView;
-//    QListWidget * resultList;
+    QLabel * upperLabel;
+    QLabel * bottomLabel;
+    QTextEdit * upperTextEdit;
+    QTextEdit * bottomTextEdit;
     QGroupBox * centralGroup;
     QGroupBox * centralButtonSubGroup;
     QMenu * fileMenu;
@@ -66,24 +72,15 @@ private:
     QAction * displayHelpAct;
     QPushButton * clearListsBut;
     QPushButton * compareBut;
-    QDockWidget * dock;
-    QTreeView * resultTreeView;
-    QStandardItemModel * resultStandardModel;
-    QStandardItemModel * subModel;
 
-    resultItemModel * resultModel;
+    QDockWidget * PDDBDescriptionDock;
 
-    QList<QString *> listOfLabels(const int& n);
+    QDockWidget * PDDBResultDock;
+    QTreeView * PDDBResultView;
+    resultItemModel * PDDBResultModel;
 
-    QList<QStandardItem *> listMOCTemplate(const QString& className);
-
-    QList<QStandardItem *> subListResultTypes(const QString& name,
-                                              const QString& count);
-
-    QList<QStandardItem *> listResultType(const QString& name,
-                                       const QString& added,
-                                       const QString& removed,
-                                       const QString& modified);
+    shared_ptr<XMLHighlighter> xmlHighlighterUp;
+    shared_ptr<XMLHighlighter> xmlHighlighterBottom;
 
     XmlReader * reader;
     XmlElementReader * elementReader;
@@ -92,6 +89,13 @@ private:
     std::string newPDDBPath;
     std::string oldGMCPath;
     std::string newGMCPath;
+
+    shared_ptr<InternalTypes::PDDBDocument> oldPDDBdoc;
+    shared_ptr<InternalTypes::PDDBDocument> newPDDBdoc;
+    shared_ptr<InternalTypes::PDDBDocument> oldGMCdoc;
+    shared_ptr<InternalTypes::PDDBDocument> newGMCdoc;
+
+    std::string getFileName(std::string path);
 
 };
 

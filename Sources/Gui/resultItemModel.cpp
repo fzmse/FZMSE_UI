@@ -1,4 +1,5 @@
 #include "Includes/Gui/resultItemModel.h"
+#include "Utilities/UtilPDDBHelper.hpp"
 
 using namespace InternalTypes;
 
@@ -7,23 +8,38 @@ resultItemModel::resultItemModel(QObject *parent) : QAbstractItemModel(parent)
 
 }
 
+resultItemModel::~resultItemModel()
+{
+    if (rootItem != NULL)
+    {
+        delete rootItem;
+    }
+}
+
 void resultItemModel::setResultVector(std::vector<PDDBManagedObjectCompareResult> resultList)
 {
+    int i = 0;
+    if (!results.empty())
+        results.clear();
+
     for (std::vector<PDDBManagedObjectCompareResult>::iterator it = resultList.begin(); it != resultList.end(); ++it)
     {
         results.append(*it);
+        ++i;
     }
+
+    qDebug() << i << " PDDB results loaded";
 }
 
 void resultItemModel::setRoot()
 {
-    if (!results.empty())
-    {
-        QList<QVariant> rootData;
-        rootData << "Type" << "Origin" << "Class";
-        rootItem = new resultItem(rootData);
-        //setupModelData(data.split(QString("\n")), rootItem);
-    }
+    setupModelData();
+}
+
+void resultItemModel::clean()
+{
+    results.clear();
+    rootItem = NULL;
 }
 
 int resultItemModel::columnCount(const QModelIndex &parent) const
@@ -51,7 +67,6 @@ Qt::ItemFlags resultItemModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return 0;
-
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
 
@@ -79,7 +94,9 @@ QModelIndex resultItemModel::index(int row, int column, const QModelIndex &paren
 
     resultItem *childItem = parentItem->item(row);
     if (childItem)
+    {
         return createIndex(row, column, childItem);
+    }
     else
         return QModelIndex();
 }
@@ -113,51 +130,29 @@ int resultItemModel::rowCount(const QModelIndex &parent) const
     return parentItem->itemCount();
 }
 
-void resultItemModel::setupModelData(const QStringList &lines, resultItem *parent)
+void resultItemModel::setupModelData()
 {
-    QList<resultItem*> parents;
-    QList<int> indentations;
-    parents << parent;
-    indentations << 0;
 
-    int number = 0;
+    QList<QVariant> rootData;
+    rootData << "Type" << "Origin" << "Location" << "Changes";
+//    if (rootItem != NULL)
+//    {
+//        delete rootItem;
+//    }
 
-    while (number < lines.count()) {
-        int position = 0;
-        while (position < lines[number].length()) {
-            if (lines[number].mid(position, 1) != " ")
-                break;
-            position++;
-        }
+    rootItem = new resultItem(rootData);
+    rootItem->setParetn(rootItem);
 
-        QString lineData = lines[number].mid(position).trimmed();
-
-        if (!lineData.isEmpty()) {
-            // Read the column data from the rest of the line.
-            QStringList columnStrings = lineData.split("\t", QString::SkipEmptyParts);
-            QList<QVariant> columnData;
-            for (int column = 0; column < columnStrings.count(); ++column)
-                columnData << columnStrings[column];
-
-            if (position > indentations.last()) {
-                // The last child of the current parent is now the new parent
-                // unless the current parent has no children.
-
-                if (parents.last()->itemCount() > 0) {
-                    parents << parents.last()->item(parents.last()->itemCount()-1);
-                    indentations << position;
-                }
-            } else {
-                while (position < indentations.last() && parents.count() > 0) {
-                    parents.pop_back();
-                    indentations.pop_back();
-                }
-            }
-
-            // Append a new item to the current parent's list of children.
-            //parents.last()->appendItem(new resultItem(columnData, parents.last()));
-        }
-
-        number++;
+    QListIterator<PDDBManagedObjectCompareResult> i(results);
+    while (i.hasNext())
+    {
+        resultItem * item = new resultItem(i.next(), rootItem);
+        rootItem->appendItem(item);
     }
+
+}
+
+resultItem * resultItemModel::getItemFromRow(int row)
+{
+    return rootItem->item(row);
 }

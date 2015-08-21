@@ -1,6 +1,7 @@
 #include <QAbstractItemModel>
 #include "Includes/Gui/resultItem.h"
 #include "Includes/InternalTypes/PDDBManagedObjectCompareResult.h"
+#include <QDebug>
 #include <vector>
 
 
@@ -10,6 +11,7 @@ class resultItemModel : public QAbstractItemModel
 
 public:
     resultItemModel(QObject *parent = 0);
+    ~resultItemModel();
 
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -18,15 +20,17 @@ public:
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const;
     QModelIndex parent(const QModelIndex &index) const;
-
+    resultItem * getItemFromRow(int row);
     void setResultVector(std::vector<InternalTypes::PDDBManagedObjectCompareResult> resultList);
     void setRoot();
+    void clean();
+    void selectNode();
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
 
 private:
     resultItem * rootItem;
     QList<InternalTypes::PDDBManagedObjectCompareResult> results;
-    void setupModelData(const QStringList &lines, resultItem *parent);
+    void setupModelData();
 
 };
