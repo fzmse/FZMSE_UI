@@ -1,17 +1,16 @@
 #include <QAbstractItemModel>
-#include "Includes/Gui/resultItem.h"
-#include "Includes/InternalTypes/PDDBManagedObjectCompareResult.h"
+#include "Includes/Gui/gmcresultitem.h"
+#include "Includes/InternalTypes/gmcaction.h"
 #include <QDebug>
 #include <vector>
 
-
-class resultItemModel : public QAbstractItemModel
+class gmcResultItemModel : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
-    resultItemModel(QObject *parent = 0);
-    ~resultItemModel();
+    gmcResultItemModel(QObject *parent = 0);
+    ~gmcResultItemModel();
 
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
@@ -20,9 +19,8 @@ public:
     QModelIndex index(int row, int column,
                       const QModelIndex &parent = QModelIndex()) const;
     QModelIndex parent(const QModelIndex &index) const;
-    resultItem * getItemFromRow(int row);
-    resultItem * getRoot();
-    void setResultVector(std::vector<InternalTypes::PDDBManagedObjectCompareResult> resultList);
+    gmcResultItem * getItemFromRow(int row);
+    void setResultVector(std::vector<InternalTypes::GMCAction> gmcResultList);
     void setRoot();
     void clean();
     void selectNode();
@@ -30,8 +28,7 @@ public:
     int columnCount(const QModelIndex &parent) const;
 
 private:
-    resultItem * rootItem;
-    QList<InternalTypes::PDDBManagedObjectCompareResult> results;
+    gmcResultItem * rootItem;
+    QList<InternalTypes::GMCAction> results;
     void setupModelData();
-
 };

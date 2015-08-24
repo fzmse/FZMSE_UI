@@ -21,7 +21,8 @@ public:
     int columnCount() const;
     QVariant data(int column) const;
     int row() const;
-    resultItem *parent();
+    resultItem * parent();
+    resultItem * findItemById(int id);
     InternalTypes::PDDBManagedObjectCompareResult resultObj;
 
 private:

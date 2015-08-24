@@ -20,8 +20,8 @@ resultItem::resultItem(PDDBManagedObjectCompareResult resultObj,
 
 resultItem::~resultItem()
 {
-//    if (!itemList.empty())
-//        qDeleteAll(itemList);
+    if (!itemList.empty())
+        qDeleteAll(itemList);
 }
 
 void resultItem::appendItem(resultItem *item)
@@ -53,6 +53,15 @@ resultItem * resultItem::parent()
 {
     return parentItem;
 }
+
+resultItem * resultItem::findItemById(int id)
+{
+    for (int i = 0; i < itemList.size(); i++)
+        if ( itemList.value(i)->resultObj.getId() == id )
+            return itemList.value(i);
+    return NULL;
+}
+
 
 void resultItem::setParetn(resultItem *item)
 {
@@ -102,7 +111,7 @@ void resultItem::setData()
         }
         else if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
         {
-            itemData << "Parameter" << "Added";
+            itemData << "Complex Parameter" << "Added";
             description.append("[ ");
             if ( ((PDDBManagedObjectParameter*)resultObj.getSecondElement())->getMocParent() != NULL )
             {
@@ -143,7 +152,7 @@ void resultItem::setData()
 
         else if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
         {
-            itemData << "Parameter" << "Removed";
+            itemData << "Complex Parameter" << "Removed";
             description.append("[ ");
             if ( ((PDDBManagedObjectParameter*)resultObj.getFirstElement())->getMocParent() != NULL )
             {
@@ -160,8 +169,17 @@ void resultItem::setData()
         break;
     case PDDBManagedObjectCompareResult::Modified:
         {
-            itemData << "Parameter" << "Modified";
-            description.append("[ ");
+            if( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
+            {
+                itemData << "Complex Parameter" << "Modified";
+                description.append("[ ");
+            }
+            else
+            {
+                itemData << "Parameter" << "Modified";
+                description.append("[ ");
+            }
+
             if ( ((PDDBManagedObjectParameter*)resultObj.getFirstElement())->getMocParent() != NULL )
             {
                 description.append(QString::fromStdString(((PDDBManagedObject*)((PDDBManagedObjectParameter*)resultObj.getFirstElement())->getMocParent())->getClassName()));
@@ -220,5 +238,4 @@ void resultItem::setData()
         }
         break;
     }
-    //qDebug() << itemData;
 }

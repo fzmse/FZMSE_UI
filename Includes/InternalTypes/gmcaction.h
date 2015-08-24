@@ -23,7 +23,7 @@ namespace InternalTypes
             ManagedObject,
             ManagedObjectParameter,
         };
-
+        GMCAction();
         GMCAction(bool interaction, ManagedObjectRelativeElement * item,
                   ActionType actionType, ChangeScope actionScope, int pddbCompareResultId,
                   std::string helpNote = "",
@@ -44,7 +44,6 @@ namespace InternalTypes
         bool isReaderInteractionRequired();
 
     protected:
-        GMCAction();
         std::vector<GMCManagedObject * > gmcMocsInvolved;
         std::vector<GMCAction> childActions;
         ManagedObjectRelativeElement * item;

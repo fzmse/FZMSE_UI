@@ -9,52 +9,17 @@ appGUI::appGUI()
 {
     resize(QDesktopWidget().availableGeometry(this).size() * 0.7);
 
-    centralGroup = new QGroupBox;
-    QVBoxLayout * centralLayout = new QVBoxLayout;
-
-    upperTextEdit = new QTextEdit();
-    bottomTextEdit = new QTextEdit();
-    upperTextEdit->setReadOnly(true);
-    bottomTextEdit->setReadOnly(true);
-
-
-    xmlHighlighterUp = make_shared<XMLHighlighter>(upperTextEdit->document());
-    xmlHighlighterBottom = make_shared<XMLHighlighter>(bottomTextEdit->document());
-
-    centralButtonSubGroup = new QGroupBox;
-    QHBoxLayout * centralButtonLayout = new QHBoxLayout;
-
-    upperLabel = new QLabel(this);
-    upperLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-
-    bottomLabel = new QLabel(this);
-    bottomLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
-
-    centralLayout->addWidget(upperLabel);
-    centralLayout->addWidget(upperTextEdit);
-    centralLayout->addWidget(bottomLabel);
-    centralLayout->addWidget(bottomTextEdit);
-    centralLayout->addWidget(centralButtonSubGroup);
-
-    centralGroup->setLayout(centralLayout);
-
-    clearListsBut = new QPushButton(tr("Clean"));
-    compareBut = new QPushButton(tr("Compare"));
-
-    centralButtonLayout->addWidget(clearListsBut);
-    centralButtonLayout->addWidget(compareBut);
-    centralButtonSubGroup->setLayout(centralButtonLayout);
-
-    connect(clearListsBut, SIGNAL(clicked(bool)), this, SLOT(clean()));
-    connect(compareBut, SIGNAL(clicked(bool)), this, SLOT(comparePDDB()));
-    setCentralWidget(centralGroup);
-
     createActions();
     createMenus();
     createToolBar();
     createStatusBar();
     createPDDBResultDock();
     createPDDBResultView();
+    createGMCResultDock();
+    createGMCResultView();
+    createPDDBTextDock();
+    createGMCTextDock();
+
     setWindowTitle(tr("FZMSE"));
 
     setUnifiedTitleAndToolBarOnMac(true);
@@ -69,17 +34,36 @@ void appGUI::loadPathToDoc(const QString &type)
                 tr("XML (*.xml)"));
 
     std::string stdFilePath = filePath.toStdString();
-
     if (type == "oldPDDB")
+    {
         oldPDDBPath = stdFilePath;
-    else if (type == "newPDDB")
-        newPDDBPath = stdFilePath;
-    else if (type == "oldGMC")
-        oldGMCPath = stdFilePath;
-    else if (type == "newGMC")
-        newGMCPath = stdFilePath;
+        oldPDDBdoc = make_shared<PDDBDocument>(oldPDDBPath);
+        setLabel(oldPDDBLabel, "Old PDDB   ||   "+getFileName(oldPDDBPath));
+        comparePDDB();
 
-    comparePDDB();
+    }
+    else if (type == "newPDDB")
+    {
+        newPDDBPath = stdFilePath;
+        newPDDBdoc = make_shared<PDDBDocument>(newPDDBPath);
+        setLabel(newPDDBLabel, "New PDDB   ||   "+getFileName(newPDDBPath));
+        comparePDDB();
+
+    }
+    else if (type == "oldGMC")
+    {
+        oldGMCPath = stdFilePath;
+        oldGMCdoc = make_shared<GMCDocument>(oldGMCPath);
+        setLabel(oldGMCLabel, "Old GMC   ||   "+getFileName(oldGMCPath));
+        compare();
+
+    }
+    else if (type == "newGMC")
+    {
+        newGMCPath = stdFilePath;
+        newGMCdoc = make_shared<GMCDocument>(oldGMCPath);
+        setLabel(newGMCLabel, "New GMC   ||   "+getFileName(newGMCPath));
+    }
 }
 
 void appGUI::save()
@@ -100,8 +84,28 @@ void appGUI::help()
 
 void appGUI::clean()
 {
-    upperTextEdit->clear();
-    bottomTextEdit->clear();
+    oldPDDBTextEdit->clear();
+    newPDDBTextEdit->clear();
+}
+
+void appGUI::compare()
+{
+    if (!(oldPDDBPath.empty() || newPDDBPath.empty() || oldGMCPath.empty()))
+    {
+        statusBar()->showMessage(tr("Loading GMC actions"));
+        vector<GMCAction> actions = GMCDocument::resolveGMCActions(oldPDDBdoc.get(), newPDDBdoc.get(), oldGMCdoc.get(), &differences);
+        GMCResultModel->setResultVector(actions);
+        GMCResultModel->setRoot();
+
+        GMCResultView->setModel(GMCResultModel);
+
+        connect(GMCResultView->selectionModel(),
+                SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+                this,
+                SLOT(showSelectedGMCResult()));
+        GMCResultView->show();
+        statusBar()->showMessage(tr("Ready"));
+    }
 }
 
 void appGUI::comparePDDB()
@@ -109,10 +113,8 @@ void appGUI::comparePDDB()
     if (!(oldPDDBPath.empty() || newPDDBPath.empty()))
     {
         statusBar()->showMessage(tr("Loading PDDB's differences"));
-        oldPDDBdoc = make_shared<PDDBDocument>(oldPDDBPath);
-        newPDDBdoc = make_shared<PDDBDocument>(newPDDBPath);
 
-        std::vector<PDDBManagedObjectCompareResult> differences = PDDBDocument::compareDocuments(oldPDDBdoc.get(), newPDDBdoc.get());
+        differences = PDDBDocument::compareDocuments(oldPDDBdoc.get(), newPDDBdoc.get());
 
         PDDBResultModel->setResultVector(differences);
         PDDBResultModel->setRoot();
@@ -123,57 +125,244 @@ void appGUI::comparePDDB()
                 SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
                 this,
                 SLOT(showSelectedPDDBResult()));
+
         PDDBResultView->show();
         statusBar()->showMessage(tr("Ready"));
 
     }
 }
 
-
-
-void appGUI::setLabels(QString desc)
+void appGUI::printDiff(resultItem *r)
 {
-    upperLabel->setText(QString::fromStdString("Old PDDB   ||   "+getFileName(oldPDDBPath)+"   ||   ").append(desc));
-    bottomLabel->setText(QString::fromStdString("New PDDB   ||   "+getFileName(newPDDBPath)+"   ||   ").append(desc));
-}
-
-void appGUI::showSelectedPDDBResult()
-{
-    statusBar()->showMessage(tr("Filling boxes"));
-    QModelIndex index = PDDBResultView->currentIndex();
-    int currIntexRow = index.row();
-    resultItem * currItem = PDDBResultModel->getItemFromRow(currIntexRow);
-    if (currItem != NULL)
+    if (r != NULL)
     {
-        auto origin = currItem->resultObj.getOrigin();
+        auto origin = r->resultObj.getOrigin();
+        auto scope = r->resultObj.getScope();
         clean();
-        setLabels(currItem->getLocation());
+        setLabels(r->getLocation(), false);
 
         if(origin == PDDBManagedObjectCompareResult::Added)
         {
-            std::string s_xml = XmlElementReader::getXML(currItem->resultObj.getSecondElement()->getElement());
-            bottomTextEdit->setPlainText(QString::fromStdString(s_xml));
+            if ( scope == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
+            {
+                std::string s_xml = XmlElementReader::getXML(r->resultObj.getSecondElementComplexTypeParameter()->getElement());
+                newPDDBTextEdit->setPlainText(QString::fromStdString(s_xml));
+            }
+            else
+            {
+                std::string s_xml = XmlElementReader::getXML(r->resultObj.getSecondElement()->getElement());
+                newPDDBTextEdit->setPlainText(QString::fromStdString(s_xml));
+            }
         }
         else if(origin == PDDBManagedObjectCompareResult::Removed)
         {
-            std::string f_xml = XmlElementReader::getXML(currItem->resultObj.getFirstElement()->getElement());
-            upperTextEdit->setPlainText(QString::fromStdString(f_xml));
+            if ( scope == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
+            {
+                std::string f_xml = XmlElementReader::getXML(r->resultObj.getFirstElementComplexTypeParameter()->getElement());
+                oldPDDBTextEdit->setPlainText(QString::fromStdString(f_xml));
+            }
+            else
+            {
+                std::string f_xml = XmlElementReader::getXML(r->resultObj.getFirstElement()->getElement());
+                oldPDDBTextEdit->setPlainText(QString::fromStdString(f_xml));
+            }
         }
         else if(origin == PDDBManagedObjectCompareResult::Modified)
         {
-            std::string f_xml = XmlElementReader::getXML(currItem->resultObj.getFirstElement()->getElement());
-            std::string s_xml = XmlElementReader::getXML(currItem->resultObj.getSecondElement()->getElement());
-            bottomTextEdit->setPlainText(QString::fromStdString(s_xml));
-            upperTextEdit->setPlainText(QString::fromStdString(f_xml));
+            if ( scope == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
+            {
+                std::string f_xml = XmlElementReader::getXML(r->resultObj.getFirstElementComplexTypeParameter()->getElement());
+                std::string s_xml = XmlElementReader::getXML(r->resultObj.getSecondElementComplexTypeParameter()->getElement());
+                newPDDBTextEdit->setPlainText(QString::fromStdString(s_xml));
+                oldPDDBTextEdit->setPlainText(QString::fromStdString(f_xml));
+            }
+            else
+            {
+                std::string f_xml = XmlElementReader::getXML(r->resultObj.getFirstElement()->getElement());
+                std::string s_xml = XmlElementReader::getXML(r->resultObj.getSecondElement()->getElement());
+                newPDDBTextEdit->setPlainText(QString::fromStdString(s_xml));
+                oldPDDBTextEdit->setPlainText(QString::fromStdString(f_xml));
+            }
         }
     }
     colorTextDifferences();
     statusBar()->showMessage(tr("Ready"));
 }
 
+
+
+void appGUI::setLabels(QString desc, bool PDDB)
+{
+    if ( PDDB )
+    {
+        oldPDDBLabel->setText(QString::fromStdString("Old PDDB   ||   "+getFileName(oldPDDBPath)+"   ||   ").append(desc));
+        newPDDBLabel->setText(QString::fromStdString("New PDDB   ||   "+getFileName(newPDDBPath)+"   ||   ").append(desc));
+    }
+    else
+    {
+        oldGMCLabel->setText(QString::fromStdString("Old GMC   ||   "+getFileName(oldGMCPath)+"   ||   ").append(desc));
+        newGMCLabel->setText(QString::fromStdString("New GMC   ||   "+getFileName(newGMCPath)+"   ||   ").append(desc));
+    }
+}
+
+void appGUI::setLabel(QLabel * label, std::string text)
+{
+    label->setText(QString::fromStdString(text));
+}
+
+void appGUI::showSelectedPDDBResult()
+{
+
+    statusBar()->showMessage(tr("Filling boxes"));
+    QModelIndex index = PDDBResultView->currentIndex();
+    int currIntexRow = index.row();
+    resultItem * r = PDDBResultModel->getItemFromRow(currIntexRow);
+    GMCResultView->clearSelection();
+    printDiff(r);
+}
+
+void appGUI::showSelectedGMCResult()
+{
+    statusBar()->showMessage(tr("Filling boxes"));
+    QModelIndex index = GMCResultView->currentIndex();
+
+    int currIntexRow = index.row();
+
+    QItemSelection selection = QItemSelection();
+    PDDBResultView->clearSelection();
+
+    if ( index.parent().row() >= 0 )
+    {
+        gmcResultItem * gmcParentItem = GMCResultModel->getItemFromRow(index.parent().row());
+        gmcResultItem * gmcChild = gmcParentItem->item(currIntexRow);
+        string text = XmlElementReader::getXML(gmcChild->resultObj.getItem()->getElement());
+        clean();
+        newPDDBTextEdit->setPlainText(QString::fromStdString(text));
+        setLabels(gmcChild->data(3).toString(), true);
+
+    }
+    else
+    {
+        gmcResultItem * gmcItem = GMCResultModel->getItemFromRow(currIntexRow);
+        int gmcID = gmcItem->resultObj.getPDDBCompareResultId();
+        resultItem * r = PDDBResultModel->getRoot()->findItemById(gmcID);
+        printDiff(r);
+
+    }
+}
+
 void appGUI::createPDDBResultView()
 {
+    PDDBResultView->setSelectionBehavior(QAbstractItemView::SelectRows);
     PDDBResultView->setSelectionMode(QAbstractItemView::SingleSelection);
+}
+
+void appGUI::createGMCResultView()
+{
+    GMCResultView->setSelectionMode(QAbstractItemView::SingleSelection);
+}
+
+void appGUI::createPDDBTextDock()
+{
+    QHBoxLayout * texts;
+    QHBoxLayout * labels;
+
+    centralWid = new QWidget;
+
+    verCentralLayout = new QVBoxLayout;
+
+    centralWid->setLayout(verCentralLayout);
+
+    setCentralWidget(centralWid);
+
+    oldPDDBTextEdit = new QTextEdit();
+    newPDDBTextEdit = new QTextEdit();
+    oldPDDBTextEdit->setReadOnly(true);
+    newPDDBTextEdit->setReadOnly(true);
+
+    xmlHighlighterOldPDDB = make_shared<XMLHighlighter>(oldPDDBTextEdit ->document());
+    xmlHighlighterNewPDDB = make_shared<XMLHighlighter>(newPDDBTextEdit->document());
+
+    connect(oldPDDBTextEdit->verticalScrollBar(),
+            SIGNAL(valueChanged(int)),
+            newPDDBTextEdit->verticalScrollBar(),
+            SLOT(setValue(int)));
+
+    connect(newPDDBTextEdit->verticalScrollBar(),
+            SIGNAL(valueChanged(int)),
+            oldPDDBTextEdit->verticalScrollBar(),
+            SLOT(setValue(int)));
+
+    texts = new QHBoxLayout();
+
+    texts->addWidget(oldPDDBTextEdit);
+    texts->addWidget(newPDDBTextEdit);
+
+    labels = new QHBoxLayout;
+
+    oldPDDBLabel = new QLabel(this);
+    oldPDDBLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    oldPDDBLabel->setText(tr("Old PDDB"));
+
+    labels->addWidget(oldPDDBLabel, Qt::AlignLeft);
+
+
+    newPDDBLabel = new QLabel(this);
+    newPDDBLabel->setAlignment(Qt::AlignTop | Qt::AlignRight);
+    newPDDBLabel->setText(tr("New PDDB"));
+    labels->addWidget(newPDDBLabel, Qt::AlignRight);
+
+    verCentralLayout->addLayout(labels);
+    verCentralLayout->addLayout(texts);
+
+}
+
+void appGUI::createGMCTextDock()
+{
+    QHBoxLayout * texts;
+    QHBoxLayout * labels;
+
+    oldGMCTextEdit = new QTextEdit();
+    newGMCTextEdit = new QTextEdit();
+    oldGMCTextEdit->setReadOnly(true);
+    newGMCTextEdit->setReadOnly(true);
+
+    xmlHighlighterOldGMC = make_shared<XMLHighlighter>(oldGMCTextEdit ->document());
+    xmlHighlighterNewGMC = make_shared<XMLHighlighter>(newGMCTextEdit->document());
+
+    oldGMCTextEdit->setMaximumHeight(this->height() * 0.2);
+    newGMCTextEdit->setMaximumHeight(this->height() * 0.2);
+
+    connect(oldGMCTextEdit->verticalScrollBar(),
+            SIGNAL(valueChanged(int)),
+            newGMCTextEdit->verticalScrollBar(),
+            SLOT(setValue(int)));
+
+    connect(newGMCTextEdit->verticalScrollBar(),
+            SIGNAL(valueChanged(int)),
+            oldGMCTextEdit->verticalScrollBar(),
+            SLOT(setValue(int)));
+
+    texts = new QHBoxLayout();
+
+    texts->addWidget(oldGMCTextEdit);
+    texts->addWidget(newGMCTextEdit);
+
+    labels = new QHBoxLayout;
+
+    oldGMCLabel = new QLabel(this);
+    oldGMCLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    oldGMCLabel->setText(tr("Old GMC"));
+    labels->addWidget(oldGMCLabel, Qt::AlignLeft);
+
+
+    newGMCLabel = new QLabel(this);
+    newGMCLabel->setAlignment(Qt::AlignTop | Qt::AlignRight);
+    labels->addWidget(newGMCLabel, Qt::AlignRight);
+    newGMCLabel->setText(tr("New GMC"));
+    verCentralLayout->addLayout(labels);
+    verCentralLayout->addLayout(texts);
+
 }
 
 std::string appGUI::getFileName(string path)
@@ -271,15 +460,30 @@ void appGUI::createStatusBar()
 void appGUI::createPDDBResultDock()
 {
     PDDBResultDock = new QDockWidget(tr("PDDB differences"), this);
-    PDDBResultDock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    PDDBResultDock->setAllowedAreas(Qt::RightDockWidgetArea);
     PDDBResultView = new QTreeView(PDDBResultDock);
 
+    PDDBResultView->setStyleSheet("QTreeView::item:selected{background-color: rgb(102,255,102);}");
     PDDBResultModel = new resultItemModel();
 
     PDDBResultDock->setWidget(PDDBResultView);
-
     addDockWidget(Qt::RightDockWidgetArea, PDDBResultDock);
     viewMenu->addAction(PDDBResultDock->toggleViewAction());
+
+}
+
+void appGUI::createGMCResultDock()
+{
+    GMCResultDock = new QDockWidget(tr("GMC Actions"), this);
+    GMCResultDock->setAllowedAreas(Qt::RightDockWidgetArea);
+    GMCResultView = new QTreeView(GMCResultDock);
+    GMCResultView->setStyleSheet("QTreeView::item:selected{background-color: rgb(102,255,102);}");
+    GMCResultModel = new gmcResultItemModel();
+
+    GMCResultDock->setWidget(GMCResultView);
+
+    addDockWidget(Qt::RightDockWidgetArea, GMCResultDock);
+    viewMenu->addAction(GMCResultDock->toggleViewAction());
 
 }
 
@@ -331,8 +535,8 @@ inline incrementVectorFromIntex(vector<pair<int, int> > &para, int index, bool f
 
 void appGUI::colorTextDifferences()
 {
-    QTextDocument * up_doc = upperTextEdit->document();
-    QTextDocument * bt_doc = bottomTextEdit->document();
+    QTextDocument * up_doc = oldPDDBTextEdit->document();
+    QTextDocument * bt_doc = newPDDBTextEdit->document();
 
     QTextCursor up_cur(up_doc);
     QTextCursor bt_cur(bt_doc);
@@ -344,7 +548,7 @@ void appGUI::colorTextDifferences()
     dark_pink.setBackground(QBrush(QColor(120, 0, 97, 60)));
     grey.setBackground(QBrush(QColor(60, 60, 60, 30)));
 
-    qDebug()<< "First doc lines: " << up_doc->lineCount() << "\n Second doc lines: " << bt_doc->lineCount();
+    //qDebug()<< "First doc lines: " << up_doc->lineCount() << "\n Second doc lines: " << bt_doc->lineCount();
 
     std::vector<pair<int, int>> repetedLines;
 

@@ -55,7 +55,9 @@ SOURCES += main.cpp \
     Sources/InternalTypes/GMCParameterSingleValue.cpp \
     Sources/InternalTypes/GMCParameterDefaultValue.cpp \
     Sources/InternalTypes/GMCParameterListValue.cpp \
-    Sources/InternalTypes/GMCAction.cpp
+    Sources/InternalTypes/GMCAction.cpp \
+    Sources/Gui/gmcresultitem.cpp \
+    Sources/Gui/gmcresultitemmodel.cpp
 
 
 HEADERS  += \
@@ -92,7 +94,9 @@ HEADERS  += \
     Includes/InternalTypes/GMCParameterDefaultValue.h \
     Includes/InternalTypes/GMCParameterSingleValue.h \
     Includes/InternalTypes/GMCParameterListValue.h \
-    Includes/InternalTypes/GMCAction.h
+    Includes/InternalTypes/GMCAction.h \
+    Includes/Gui/gmcresultitem.h \
+    Includes/Gui/gmcresultitemmodel.h
 
 FORMS    += mainwindow.ui
 

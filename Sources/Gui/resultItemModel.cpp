@@ -1,5 +1,4 @@
 #include "Includes/Gui/resultItemModel.h"
-#include "Utilities/UtilPDDBHelper.hpp"
 
 using namespace InternalTypes;
 
@@ -27,7 +26,6 @@ void resultItemModel::setResultVector(std::vector<PDDBManagedObjectCompareResult
         results.append(*it);
         ++i;
     }
-
     qDebug() << i << " PDDB results loaded";
 }
 
@@ -135,10 +133,10 @@ void resultItemModel::setupModelData()
 
     QList<QVariant> rootData;
     rootData << "Type" << "Origin" << "Location" << "Changes";
-//    if (rootItem != NULL)
-//    {
-//        delete rootItem;
-//    }
+    if (rootItem != NULL)
+    {
+        delete rootItem;
+    }
 
     rootItem = new resultItem(rootData);
     rootItem->setParetn(rootItem);
@@ -155,4 +153,9 @@ void resultItemModel::setupModelData()
 resultItem * resultItemModel::getItemFromRow(int row)
 {
     return rootItem->item(row);
+}
+
+resultItem * resultItemModel::getRoot()
+{
+    return rootItem;
 }
