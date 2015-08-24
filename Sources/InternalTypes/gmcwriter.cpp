@@ -381,6 +381,8 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
             }
         }
     }
+
+    gmc->reinitialize();
 }
 
 
