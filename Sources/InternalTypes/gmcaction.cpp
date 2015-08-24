@@ -31,6 +31,11 @@ GMCAction::~GMCAction()
 
 }
 
+std::vector<GMCManagedObject*> GMCAction::getGmcMocsInvolved()
+{
+    return this->gmcMocsInvolved;
+}
+
 int GMCAction::getPDDBCompareResultId()
 {
     return this->pddbCompareResultId;

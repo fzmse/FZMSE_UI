@@ -4,6 +4,8 @@
 
 #include "Xml/XmlWrapper.h"
 
+#include "Xml/XmlWriter.h"
+
 #include "InternalTypes/GMCDocument.h"
 #include "InternalTypes/GMCManagedObject.h"
 
@@ -17,6 +19,18 @@ GMCDocument::GMCDocument(std::string fileName)
 {
     this->doc = XmlWrapper::loadDocument(fileName);
 
+    this->managedObjects = retrieveManagedObjects();
+}
+
+GMCDocument::GMCDocument(GMCDocument * from)
+{
+    this->doc = XmlWriter::createDocumentFrom(from->getXMLDocument());
+
+    this->managedObjects = retrieveManagedObjects();
+}
+
+void GMCDocument::reinitialize()
+{
     this->managedObjects = retrieveManagedObjects();
 }
 

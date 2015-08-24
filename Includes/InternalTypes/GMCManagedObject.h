@@ -22,6 +22,8 @@ namespace InternalTypes
         GMCManagedObject(tinyxml2::XMLElement * e);
         ~GMCManagedObject();
 
+        void reinitialize();
+
         std::vector<GMCManagedObjectParameter * > getParameters();
         GMCManagedObjectParameter * getParameterByName(std::string name);
 

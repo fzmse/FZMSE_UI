@@ -39,7 +39,7 @@ namespace InternalTypes
         ChangeScope getChangeScope();
         std::vector<GMCAction> getChildActions();
         ManagedObjectRelativeElement * getItem();
-
+        std::vector<GMCManagedObject*> getGmcMocsInvolved();
         std::string getHelpNote();
         bool isReaderInteractionRequired();
 

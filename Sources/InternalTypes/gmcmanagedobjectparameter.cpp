@@ -63,3 +63,8 @@ GMCParameterDefaultValue * GMCManagedObjectParameter::retrieveValue()
 
     return resultValue;
 }
+
+ManagedObjectRelativeElement * GMCManagedObjectParameter::getParentMoc()
+{
+    return this->parentMoc;
+}

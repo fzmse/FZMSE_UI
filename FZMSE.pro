@@ -55,7 +55,11 @@ SOURCES += main.cpp \
     Sources/InternalTypes/GMCParameterSingleValue.cpp \
     Sources/InternalTypes/GMCParameterDefaultValue.cpp \
     Sources/InternalTypes/GMCParameterListValue.cpp \
-    Sources/InternalTypes/GMCAction.cpp
+    Sources/InternalTypes/GMCAction.cpp \
+    Sources/Xml/XmlWriter.cpp \
+    UT/Doubles/Sources/Xml/XmlWriterTest.cpp \
+    UT/Doubles/Sources/InternalTypes/GMCWriterTest.cpp \
+    Sources/InternalTypes/GMCWriter.cpp
 
 
 HEADERS  += \
@@ -92,7 +96,9 @@ HEADERS  += \
     Includes/InternalTypes/GMCParameterDefaultValue.h \
     Includes/InternalTypes/GMCParameterSingleValue.h \
     Includes/InternalTypes/GMCParameterListValue.h \
-    Includes/InternalTypes/GMCAction.h
+    Includes/InternalTypes/GMCAction.h \
+    Includes/Xml/XmlWriter.h \
+    Includes/InternalTypes/GMCWriter.h
 
 FORMS    += mainwindow.ui
 
