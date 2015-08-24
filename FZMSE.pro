@@ -56,8 +56,15 @@ SOURCES += main.cpp \
     Sources/InternalTypes/GMCParameterDefaultValue.cpp \
     Sources/InternalTypes/GMCParameterListValue.cpp \
     Sources/InternalTypes/GMCAction.cpp \
+<<<<<<< HEAD
     Sources/Gui/gmcresultitem.cpp \
     Sources/Gui/gmcresultitemmodel.cpp
+=======
+    Sources/Xml/XmlWriter.cpp \
+    UT/Doubles/Sources/Xml/XmlWriterTest.cpp \
+    UT/Doubles/Sources/InternalTypes/GMCWriterTest.cpp \
+    Sources/InternalTypes/GMCWriter.cpp
+>>>>>>> a369d608e6e06db922b7244c7a69102cb6f8bacc
 
 
 HEADERS  += \
@@ -95,8 +102,13 @@ HEADERS  += \
     Includes/InternalTypes/GMCParameterSingleValue.h \
     Includes/InternalTypes/GMCParameterListValue.h \
     Includes/InternalTypes/GMCAction.h \
+<<<<<<< HEAD
     Includes/Gui/gmcresultitem.h \
     Includes/Gui/gmcresultitemmodel.h
+=======
+    Includes/Xml/XmlWriter.h \
+    Includes/InternalTypes/GMCWriter.h
+>>>>>>> a369d608e6e06db922b7244c7a69102cb6f8bacc
 
 FORMS    += mainwindow.ui
 
@@ -135,6 +147,8 @@ DISTFILES += \
     UT/TestFiles/PDDB/pddb1506.xml \
     UT/TestFiles/PDDB/pddb1507.xml \
     UT/TestFiles/PDDB/pddb150702.xml \
+    UT/TestFiles/PDDB/pddb1507_mychanges.xml \
+    UT/TestFiles/PDDB/FL161506.xml \
+    UT/TestFiles/PDDB/FL161507.xml \
     Includes/Gui/lineTextEdit \
     UT/TestFiles/PDDB/pddb1507_mychanges.xml
-

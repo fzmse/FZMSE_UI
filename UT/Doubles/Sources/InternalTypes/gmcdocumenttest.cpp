@@ -12,6 +12,8 @@ static std::string dir = "D:/Projects/FZMSE/FZMSE/";
 
 std::shared_ptr<InternalTypes::GMCDocument> gmc_1506_02 = std::make_shared<InternalTypes::GMCDocument>(dir + "UT/TestFiles/GMC/gmc150602.xml");
 std::shared_ptr<InternalTypes::PDDBDocument> pddb_1506 = std::make_shared<InternalTypes::PDDBDocument>(dir + "UT/TestFiles/PDDB/pddb1506.xml");
+std::shared_ptr<InternalTypes::PDDBDocument> pddbfl16_1506 = std::make_shared<InternalTypes::PDDBDocument>(dir + "UT/TestFiles/PDDB/FL161506.xml");
+std::shared_ptr<InternalTypes::PDDBDocument> pddbfl16_1507 = std::make_shared<InternalTypes::PDDBDocument>(dir + "UT/TestFiles/PDDB/FL161507.xml");
 std::shared_ptr<InternalTypes::PDDBDocument> pddb_1507 = std::make_shared<InternalTypes::PDDBDocument>(dir + "UT/TestFiles/PDDB/pddb1507.xml");
 std::shared_ptr<InternalTypes::PDDBDocument> pddb_1507_mychanges = std::make_shared<InternalTypes::PDDBDocument>(dir + "UT/TestFiles/PDDB/pddb1507_mychanges.xml");
 using namespace tinyxml2;
@@ -63,6 +65,18 @@ TEST(GMCResolveActions, Moc_Add_02)
 
 
 }
+
+//TEST(GMCResolveActions, PDDBCompare_03)
+//{
+//    auto compareResults = PDDBDocument::compareDocuments(pddbfl16_1506.get(), pddbfl16_1507.get());
+//    auto actions = GMCDocument::resolveGMCActions(pddbfl16_1506.get(), pddbfl16_1507.get(), gmc_1506_02.get(), &compareResults);
+
+//    cout << getDifferencesText(actions, compareResults);
+
+//    ASSERT_EQ(14, actions.size() );
+
+
+//}
 
 
 TEST(GMCResolveActions, MocPar_Add_01)

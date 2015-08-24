@@ -32,6 +32,16 @@ GMCManagedObject::~GMCManagedObject()
 
 }
 
+void GMCManagedObject::reinitialize()
+{
+    vector<XMLElement * > pElements = XmlReader::getChildren(this->element, "");
+    for ( vector<XMLElement * >::iterator it = pElements.begin(); it != pElements.end(); ++ it )
+    {
+        this->parameters.push_back( new GMCManagedObjectParameter(*it, this) );
+    }
+
+}
+
 GMCManagedObjectParameter * GMCManagedObject::getParameterByName(std::string name)
 {
     for ( std::vector<GMCManagedObjectParameter*>::iterator it = this->parameters.begin(); it != this->parameters.end(); it ++)

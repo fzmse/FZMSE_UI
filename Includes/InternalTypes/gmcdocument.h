@@ -16,7 +16,11 @@ namespace InternalTypes
     {
     public:
         GMCDocument(std::string fileName);
+        GMCDocument(GMCDocument * from);
         ~GMCDocument();
+
+        void reinitialize();
+
 
         std::vector<GMCManagedObject*> getManagedObjects();
         GMCManagedObject * getManagedObjectByClassName(std::string name);

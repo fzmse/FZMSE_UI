@@ -161,6 +161,13 @@ std::string PDDBSimpleTypeValue::resolveEvaluatedValue()
     }
 
     // Return raw value if no modifiers are present
+
+    if ( this->value == "" )
+    {
+        if ( range.size() > 0 )
+            return range[0].first;
+    }
+
     return this->value;
 }
 
