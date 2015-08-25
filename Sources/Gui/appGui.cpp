@@ -36,19 +36,21 @@ void appGUI::loadPathToDoc(const QString &type)
     std::string stdFilePath = filePath.toStdString();
     if (type == "oldPDDB")
     {
+        clean();
         oldPDDBPath = stdFilePath;
         oldPDDBdoc = make_shared<PDDBDocument>(oldPDDBPath);
         setLabel(oldPDDBLabel, "Old PDDB   ||   "+getFileName(oldPDDBPath));
         comparePDDB();
-
+        compare();
     }
     else if (type == "newPDDB")
     {
+        clean();
         newPDDBPath = stdFilePath;
         newPDDBdoc = make_shared<PDDBDocument>(newPDDBPath);
         setLabel(newPDDBLabel, "New PDDB   ||   "+getFileName(newPDDBPath));
         comparePDDB();
-
+        compare();
     }
     else if (type == "oldGMC")
     {
@@ -56,7 +58,6 @@ void appGUI::loadPathToDoc(const QString &type)
         oldGMCdoc = make_shared<GMCDocument>(oldGMCPath);
         setLabel(oldGMCLabel, "Old GMC   ||   "+getFileName(oldGMCPath));
         compare();
-
     }
 }
 
@@ -69,20 +70,20 @@ void appGUI::save()
                     tr("Save file"),
                     "",
                     tr("XML (*.xml)"));
-
-        GMCDocument * gmcCopy = new GMCDocument(oldGMCdoc.get());
-        GMCWriter::reactToAllWithoutReaderInteraction(gmcCopy, actions);
-        if (XmlWriter::save(gmcCopy->getXMLDocument(), savePath.toStdString()))
+        if (savePath.length() > 0)
         {
-            QMessageBox::information(this, tr("Saving file"),
-                                           tr("Success !         "),
-                                           QMessageBox::Ok);
-        }
-        else
-        {
-            QMessageBox::warning(this, tr("Saving file"),
-                                           tr("Failed!          "),
-                                           QMessageBox::Ok);
+            if (XmlWriter::save(newGMCdoc.get()->getXMLDocument(), savePath.toStdString()))
+            {
+                QMessageBox::information(this, tr("Saving file"),
+                                               tr("Success !         "),
+                                               QMessageBox::Ok);
+            }
+            else
+            {
+                QMessageBox::warning(this, tr("Saving file"),
+                                               tr("Failed!          "),
+                                               QMessageBox::Ok);
+            }
         }
     }
     else
@@ -95,12 +96,18 @@ void appGUI::save()
 
 void appGUI::generateRaport()
 {
-
+    if ( differences.size() == 0 )
+        QMessageBox::information(this, tr("Raport"),
+                                       tr("Not implemented yet !     "),
+                                       QMessageBox::Ok);
 }
 
 void appGUI::help()
 {
-
+    if ( differences.size() == 0 )
+        QMessageBox::information(this, tr("Help"),
+                                       tr("Not implemented yet !     "),
+                                       QMessageBox::Ok);
 }
 
 
@@ -108,14 +115,28 @@ void appGUI::clean()
 {
     oldPDDBTextEdit->clear();
     newPDDBTextEdit->clear();
+    oldGMCTextEdit->clear();
+    newGMCTextEdit->clear();
+
+
+    setLabels("", true);
+    if ( !oldGMCPath.empty() )
+        setLabels("", false);
 }
 
 void appGUI::compare()
 {
     if (!(oldPDDBPath.empty() || newPDDBPath.empty() || oldGMCPath.empty()))
     {
+
         statusBar()->showMessage(tr("Loading GMC actions"));
         actions = GMCDocument::resolveGMCActions(oldPDDBdoc.get(), newPDDBdoc.get(), oldGMCdoc.get(), &differences);
+
+        if ( actions.size() == 0 )
+            QMessageBox::information(this, tr("GMC"),
+                                           tr("No actions available !     "),
+                                           QMessageBox::Ok);
+
         GMCResultModel->setResultVector(actions);
         GMCResultModel->setRoot();
 
@@ -127,6 +148,9 @@ void appGUI::compare()
                 SLOT(showSelectedGMCResult()));
         GMCResultView->show();
         statusBar()->showMessage(tr("Ready"));
+
+        newGMCdoc = make_shared<GMCDocument>(oldGMCdoc.get());
+        GMCWriter::reactToAllWithoutReaderInteraction(newGMCdoc.get(), actions);
     }
 }
 
@@ -137,6 +161,11 @@ void appGUI::comparePDDB()
         statusBar()->showMessage(tr("Loading PDDB's differences"));
 
         differences = PDDBDocument::compareDocuments(oldPDDBdoc.get(), newPDDBdoc.get());
+
+        if ( differences.size() == 0 )
+            QMessageBox::information(this, tr("PDDB"),
+                                           tr("No differences found !     "),
+                                           QMessageBox::Ok);
 
         PDDBResultModel->setResultVector(differences);
         PDDBResultModel->setRoot();
@@ -208,7 +237,6 @@ void appGUI::printDiff(resultItem *r)
         }
     }
     colorTextDifferences();
-    statusBar()->showMessage(tr("Ready"));
 }
 
 
@@ -241,6 +269,7 @@ void appGUI::showSelectedPDDBResult()
     resultItem * r = PDDBResultModel->getItemFromRow(currIntexRow);
     GMCResultView->clearSelection();
     printDiff(r);
+    statusBar()->showMessage(tr("Ready"));
 }
 
 void appGUI::showSelectedGMCResult()
@@ -261,6 +290,10 @@ void appGUI::showSelectedGMCResult()
         clean();
         newPDDBTextEdit->setPlainText(QString::fromStdString(text));
         setLabels(gmcChild->data(3).toString(), true);
+        setLabels(gmcChild->data(3).toString(), false);
+        pair<string, string> gmcPair = GMCDocument::resolveGMCCompareText(oldGMCdoc.get(), newGMCdoc.get(), gmcChild->resultObj);
+        oldGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.first));
+        newGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.second));
 
     }
     else
@@ -268,9 +301,15 @@ void appGUI::showSelectedGMCResult()
         gmcResultItem * gmcItem = GMCResultModel->getItemFromRow(currIntexRow);
         int gmcID = gmcItem->resultObj.getPDDBCompareResultId();
         resultItem * r = PDDBResultModel->getRoot()->findItemById(gmcID);
+
         printDiff(r);
 
+        pair<string, string> gmcPair = GMCDocument::resolveGMCCompareText(oldGMCdoc.get(), newGMCdoc.get(), gmcItem->resultObj);
+        oldGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.first));
+        newGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.second));
+
     }
+    statusBar()->showMessage(tr("Ready"));
 }
 
 void appGUI::createPDDBResultView()
@@ -301,6 +340,9 @@ void appGUI::createPDDBTextDock()
     newPDDBTextEdit = new QTextEdit();
     oldPDDBTextEdit->setReadOnly(true);
     newPDDBTextEdit->setReadOnly(true);
+    oldPDDBTextEdit->setLineWrapMode(QTextEdit::NoWrap);
+    newPDDBTextEdit->setLineWrapMode(QTextEdit::NoWrap);
+
 
     xmlHighlighterOldPDDB = make_shared<XMLHighlighter>(oldPDDBTextEdit ->document());
     xmlHighlighterNewPDDB = make_shared<XMLHighlighter>(newPDDBTextEdit->document());
@@ -313,6 +355,16 @@ void appGUI::createPDDBTextDock()
     connect(newPDDBTextEdit->verticalScrollBar(),
             SIGNAL(valueChanged(int)),
             oldPDDBTextEdit->verticalScrollBar(),
+            SLOT(setValue(int)));
+
+    connect(oldPDDBTextEdit->horizontalScrollBar(),
+            SIGNAL(valueChanged(int)),
+            newPDDBTextEdit->horizontalScrollBar(),
+            SLOT(setValue(int)));
+
+    connect(newPDDBTextEdit->horizontalScrollBar(),
+            SIGNAL(valueChanged(int)),
+            oldPDDBTextEdit->horizontalScrollBar(),
             SLOT(setValue(int)));
 
     texts = new QHBoxLayout();
@@ -348,12 +400,15 @@ void appGUI::createGMCTextDock()
     newGMCTextEdit = new QTextEdit();
     oldGMCTextEdit->setReadOnly(true);
     newGMCTextEdit->setReadOnly(true);
+    oldGMCTextEdit->setLineWrapMode(QTextEdit::NoWrap);
+    newGMCTextEdit->setLineWrapMode(QTextEdit::NoWrap);
+
 
     xmlHighlighterOldGMC = make_shared<XMLHighlighter>(oldGMCTextEdit ->document());
     xmlHighlighterNewGMC = make_shared<XMLHighlighter>(newGMCTextEdit->document());
 
-    oldGMCTextEdit->setMaximumHeight(this->height() * 0.4);
-    newGMCTextEdit->setMaximumHeight(this->height() * 0.4);
+    oldGMCTextEdit->setMaximumHeight(this->height() * 0.2);
+    newGMCTextEdit->setMaximumHeight(this->height() * 0.2);
 
     connect(oldGMCTextEdit->verticalScrollBar(),
             SIGNAL(valueChanged(int)),
@@ -364,6 +419,17 @@ void appGUI::createGMCTextDock()
             SIGNAL(valueChanged(int)),
             oldGMCTextEdit->verticalScrollBar(),
             SLOT(setValue(int)));
+
+    connect(oldGMCTextEdit->horizontalScrollBar(),
+            SIGNAL(valueChanged(int)),
+            newGMCTextEdit->horizontalScrollBar(),
+            SLOT(setValue(int)));
+
+    connect(newGMCTextEdit->horizontalScrollBar(),
+            SIGNAL(valueChanged(int)),
+            oldGMCTextEdit->horizontalScrollBar(),
+            SLOT(setValue(int)));
+
 
     texts = new QHBoxLayout();
 
