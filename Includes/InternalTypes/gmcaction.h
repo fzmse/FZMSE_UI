@@ -33,6 +33,8 @@ namespace InternalTypes
         ~GMCAction();
 
 
+
+
         int getPDDBCompareResultId();
 
         ActionType getActionType();

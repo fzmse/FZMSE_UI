@@ -71,3 +71,5 @@ bool GMCAction::isReaderInteractionRequired()
 {
     return this->requiresReaderInteraction;
 }
+
+
