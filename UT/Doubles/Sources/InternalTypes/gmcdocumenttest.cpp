@@ -1,12 +1,16 @@
 #include <gtest/gtest.h>
 #include "TinyXML/tinyxml2.h"
 
+#include "Xml/XmlWriter.h"
+
 #include "Xml/XmlWrapper.h"
 #include "Xml/XmlElementReader.h"
 
 #include "InternalTypes/GMCDocument.h"
 
 #include "Utilities/UtilPDDBHelper.hpp"
+
+#include "InternalTypes/GMCWriter.h"
 
 static std::string dir = "D:/Projects/FZMSE/FZMSE/";
 
@@ -16,6 +20,7 @@ std::shared_ptr<InternalTypes::PDDBDocument> pddbfl16_1506 = std::make_shared<In
 std::shared_ptr<InternalTypes::PDDBDocument> pddbfl16_1507 = std::make_shared<InternalTypes::PDDBDocument>(dir + "UT/TestFiles/PDDB/FL161507.xml");
 std::shared_ptr<InternalTypes::PDDBDocument> pddb_1507 = std::make_shared<InternalTypes::PDDBDocument>(dir + "UT/TestFiles/PDDB/pddb1507.xml");
 std::shared_ptr<InternalTypes::PDDBDocument> pddb_1507_mychanges = std::make_shared<InternalTypes::PDDBDocument>(dir + "UT/TestFiles/PDDB/pddb1507_mychanges.xml");
+std::shared_ptr<InternalTypes::PDDBDocument> pddb_1503 = std::make_shared<InternalTypes::PDDBDocument>(dir + "UT/TestFiles/PDDB/f13.xml");
 using namespace tinyxml2;
 using namespace std;
 
@@ -56,12 +61,12 @@ TEST(GMCResolveActions, Moc_Add_01)
 
 TEST(GMCResolveActions, Moc_Add_02)
 {
-    auto compareResults = PDDBDocument::compareDocuments(pddb_1506.get(), pddb_1507.get());
-    auto actions = GMCDocument::resolveGMCActions(pddb_1506.get(), pddb_1507.get(), gmc_1506_02.get(), &compareResults);
+    auto compareResults = PDDBDocument::compareDocuments(pddb_1506.get(), pddb_1507_mychanges.get());
+    auto actions = GMCDocument::resolveGMCActions(pddb_1506.get(), pddb_1507_mychanges.get(), gmc_1506_02.get(), &compareResults);
 
     cout << getDifferencesText(actions, compareResults);
 
-    ASSERT_EQ(14, actions.size() );
+    ASSERT_EQ(15, actions.size() );
 
 
 }
@@ -83,6 +88,35 @@ TEST(GMCResolveActions, MocPar_Add_01)
 {
     auto compareResults = PDDBDocument::compareDocuments(pddb_1506.get(), pddb_1507_mychanges.get());
     auto actions = GMCDocument::resolveGMCActions(pddb_1506.get(), pddb_1507_mychanges.get(), gmc_1506_02.get(), &compareResults);
+
+    ASSERT_EQ(true, actions.size() > 0);
+}
+
+TEST(GMCResolveActions, MocPar_Add_02)
+{
+    auto compareResults = PDDBDocument::compareDocuments(pddb_1506.get(), pddb_1503.get());
+    auto actions = GMCDocument::resolveGMCActions(pddb_1506.get(), pddb_1503.get(), gmc_1506_02.get(), &compareResults);
+
+
+    GMCDocument * gmcCopy = new GMCDocument(gmc_1506_02.get());
+    GMCWriter::reactToAllWithoutReaderInteraction(gmcCopy, actions);
+
+    for ( vector<GMCAction>::iterator it = actions.begin(); it != actions.end(); it ++ )
+    {
+        pair<string, string> text = GMCDocument::resolveGMCCompareText(gmc_1506_02.get(), gmcCopy, *it);
+
+        cout << "FIRST ---------------------------------" << endl;
+        cout << text.first << endl;
+
+        cout << "SECOND ---------------------------------" << endl;
+        cout << text.second << endl;
+
+        cout << endl;
+        cout << endl;
+    }
+
+
+    XmlWriter::save(gmcCopy->getXMLDocument(), dir + "UT/TestFiles/GMC/gmc150602_saved11.xml");
 
     ASSERT_EQ(true, actions.size() > 0);
 }

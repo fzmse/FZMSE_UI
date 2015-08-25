@@ -258,6 +258,7 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                     if ( val->isComplexType() == false )
                     {
                         insertParameterSimpleType(gmc, gmcNewMoc, p->getName(), ((PDDBSimpleTypeValue*)val)->getEvaluatedValue() );
+                        gmc->reinitialize();
                     }
                     else
                     {
@@ -274,6 +275,7 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                         }
 
                         insertParameterComplexType(gmc, gmcNewMoc, p->getName(), nameVal);
+                        gmc->reinitialize();
 
                     }
                 }
@@ -293,6 +295,7 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                     if ( val->isComplexType() == false )
                     {
                         insertParameterSimpleType(gmc, (*it), p->getName(), ((PDDBSimpleTypeValue*)val)->getEvaluatedValue() );
+                        gmc->reinitialize();
                     }
                     else
                     {
@@ -309,6 +312,7 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                         }
 
                         insertParameterComplexType(gmc, (*it), p->getName(), nameVal);
+                        gmc->reinitialize();
 
                     }
                 }
@@ -327,6 +331,7 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                   it != els.end(); it ++ )
             {
                 removeMoc(gmc, *it );
+                gmc->reinitialize();
             }
         }
 
@@ -343,11 +348,13 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                 if ( val->isComplexType() == false )
                 {
                     removeParameterSimpleType(gmc, (*it), p->getName());
+                    gmc->reinitialize();
                 }
                 else
                 {
                     GMCManagedObjectParameter * currPar = (*it)->getParameterByName(p->getName());
                     removeParameterComplexType(gmc, currPar, p->getName() );
+                    gmc->reinitialize();
                 }
 
             }
