@@ -58,17 +58,39 @@ void appGUI::loadPathToDoc(const QString &type)
         compare();
 
     }
-    else if (type == "newGMC")
-    {
-        newGMCPath = stdFilePath;
-        newGMCdoc = make_shared<GMCDocument>(oldGMCPath);
-        setLabel(newGMCLabel, "New GMC   ||   "+getFileName(newGMCPath));
-    }
 }
 
 void appGUI::save()
 {
+    if (!(oldPDDBPath.empty() || newPDDBPath.empty() || oldGMCPath.empty()))
+    {
+        QString savePath = QFileDialog::getSaveFileName(
+                    this,
+                    tr("Save file"),
+                    "",
+                    tr("XML (*.xml)"));
 
+        GMCDocument * gmcCopy = new GMCDocument(oldGMCdoc.get());
+        GMCWriter::reactToAllWithoutReaderInteraction(gmcCopy, actions);
+        if (XmlWriter::save(gmcCopy->getXMLDocument(), savePath.toStdString()))
+        {
+            QMessageBox::information(this, tr("Saving file"),
+                                           tr("Success !         "),
+                                           QMessageBox::Ok);
+        }
+        else
+        {
+            QMessageBox::warning(this, tr("Saving file"),
+                                           tr("Failed!          "),
+                                           QMessageBox::Ok);
+        }
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Saving file"),
+                                       tr("PDDB or GMC files not loaded"),
+                                       QMessageBox::Ok);
+    }
 }
 
 void appGUI::generateRaport()
@@ -93,7 +115,7 @@ void appGUI::compare()
     if (!(oldPDDBPath.empty() || newPDDBPath.empty() || oldGMCPath.empty()))
     {
         statusBar()->showMessage(tr("Loading GMC actions"));
-        vector<GMCAction> actions = GMCDocument::resolveGMCActions(oldPDDBdoc.get(), newPDDBdoc.get(), oldGMCdoc.get(), &differences);
+        actions = GMCDocument::resolveGMCActions(oldPDDBdoc.get(), newPDDBdoc.get(), oldGMCdoc.get(), &differences);
         GMCResultModel->setResultVector(actions);
         GMCResultModel->setRoot();
 
@@ -201,7 +223,7 @@ void appGUI::setLabels(QString desc, bool PDDB)
     else
     {
         oldGMCLabel->setText(QString::fromStdString("Old GMC   ||   "+getFileName(oldGMCPath)+"   ||   ").append(desc));
-        newGMCLabel->setText(QString::fromStdString("New GMC   ||   "+getFileName(newGMCPath)+"   ||   ").append(desc));
+        newGMCLabel->setText(QString::fromStdString("New GMC   ||   ").append(desc));
     }
 }
 
@@ -330,8 +352,8 @@ void appGUI::createGMCTextDock()
     xmlHighlighterOldGMC = make_shared<XMLHighlighter>(oldGMCTextEdit ->document());
     xmlHighlighterNewGMC = make_shared<XMLHighlighter>(newGMCTextEdit->document());
 
-    oldGMCTextEdit->setMaximumHeight(this->height() * 0.2);
-    newGMCTextEdit->setMaximumHeight(this->height() * 0.2);
+    oldGMCTextEdit->setMaximumHeight(this->height() * 0.4);
+    newGMCTextEdit->setMaximumHeight(this->height() * 0.4);
 
     connect(oldGMCTextEdit->verticalScrollBar(),
             SIGNAL(valueChanged(int)),
@@ -387,14 +409,9 @@ void appGUI::createLoadPathActions()
     openOldGMCAct->setStatusTip(tr("Open old GMC file "));
     connect(openOldGMCAct, SIGNAL(triggered(bool)), mapper, SLOT(map()));
 
-    openNewGMCAct = new QAction(tr("Open new GMC"), this);
-    openNewGMCAct->setStatusTip(tr("Open new GMC file "));
-    connect(openNewGMCAct, SIGNAL(triggered(bool)), mapper, SLOT(map()));
-
     mapper->setMapping(openOldPDDBAct, "oldPDDB");
     mapper->setMapping(openNewPDDBAct, "newPDDB");
     mapper->setMapping(openOldGMCAct,  "oldGMC");
-    mapper->setMapping(openNewGMCAct,  "newGMC");
 
     connect (mapper, SIGNAL(mapped(QString)), this, SLOT(loadPathToDoc(QString)));
 }
@@ -423,7 +440,6 @@ void appGUI::createMenus()
     fileMenu->addAction(openOldPDDBAct);
     fileMenu->addAction(openNewPDDBAct);
     fileMenu->addAction(openOldGMCAct);
-    fileMenu->addAction(openNewGMCAct);
     fileMenu->addAction(saveFileAct);
     fileMenu->addSeparator();
 
@@ -444,7 +460,6 @@ void appGUI::createToolBar()
     fileToolBar->addAction(openOldPDDBAct);
     fileToolBar->addAction(openNewPDDBAct);
     fileToolBar->addAction(openOldGMCAct);
-    fileToolBar->addAction(openNewGMCAct);
     fileToolBar->addAction(saveFileAct);
 
     raportToolBar = addToolBar(tr("&Raport"));

@@ -9,6 +9,7 @@
 #include "Includes/InternalTypes/GMCManagedObject.h"
 #include "InternalTypes/pddbdocument.h"
 #include "InternalTypes/gmcdocument.h"
+#include "InternalTypes/gmcwriter.h"
 #include "Includes/Gui/xmlhighlighter.h"
 #include "Includes/InternalTypes/PDDBManagedObjectCompareResult.h"
 
@@ -94,7 +95,6 @@ private:
     QAction * openOldPDDBAct;
     QAction * openNewPDDBAct;
     QAction * openOldGMCAct;
-    QAction * openNewGMCAct;
     QAction * saveFileAct;
     QAction * generateRaportAct;
     QAction * displayHelpAct;
@@ -132,7 +132,6 @@ private:
     std::string oldPDDBPath;
     std::string newPDDBPath;
     std::string oldGMCPath;
-    std::string newGMCPath;
 
     shared_ptr<InternalTypes::PDDBDocument> oldPDDBdoc;
     shared_ptr<InternalTypes::PDDBDocument> newPDDBdoc;
@@ -141,5 +140,6 @@ private:
 
     std::string getFileName(std::string path);
     std::vector<InternalTypes::PDDBManagedObjectCompareResult> differences;
+    vector<InternalTypes::GMCAction> actions;
 };
 
