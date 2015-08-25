@@ -32,32 +32,38 @@ void appGUI::loadPathToDoc(const QString &type)
                 tr("Open file"),
                 "",
                 tr("XML (*.xml)"));
+    if (filePath.length() > 0)
+    {
+        std::string stdFilePath = filePath.toStdString();
+        if (type == "oldPDDB")
+        {
+            clean();
+            oldPDDBPath = stdFilePath;
+            oldPDDBdoc = make_shared<PDDBDocument>(oldPDDBPath);
+            setLabel(oldPDDBLabel, "Old PDDB   ||   "+getFileName(oldPDDBPath));
+            comparePDDB();
+            compare();
+        }
+        else if (type == "newPDDB")
+        {
+            clean();
+            newPDDBPath = stdFilePath;
+            newPDDBdoc = make_shared<PDDBDocument>(newPDDBPath);
+            setLabel(newPDDBLabel, "New PDDB   ||   "+getFileName(newPDDBPath));
+            comparePDDB();
+            compare();
+        }
+        else if (type == "oldGMC")
+        {
+            oldGMCPath = stdFilePath;
+            oldGMCdoc = make_shared<GMCDocument>(oldGMCPath);
+            setLabel(oldGMCLabel, "Old GMC   ||   "+getFileName(oldGMCPath));
+            compare();
+        }
+    }
+    else
+    {
 
-    std::string stdFilePath = filePath.toStdString();
-    if (type == "oldPDDB")
-    {
-        clean();
-        oldPDDBPath = stdFilePath;
-        oldPDDBdoc = make_shared<PDDBDocument>(oldPDDBPath);
-        setLabel(oldPDDBLabel, "Old PDDB   ||   "+getFileName(oldPDDBPath));
-        comparePDDB();
-        compare();
-    }
-    else if (type == "newPDDB")
-    {
-        clean();
-        newPDDBPath = stdFilePath;
-        newPDDBdoc = make_shared<PDDBDocument>(newPDDBPath);
-        setLabel(newPDDBLabel, "New PDDB   ||   "+getFileName(newPDDBPath));
-        comparePDDB();
-        compare();
-    }
-    else if (type == "oldGMC")
-    {
-        oldGMCPath = stdFilePath;
-        oldGMCdoc = make_shared<GMCDocument>(oldGMCPath);
-        setLabel(oldGMCLabel, "Old GMC   ||   "+getFileName(oldGMCPath));
-        compare();
     }
 }
 
@@ -139,9 +145,8 @@ void appGUI::compare()
 
         GMCResultModel->setResultVector(actions);
         GMCResultModel->setRoot();
-
+        GMCResultView->reset();
         GMCResultView->setModel(GMCResultModel);
-
         connect(GMCResultView->selectionModel(),
                 SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
                 this,
@@ -166,12 +171,10 @@ void appGUI::comparePDDB()
             QMessageBox::information(this, tr("PDDB"),
                                            tr("No differences found !     "),
                                            QMessageBox::Ok);
-
         PDDBResultModel->setResultVector(differences);
         PDDBResultModel->setRoot();
-
+        PDDBResultView->reset();
         PDDBResultView->setModel(PDDBResultModel);
-
         connect(PDDBResultView->selectionModel(),
                 SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
                 this,
@@ -269,6 +272,8 @@ void appGUI::showSelectedPDDBResult()
     resultItem * r = PDDBResultModel->getItemFromRow(currIntexRow);
     GMCResultView->clearSelection();
     printDiff(r);
+    setLabels(r->data(2).toString(), true);
+    setLabels("", false);
     statusBar()->showMessage(tr("Ready"));
 }
 
@@ -289,8 +294,8 @@ void appGUI::showSelectedGMCResult()
         string text = XmlElementReader::getXML(gmcChild->resultObj.getItem()->getElement());
         clean();
         newPDDBTextEdit->setPlainText(QString::fromStdString(text));
-        setLabels(gmcChild->data(3).toString(), true);
-        setLabels(gmcChild->data(3).toString(), false);
+        setLabels(gmcChild->data(2).toString(), true);
+        setLabels(gmcChild->data(2).toString(), false);
         pair<string, string> gmcPair = GMCDocument::resolveGMCCompareText(oldGMCdoc.get(), newGMCdoc.get(), gmcChild->resultObj);
         oldGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.first));
         newGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.second));
@@ -301,9 +306,12 @@ void appGUI::showSelectedGMCResult()
         gmcResultItem * gmcItem = GMCResultModel->getItemFromRow(currIntexRow);
         int gmcID = gmcItem->resultObj.getPDDBCompareResultId();
         resultItem * r = PDDBResultModel->getRoot()->findItemById(gmcID);
+//        for (  )
+//        PDDBResultView->selectionModel()->select(QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
 
         printDiff(r);
-
+        setLabels(r->data(2).toString(), true);
+        setLabels(r->data(2).toString(), false);
         pair<string, string> gmcPair = GMCDocument::resolveGMCCompareText(oldGMCdoc.get(), newGMCdoc.get(), gmcItem->resultObj);
         oldGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.first));
         newGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.second));
@@ -544,7 +552,7 @@ void appGUI::createPDDBResultDock()
     PDDBResultDock->setAllowedAreas(Qt::RightDockWidgetArea);
     PDDBResultView = new QTreeView(PDDBResultDock);
 
-    PDDBResultView->setStyleSheet("QTreeView::item:selected{background-color: rgb(102,255,102);}");
+    PDDBResultView->setStyleSheet("QTreeView::item:selected{background-color: rgb(102,255,102);color: black;}");
     PDDBResultModel = new resultItemModel();
 
     PDDBResultDock->setWidget(PDDBResultView);
@@ -558,7 +566,7 @@ void appGUI::createGMCResultDock()
     GMCResultDock = new QDockWidget(tr("GMC Actions"), this);
     GMCResultDock->setAllowedAreas(Qt::RightDockWidgetArea);
     GMCResultView = new QTreeView(GMCResultDock);
-    GMCResultView->setStyleSheet("QTreeView::item:selected{background-color: rgb(102,255,102);}");
+    GMCResultView->setStyleSheet("QTreeView::item:selected{background-color: rgb(102,255,102);color: black;}");
     GMCResultModel = new gmcResultItemModel();
 
     GMCResultDock->setWidget(GMCResultView);

@@ -131,7 +131,6 @@ int gmcResultItemModel::rowCount(const QModelIndex &parent) const
 
 void gmcResultItemModel::setupModelData()
 {
-
     QList<QVariant> rootData;
     rootData << " " << "Type" << "Origin" << "Location" << "Changes";
 
@@ -155,7 +154,6 @@ void gmcResultItemModel::setupModelData()
             }
         }
     }
-
 }
 
 gmcResultItem * gmcResultItemModel::getItemFromRow(int row)
