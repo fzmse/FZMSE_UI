@@ -145,4 +145,5 @@ DISTFILES += \
     UT/TestFiles/PDDB/FL161506.xml \
     UT/TestFiles/PDDB/FL161507.xml \
     Includes/Gui/lineTextEdit \
-    UT/TestFiles/PDDB/pddb1507_mychanges.xml
+    UT/TestFiles/PDDB/pddb1507_mychanges.xml \
+    UT/TestFiles/PDDB/f13.xml
