@@ -142,5 +142,21 @@ TEST(GMCWriter, ProcessGMCWithoutReaderInteraction)
     GMCDocument * gmcCopy = new GMCDocument(writer_gmc_1506.get());
     GMCWriter::reactToAllWithoutReaderInteraction(gmcCopy, actions);
 
+    for ( vector<GMCAction>::iterator it = actions.begin(); it != actions.end(); it ++ )
+    {
+        pair<string, string> text = GMCDocument::resolveGMCCompareText(writer_gmc_1506.get(), gmcCopy, *it);
+
+        cout << "FIRST ---------------------------------" << endl;
+        cout << text.first << endl;
+
+        cout << "SECOND ---------------------------------" << endl;
+        cout << text.second << endl;
+
+        cout << endl;
+        cout << endl;
+    }
+
+
     XmlWriter::save(gmcCopy->getXMLDocument(), dir + "UT/TestFiles/GMC/gmc150602_saved10.xml");
+    //delete gmcCopy;
 }

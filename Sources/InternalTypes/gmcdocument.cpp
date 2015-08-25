@@ -481,3 +481,80 @@ std::vector<GMCAction> GMCDocument::resolveGMCActions( PDDBDocument * oldPDDB, P
 
     return actions;
 }
+
+
+std::pair< std::string, std::string> GMCDocument::resolveGMCCompareText(GMCDocument * original, GMCDocument * modified, GMCAction action)
+{
+    pair<string, string> result;
+    result.first = "";
+    result.second = "";
+    try
+    {
+        if ( action.getActionType() == GMCAction::Add )
+        {
+            if ( action.getChangeScope() == GMCAction::ManagedObject )
+            {
+                auto mocInPDDB = ((PDDBManagedObject*)action.getItem());
+                auto className = mocInPDDB->getClassName();
+                auto mocFound = modified->getManagedObjectByClassName(className);
+                if ( mocFound == NULL )
+                    return result;
+                result.second = XmlElementReader::getXML( mocFound->getElement() );
+            }
+            if ( action.getChangeScope() == GMCAction::ManagedObjectParameter )
+            {
+                auto par = ((PDDBManagedObjectParameter*)action.getItem());
+                auto parParent = (PDDBManagedObject*)par->getMocParent();
+                auto gmcMocFound = modified->getManagedObjectByClassName(parParent->getClassName());
+                if ( gmcMocFound == NULL )
+                    return result;
+                string parName = par->getName();
+                auto foundParInGMC = gmcMocFound->getParameterByName(parName);
+                if ( foundParInGMC == NULL )
+                    return result;
+                result.second = XmlElementReader::getXML(foundParInGMC->getElement());
+            }
+        }
+
+        if ( action.getActionType() == GMCAction::Remove )
+        {
+            result.second = "";
+            if ( action.getChangeScope() == GMCAction::ManagedObject )
+                result.first = XmlElementReader::getXML( original->getManagedObjectByClassName(((PDDBManagedObject*)action.getItem())->getClassName())->getElement() );
+            if ( action.getChangeScope() == GMCAction::ManagedObjectParameter )
+                result.first = XmlElementReader::getXML( original->getManagedObjectByClassName(
+                                              ((PDDBManagedObject*)((PDDBManagedObjectParameter*)action.getItem())->getMocParent())->getClassName())
+                                          ->getParameterByName(((PDDBManagedObjectParameter*)action.getItem())->getName() )->getElement() );
+        }
+
+        if ( action.getActionType() == GMCAction::Modify )
+        {
+            if ( action.getChangeScope() == GMCAction::ManagedObject )
+                result.first = XmlElementReader::getXML( original->getManagedObjectByClassName(((PDDBManagedObject*)action.getItem())->getClassName())->getElement() );
+            if ( action.getChangeScope() == GMCAction::ManagedObjectParameter )
+                result.first = XmlElementReader::getXML( original->getManagedObjectByClassName(
+                                              ((PDDBManagedObject*)((PDDBManagedObjectParameter*)action.getItem())->getMocParent())->getClassName())
+                                          ->getParameterByName(((PDDBManagedObjectParameter*)action.getItem())->getName() )->getElement() );
+
+            if ( action.getChangeScope() == GMCAction::ManagedObjectParameter )
+            {
+                auto par = ((PDDBManagedObjectParameter*)action.getItem());
+                auto parParent = (PDDBManagedObject*)par->getMocParent();
+                auto gmcMocFound = modified->getManagedObjectByClassName(parParent->getClassName());
+                if ( gmcMocFound == NULL )
+                    return result;
+                string parName = par->getName();
+                auto foundParInGMC = gmcMocFound->getParameterByName(parName);
+                if ( foundParInGMC == NULL )
+                    return result;
+                result.second = XmlElementReader::getXML(foundParInGMC->getElement());
+            }
+        }
+    }
+    catch(...)
+    {
+        return result;
+    }
+
+    return result;
+}
