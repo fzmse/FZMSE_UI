@@ -18,6 +18,8 @@ GMCAction::GMCAction(bool interaction, ManagedObjectRelativeElement * item,
     this->childActions = childActions;
     this->gmcMocsInvolved = gmcMocsInvolved;
     this->helpNote = helpNote;
+
+    this->includedInGMC = !this->requiresReaderInteraction;
 }
 
 
@@ -72,4 +74,13 @@ bool GMCAction::isReaderInteractionRequired()
     return this->requiresReaderInteraction;
 }
 
+bool GMCAction::isIncludedInGMC()
+{
+    return this->includedInGMC;
+}
+
+void GMCAction::setIncludedInGMC(bool val)
+{
+    this->includedInGMC = val;
+}
 

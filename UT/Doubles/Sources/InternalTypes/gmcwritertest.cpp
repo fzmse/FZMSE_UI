@@ -140,7 +140,7 @@ TEST(GMCWriter, ProcessGMCWithoutReaderInteraction)
     auto actions = GMCDocument::resolveGMCActions(writer_p_1506.get(), writer_p_1507_myc.get(), writer_gmc_1506.get(), &compareResults);
 
     GMCDocument * gmcCopy = new GMCDocument(writer_gmc_1506.get());
-    GMCWriter::reactToAllWithoutReaderInteraction(gmcCopy, actions);
+    GMCWriter::reactToAllIncluded(gmcCopy, actions);
 
     for ( vector<GMCAction>::iterator it = actions.begin(); it != actions.end(); it ++ )
     {

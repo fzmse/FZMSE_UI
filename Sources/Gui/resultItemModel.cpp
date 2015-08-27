@@ -135,7 +135,7 @@ void resultItemModel::setupModelData()
     rootData << "Type" << "Origin" << "Location" << "Changes";
     if (rootItem != NULL)
     {
-        delete rootItem;
+        //delete rootItem;
     }
 
     rootItem = new resultItem(rootData);

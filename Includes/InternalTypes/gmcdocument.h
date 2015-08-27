@@ -33,6 +33,7 @@ namespace InternalTypes
         static std::vector<GMCAction> resolveGMCActions( PDDBDocument * oldPDDB, PDDBDocument * newPDDB, GMCDocument * gmc, std::vector<PDDBManagedObjectCompareResult> * compareResults );
 
     protected:
+        static std::vector<GMCAction> resolveGMCActionsPostProcessing( PDDBDocument * oldPDDB, PDDBDocument * newPDDB, GMCDocument * gmc, std::vector<PDDBManagedObjectCompareResult> * compareResults, std::vector<GMCAction> actionsPost );
 
         std::vector<GMCManagedObject*> retrieveManagedObjects();
 

@@ -34,6 +34,7 @@ namespace InternalTypes
 
         static void reactToAction(GMCDocument * gmc, GMCAction action);
 
-        static void reactToAllWithoutReaderInteraction( GMCDocument * gmc, std::vector<GMCAction> actions);
+        static void reactToAllIncluded( GMCDocument * gmc, std::vector<GMCAction> actions);
+        static void reactToAll( GMCDocument * gmc, std::vector<GMCAction> actions);
     };
 }

@@ -20,8 +20,8 @@ resultItem::resultItem(PDDBManagedObjectCompareResult resultObj,
 
 resultItem::~resultItem()
 {
-    if (!itemList.empty())
-        qDeleteAll(itemList);
+//    if (!itemList.empty())
+//        qDeleteAll(itemList);
 }
 
 void resultItem::appendItem(resultItem *item)
