@@ -78,6 +78,8 @@ void appGUI::save()
                     tr("XML (*.xml)"));
         if (savePath.length() > 0)
         {
+            newGMCdoc = make_shared<GMCDocument>(oldGMCdoc.get());
+            GMCWriter::reactToAllIncluded(newGMCdoc.get(), actions);
             if (XmlWriter::save(newGMCdoc.get()->getXMLDocument(), savePath.toStdString()))
             {
                 QMessageBox::information(this, tr("Saving file"),
@@ -159,7 +161,7 @@ void appGUI::compare()
         statusBar()->showMessage(tr("Ready"));
 
         newGMCdoc = make_shared<GMCDocument>(oldGMCdoc.get());
-        GMCWriter::reactToAllWithoutReaderInteraction(newGMCdoc.get(), actions);
+        GMCWriter::reactToAll(newGMCdoc.get(), actions);
     }
 }
 

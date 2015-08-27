@@ -22,6 +22,7 @@ namespace InternalTypes
         {
             ManagedObject,
             ManagedObjectParameter,
+            ComplexParameter
         };
         GMCAction();
         GMCAction(bool interaction, ManagedObjectRelativeElement * item,
@@ -33,6 +34,10 @@ namespace InternalTypes
         ~GMCAction();
 
 
+        void setIncludedInGMC(bool val);
+
+
+        bool isIncludedInGMC();
 
 
         int getPDDBCompareResultId();
@@ -55,6 +60,8 @@ namespace InternalTypes
         std::string helpNote;
 
         bool requiresReaderInteraction;
+
+        bool includedInGMC;
 
 
     };

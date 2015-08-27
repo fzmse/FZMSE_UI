@@ -99,7 +99,7 @@ TEST(GMCResolveActions, MocPar_Add_02)
 
 
     GMCDocument * gmcCopy = new GMCDocument(gmc_1506_02.get());
-    GMCWriter::reactToAllWithoutReaderInteraction(gmcCopy, actions);
+    GMCWriter::reactToAllIncluded(gmcCopy, actions);
 
     for ( vector<GMCAction>::iterator it = actions.begin(); it != actions.end(); it ++ )
     {

@@ -257,7 +257,7 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                     PDDBDefaultValue * val = p->getPDDBValue();
                     if ( val->isComplexType() == false )
                     {
-                        insertParameterSimpleType(gmc, gmcNewMoc, p->getName(), ((PDDBSimpleTypeValue*)val)->getEvaluatedValue() );
+                        insertParameterSimpleType(gmc, gmcNewMoc, p->getName(), ((PDDBSimpleTypeValue*)val)->getEvaluatedValueForAdd() );
                         gmc->reinitialize();
                     }
                     else
@@ -270,7 +270,7 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                         {
                             pair<string, string> parPair;
                             parPair.first = (*pIt)->getName();
-                            parPair.second = ((PDDBSimpleTypeValue*)(*pIt)->getPDDBValue())->getEvaluatedValue();
+                            parPair.second = ((PDDBSimpleTypeValue*)(*pIt)->getPDDBValue())->getEvaluatedValueForAdd();
                             nameVal.push_back(parPair);
                         }
 
@@ -294,7 +294,7 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                     PDDBDefaultValue * val = p->getPDDBValue();
                     if ( val->isComplexType() == false )
                     {
-                        insertParameterSimpleType(gmc, (*it), p->getName(), ((PDDBSimpleTypeValue*)val)->getEvaluatedValue() );
+                        insertParameterSimpleType(gmc, (*it), p->getName(), ((PDDBSimpleTypeValue*)val)->getEvaluatedValueForAdd() );
                         gmc->reinitialize();
                     }
                     else
@@ -307,13 +307,49 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                         {
                             pair<string, string> parPair;
                             parPair.first = (*pIt)->getName();
-                            parPair.second = ((PDDBSimpleTypeValue*)(*pIt)->getPDDBValue())->getEvaluatedValue();
+                            parPair.second = ((PDDBSimpleTypeValue*)(*pIt)->getPDDBValue())->getEvaluatedValueForAdd();
                             nameVal.push_back(parPair);
                         }
 
                         insertParameterComplexType(gmc, (*it), p->getName(), nameVal);
                         gmc->reinitialize();
 
+                    }
+                }
+            }
+            else
+            {
+                if ( action.getChangeScope() == GMCAction::ChangeScope::ComplexParameter )
+                {
+                    for ( vector<GMCManagedObject*>::iterator it = action.getGmcMocsInvolved().begin();
+                          it != action.getGmcMocsInvolved().end(); it ++ )
+                    {
+                        GMCAction a = action;
+                        PDDBManagedObjectParameter * p = (PDDBManagedObjectParameter*)a.getItem();
+                        PDDBDefaultValue * val = p->getPDDBValue();
+                        if ( val->isComplexType() == false )
+                        {
+                            insertParameterSimpleType(gmc, (*it), p->getName(), ((PDDBSimpleTypeValue*)val)->getEvaluatedValueForAdd() );
+                            gmc->reinitialize();
+                        }
+                        else
+                        {
+                            PDDBComplexTypeValue* complexVal = (PDDBComplexTypeValue*)val;
+                            std::vector<pair< string, string> > nameVal;
+                            auto els = complexVal->getValueParameters();
+                            for ( vector<PDDBManagedObjectParameter*>::iterator pIt = els.begin();
+                                  pIt != els.end(); pIt ++)
+                            {
+                                pair<string, string> parPair;
+                                parPair.first = (*pIt)->getName();
+                                parPair.second = ((PDDBSimpleTypeValue*)(*pIt)->getPDDBValue())->getEvaluatedValueForAdd();
+                                nameVal.push_back(parPair);
+                            }
+
+                            insertParameterComplexType(gmc, (*it), p->getName(), nameVal);
+                            gmc->reinitialize();
+
+                        }
                     }
                 }
             }
@@ -393,11 +429,19 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
 }
 
 
-void GMCWriter::reactToAllWithoutReaderInteraction( GMCDocument * gmc, std::vector<GMCAction> actions)
+void GMCWriter::reactToAll( GMCDocument * gmc, std::vector<GMCAction> actions)
 {
     for ( vector<GMCAction>::iterator it = actions.begin(); it != actions.end(); it ++ )
     {
-        if ((*it).isReaderInteractionRequired() == false)
+        reactToAction(gmc, *it);
+    }
+}
+
+void GMCWriter::reactToAllIncluded( GMCDocument * gmc, std::vector<GMCAction> actions)
+{
+    for ( vector<GMCAction>::iterator it = actions.begin(); it != actions.end(); it ++ )
+    {
+        if ((*it).isIncludedInGMC() == true)
             reactToAction(gmc, *it);
     }
 }

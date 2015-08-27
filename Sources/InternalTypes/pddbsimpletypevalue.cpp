@@ -162,13 +162,25 @@ std::string PDDBSimpleTypeValue::resolveEvaluatedValue()
 
     // Return raw value if no modifiers are present
 
-    if ( this->value == "" )
+
+    return this->value;
+}
+
+std::string PDDBSimpleTypeValue::getEvaluatedValueForAdd()
+{
+    string val = resolveEvaluatedValue();
+    if ( val == "" )
     {
         if ( range.size() > 0 )
             return range[0].first;
+        else
+        {
+            if ( enums.size() > 0 )
+                return enums[0].second;
+        }
     }
 
-    return this->value;
+    return val;
 }
 
 std::vector<std::pair<std::string, std::string> > PDDBSimpleTypeValue::resolveRange(PDDBManagedObjectParameter * p)

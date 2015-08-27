@@ -14,6 +14,7 @@ namespace InternalTypes
         std::string getEvaluation();
         std::string getValue();
         std::string getEvaluatedValue();
+        std::string getEvaluatedValueForAdd();
         std::vector<std::pair<std::string, std::string> > getRange();
 
         virtual bool isComplexType();

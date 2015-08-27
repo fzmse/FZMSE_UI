@@ -111,7 +111,7 @@ void gmcResultItem::setData()
             addStdToQ(d, "]");
 
         }
-        else if ( r.getChangeScope() == PDDBManagedObjectCompareResult::ManagedObject )
+        else if ( r.getChangeScope() == GMCAction::ManagedObject )
         {
             itemData << "Managed Object" << "Add";
             addStdToQ(d, "[ ");
@@ -119,10 +119,19 @@ void gmcResultItem::setData()
             addStdToQ(d, " ]");
 
         }
+        else if ( r.getChangeScope() == GMCAction::ComplexParameter )
+        {
+            itemData << "Parameter" << "Add";
+            addStdToQ(d, "[ ");
+            addStdToQ(d,((PDDBManagedObject*)((PDDBManagedObjectParameter*)r.getItem())->getMocParent() )->getClassName());
+            addStdToQ(d, " -> ");
+            addStdToQ(d,((PDDBManagedObjectParameter*)r.getItem())->getName());
+            addStdToQ(d, " ]");
+        }
 
         break;
     case GMCAction::Remove:
-        if ( r.getChangeScope() == PDDBManagedObjectCompareResult::ManagedObjectParameter )
+        if ( r.getChangeScope() == GMCAction::ManagedObjectParameter )
         {
             itemData << "Parameter" << "Del";
             addStdToQ(d, "[ ");
@@ -136,7 +145,7 @@ void gmcResultItem::setData()
             addStdToQ(d, "]");
         }
 
-        if ( r.getChangeScope() == PDDBManagedObjectCompareResult::ManagedObject )
+        if ( r.getChangeScope() == GMCAction::ManagedObject )
         {
             itemData << "Managed Object" << "Del";
             addStdToQ(d, "[ ");
