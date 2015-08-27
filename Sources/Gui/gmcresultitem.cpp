@@ -87,8 +87,10 @@ void gmcResultItem::setData()
 {
     QString d;
     GMCAction r = resultObj;
+
     if ( r.isReaderInteractionRequired() )
         itemData << "[!]";
+
     else
         itemData << "  ";
     switch(r.getActionType())
@@ -122,7 +124,7 @@ void gmcResultItem::setData()
     case GMCAction::Remove:
         if ( r.getChangeScope() == PDDBManagedObjectCompareResult::ManagedObjectParameter )
         {
-            itemData << "Parameter" << "Remove";
+            itemData << "Parameter" << "Del";
             addStdToQ(d, "[ ");
             if ( ((PDDBManagedObjectParameter*)r.getItem())->getMocParent() != NULL )
             {
@@ -136,7 +138,7 @@ void gmcResultItem::setData()
 
         if ( r.getChangeScope() == PDDBManagedObjectCompareResult::ManagedObject )
         {
-            itemData << "Managed Object" << "Remove";
+            itemData << "Managed Object" << "Del";
             addStdToQ(d, "[ ");
             addStdToQ(d, ((PDDBManagedObject*)r.getItem())->getClassName());
             addStdToQ(d, " ]");
@@ -146,7 +148,7 @@ void gmcResultItem::setData()
         break;
     case GMCAction::Modify:
         {
-        itemData << "Parameter" << "Modified";
+        itemData << "Parameter" << "Mod";
         addStdToQ(d, "[ ");
             if ( ((PDDBManagedObjectParameter*)r.getItem())->getMocParent() != NULL )
             {

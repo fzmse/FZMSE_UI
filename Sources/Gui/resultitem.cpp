@@ -89,7 +89,7 @@ void resultItem::setData()
     case PDDBManagedObjectCompareResult::Added:
         if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameter )
         {
-            itemData << "Parameter" << "Added";
+            itemData << "Parameter" << "Add";
             description.append("[ ");
             if ( ((PDDBManagedObjectParameter*)resultObj.getSecondElement())->getMocParent() != NULL )
             {
@@ -102,7 +102,7 @@ void resultItem::setData()
         }
         else if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObject )
         {
-            itemData << "Managed Object" << "Added";
+            itemData << "Managed Object" << "Add";
             description.append("[ ");
             description.append(QString::fromStdString(((PDDBManagedObject*)resultObj.getSecondElement())->getClassName()));
             description.append(" ]");
@@ -111,7 +111,7 @@ void resultItem::setData()
         }
         else if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
         {
-            itemData << "Complex Parameter" << "Added";
+            itemData << "Complex Parameter" << "Add";
             description.append("[ ");
             if ( ((PDDBManagedObjectParameter*)resultObj.getSecondElement())->getMocParent() != NULL )
             {
@@ -128,7 +128,7 @@ void resultItem::setData()
     case PDDBManagedObjectCompareResult::Removed:
         if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameter )
         {
-            itemData << "Parameter" << "Removed";
+            itemData << "Parameter" << "Del";
             description.append("[ ");
             if ( ((PDDBManagedObjectParameter*)resultObj.getFirstElement())->getMocParent() != NULL )
             {
@@ -143,7 +143,7 @@ void resultItem::setData()
 
         else if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObject )
         {
-            itemData << "Managed Object" << "Removed";
+            itemData << "Managed Object" << "Del";
             description.append("[ ");
             description.append(QString::fromStdString(((PDDBManagedObject*)resultObj.getFirstElement())->getClassName()));
             description.append(" ]");
@@ -152,7 +152,7 @@ void resultItem::setData()
 
         else if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
         {
-            itemData << "Complex Parameter" << "Removed";
+            itemData << "Complex Parameter" << "Del";
             description.append("[ ");
             if ( ((PDDBManagedObjectParameter*)resultObj.getFirstElement())->getMocParent() != NULL )
             {
@@ -171,12 +171,12 @@ void resultItem::setData()
         {
             if( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
             {
-                itemData << "Complex Parameter" << "Modified";
+                itemData << "Complex Parameter" << "Mod";
                 description.append("[ ");
             }
             else
             {
-                itemData << "Parameter" << "Modified";
+                itemData << "Parameter" << "Mod";
                 description.append("[ ");
             }
 

@@ -102,18 +102,16 @@ void appGUI::save()
 
 void appGUI::generateRaport()
 {
-    if ( differences.size() == 0 )
-        QMessageBox::information(this, tr("Raport"),
-                                       tr("Not implemented yet !     "),
-                                       QMessageBox::Ok);
+    QMessageBox::information(this, tr("Raport"),
+                                   tr("Not implemented yet !     "),
+                                   QMessageBox::Ok);
 }
 
 void appGUI::help()
 {
-    if ( differences.size() == 0 )
-        QMessageBox::information(this, tr("Help"),
-                                       tr("Not implemented yet !     "),
-                                       QMessageBox::Ok);
+    QMessageBox::information(this, tr("Help"),
+                                   tr("Not implemented yet !     "),
+                                   QMessageBox::Ok);
 }
 
 
@@ -147,6 +145,12 @@ void appGUI::compare()
         GMCResultModel->setRoot();
         GMCResultView->reset();
         GMCResultView->setModel(GMCResultModel);
+
+        GMCResultView->setColumnWidth(0, 40);
+        GMCResultView->setColumnWidth(1, 80);
+        GMCResultView->setColumnWidth(2, 35);
+        GMCResultView->setColumnWidth(3, 100);
+
         connect(GMCResultView->selectionModel(),
                 SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
                 this,
@@ -175,6 +179,11 @@ void appGUI::comparePDDB()
         PDDBResultModel->setRoot();
         PDDBResultView->reset();
         PDDBResultView->setModel(PDDBResultModel);
+
+        PDDBResultView->setColumnWidth(0, 80);
+        PDDBResultView->setColumnWidth(1, 35);
+        PDDBResultView->setColumnWidth(2, 100);
+
         connect(PDDBResultView->selectionModel(),
                 SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
                 this,
@@ -265,7 +274,6 @@ void appGUI::setLabel(QLabel * label, std::string text)
 
 void appGUI::showSelectedPDDBResult()
 {
-
     statusBar()->showMessage(tr("Filling boxes"));
     QModelIndex index = PDDBResultView->currentIndex();
     int currIntexRow = index.row();
@@ -306,8 +314,19 @@ void appGUI::showSelectedGMCResult()
         gmcResultItem * gmcItem = GMCResultModel->getItemFromRow(currIntexRow);
         int gmcID = gmcItem->resultObj.getPDDBCompareResultId();
         resultItem * r = PDDBResultModel->getRoot()->findItemById(gmcID);
-//        for (  )
-//        PDDBResultView->selectionModel()->select(QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+
+
+        for ( int i = 0; i < differences.size(); i++)
+        {
+            if ( differences[i].getId() == gmcID )
+            {
+                PDDBResultView->selectionModel()->select(PDDBResultModel->index(i,0),
+                                                         QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+                PDDBResultView->scrollTo(PDDBResultModel->index(i,0));
+                break;
+            }
+        }
+
 
         printDiff(r);
         setLabels(r->data(2).toString(), true);
@@ -337,6 +356,8 @@ void appGUI::createPDDBTextDock()
     QHBoxLayout * labels;
 
     centralWid = new QWidget;
+
+    centralWid->setMinimumWidth(this->width()* 0.4 );
 
     verCentralLayout = new QVBoxLayout;
 
@@ -384,15 +405,18 @@ void appGUI::createPDDBTextDock()
 
     oldPDDBLabel = new QLabel(this);
     oldPDDBLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
+    oldPDDBLabel->setWordWrap(true);
     oldPDDBLabel->setText(tr("Old PDDB"));
 
-    labels->addWidget(oldPDDBLabel, Qt::AlignLeft);
+    labels->addWidget(oldPDDBLabel, Qt::AlignTop);
 
 
     newPDDBLabel = new QLabel(this);
     newPDDBLabel->setAlignment(Qt::AlignTop | Qt::AlignRight);
+    newPDDBLabel->setWordWrap(true);
     newPDDBLabel->setText(tr("New PDDB"));
-    labels->addWidget(newPDDBLabel, Qt::AlignRight);
+
+    labels->addWidget(newPDDBLabel, Qt::AlignTop);
 
     verCentralLayout->addLayout(labels);
     verCentralLayout->addLayout(texts);
@@ -449,13 +473,16 @@ void appGUI::createGMCTextDock()
     oldGMCLabel = new QLabel(this);
     oldGMCLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     oldGMCLabel->setText(tr("Old GMC"));
-    labels->addWidget(oldGMCLabel, Qt::AlignLeft);
+    oldGMCLabel->setWordWrap(true);
+    labels->addWidget(oldGMCLabel, Qt::AlignTop);
 
 
     newGMCLabel = new QLabel(this);
     newGMCLabel->setAlignment(Qt::AlignTop | Qt::AlignRight);
-    labels->addWidget(newGMCLabel, Qt::AlignRight);
+    newGMCLabel->setWordWrap(true);
     newGMCLabel->setText(tr("New GMC"));
+    labels->addWidget(newGMCLabel, Qt::AlignTop);
+
     verCentralLayout->addLayout(labels);
     verCentralLayout->addLayout(texts);
 
@@ -550,6 +577,9 @@ void appGUI::createPDDBResultDock()
 {
     PDDBResultDock = new QDockWidget(tr("PDDB differences"), this);
     PDDBResultDock->setAllowedAreas(Qt::RightDockWidgetArea);
+
+    PDDBResultDock->setMinimumWidth(this->width() * 0.3);
+
     PDDBResultView = new QTreeView(PDDBResultDock);
 
     PDDBResultView->setStyleSheet("QTreeView::item:selected{background-color: rgb(102,255,102);color: black;}");
@@ -565,6 +595,7 @@ void appGUI::createGMCResultDock()
 {
     GMCResultDock = new QDockWidget(tr("GMC Actions"), this);
     GMCResultDock->setAllowedAreas(Qt::RightDockWidgetArea);
+    GMCResultDock->setMinimumWidth(this->width() * 0.3);
     GMCResultView = new QTreeView(GMCResultDock);
     GMCResultView->setStyleSheet("QTreeView::item:selected{background-color: rgb(102,255,102);color: black;}");
     GMCResultModel = new gmcResultItemModel();
