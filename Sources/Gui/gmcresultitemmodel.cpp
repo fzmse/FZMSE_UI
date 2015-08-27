@@ -59,6 +59,17 @@ QVariant gmcResultItemModel::data(const QModelIndex &index, int role) const
 
     gmcResultItem *item = static_cast<gmcResultItem*>(index.internalPointer());
 
+//    if (item->data(index.column()) == true)
+//    {
+//        qDebug() << item->data(index.column());
+//        return QVariant( QBrush( Qt::green ) );
+//    }
+
+//    if (item->data(index.column()) == false)
+//    {
+//        qDebug() << item->data(index.column());
+//        return QVariant( QBrush( Qt::red ) );
+//    }
     return item->data(index.column());
 }
 
@@ -132,7 +143,7 @@ int gmcResultItemModel::rowCount(const QModelIndex &parent) const
 void gmcResultItemModel::setupModelData()
 {
     QList<QVariant> rootData;
-    rootData << " " << "Type" << "Origin" << "Location" << "Changes";
+    rootData << " " << " " << "Type" << "Origin" << "Location" << "Changes";
 
     rootItem = new gmcResultItem(rootData);
     rootItem->setParetn(rootItem);

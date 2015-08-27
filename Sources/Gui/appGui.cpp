@@ -130,6 +130,50 @@ void appGUI::clean()
         setLabels("", false);
 }
 
+void appGUI::onGMCRClick(const QPoint &pos)
+{
+    QPoint globalPos = GMCResultView->mapToGlobal(pos);
+    // for QAbstractScrollArea and derived classes you would use:
+    // QPoint globalPos = myWidget->viewport()->mapToGlobal(pos);
+
+    QMenu myMenu;
+    myMenu.addAction(addToGMC);
+    myMenu.addAction(delFromGMC);
+
+    QAction* selectedItem = myMenu.exec(globalPos);
+    auto index = GMCResultView->indexAt(pos);
+    auto item = GMCResultModel->getItemFromRow(index.row());
+
+    if (addToGMC == selectedItem)
+    {
+        int id = item->resultObj.getPDDBCompareResultId();
+        for (int i = 0; i < actions.size(); i++)
+        {
+            if ( actions[i].getPDDBCompareResultId() == id )
+            {
+                actions[i].setIncludedInGMC(true);
+                break;
+            }
+        }
+        item->resultObj.setIncludedInGMC(true);
+        item->updateIncludedInGMC(true);
+    }
+    else if (delFromGMC == selectedItem)
+    {
+        int id = item->resultObj.getPDDBCompareResultId();
+        for (int i = 0; i < actions.size(); i++)
+        {
+            if ( actions[i].getPDDBCompareResultId() == id )
+            {
+                actions[i].setIncludedInGMC(false);
+                break;
+            }
+        }
+        item->resultObj.setIncludedInGMC(false);
+        item->updateIncludedInGMC(false);
+    }
+}
+
 void appGUI::compare()
 {
     if (!(oldPDDBPath.empty() || newPDDBPath.empty() || oldGMCPath.empty()))
@@ -149,14 +193,21 @@ void appGUI::compare()
         GMCResultView->setModel(GMCResultModel);
 
         GMCResultView->setColumnWidth(0, 40);
-        GMCResultView->setColumnWidth(1, 80);
-        GMCResultView->setColumnWidth(2, 35);
-        GMCResultView->setColumnWidth(3, 100);
+        GMCResultView->setColumnWidth(1, 40);
+        GMCResultView->setColumnWidth(2, 80);
+        GMCResultView->setColumnWidth(3, 35);
+        GMCResultView->setColumnWidth(4, 100);
 
         connect(GMCResultView->selectionModel(),
                 SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
                 this,
                 SLOT(showSelectedGMCResult()));
+
+        connect(GMCResultView,
+                SIGNAL(customContextMenuRequested(const QPoint &)),
+                this,
+                SLOT(onGMCRClick(const QPoint &)));
+
         GMCResultView->show();
         statusBar()->showMessage(tr("Ready"));
 
@@ -350,6 +401,7 @@ void appGUI::createPDDBResultView()
 void appGUI::createGMCResultView()
 {
     GMCResultView->setSelectionMode(QAbstractItemView::SingleSelection);
+    GMCResultView->setContextMenuPolicy(Qt::CustomContextMenu);
 }
 
 void appGUI::createPDDBTextDock()
@@ -535,6 +587,9 @@ void appGUI::createActions()
     displayHelpAct = new QAction(tr("&Help"), this);
     displayHelpAct->setStatusTip(tr("Help"));
     connect(displayHelpAct, SIGNAL(triggered(bool)), this, SLOT(help()));
+
+    addToGMC = new QAction(tr("Add to GMC"), this);
+    delFromGMC = new QAction(tr("Delete from GMC"), this);
 }
 
 void appGUI::createMenus()
@@ -584,7 +639,11 @@ void appGUI::createPDDBResultDock()
 
     PDDBResultView = new QTreeView(PDDBResultDock);
 
-    PDDBResultView->setStyleSheet("QTreeView::item:selected{background-color: rgb(102,255,102);color: black;}");
+    PDDBResultView->setStyleSheet("QTreeView::item:selected{"
+                                  "background-color: rgb(102,255,102);"
+                                  "color: black;"
+                                  "}");
+
     PDDBResultModel = new resultItemModel();
 
     PDDBResultDock->setWidget(PDDBResultView);
@@ -599,7 +658,16 @@ void appGUI::createGMCResultDock()
     GMCResultDock->setAllowedAreas(Qt::RightDockWidgetArea);
     GMCResultDock->setMinimumWidth(this->width() * 0.3);
     GMCResultView = new QTreeView(GMCResultDock);
-    GMCResultView->setStyleSheet("QTreeView::item:selected{background-color: rgb(102,255,102);color: black;}");
+    GMCResultView->setStyleSheet("QTreeView {"
+                                 "    selection-background-color: navy;"
+                                 "    alternate-background-color: rgb(240,240,240);"
+                                 "    show-decoration-selected: 1;"
+                                 "}"
+                                 "QTreeView::item:selected {"
+                                 "background-color: rgb(102,255,102);"
+                                 "color: black;"
+                                 "}");
+
     GMCResultModel = new gmcResultItemModel();
 
     GMCResultDock->setWidget(GMCResultView);

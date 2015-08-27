@@ -17,6 +17,7 @@ public:
 
     void appendItem(gmcResultItem *item);
     void setParetn(gmcResultItem *item);
+    void updateIncludedInGMC(bool state);
     QString getLocation();
     gmcResultItem *item(int row);
     int itemCount() const;

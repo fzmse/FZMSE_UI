@@ -60,6 +60,11 @@ void gmcResultItem::setParetn(gmcResultItem *item)
     parentItem = item;
 }
 
+void gmcResultItem::updateIncludedInGMC(bool state)
+{
+    itemData[0].setValue(state);
+}
+
 QString gmcResultItem::getLocation()
 {
     return itemData.value(2).toString();
@@ -88,11 +93,13 @@ void gmcResultItem::setData()
     QString d;
     GMCAction r = resultObj;
 
+   itemData << r.isIncludedInGMC();
+
     if ( r.isReaderInteractionRequired() )
         itemData << "[!]";
-
     else
         itemData << "  ";
+
     switch(r.getActionType())
     {
     case GMCAction::Add:

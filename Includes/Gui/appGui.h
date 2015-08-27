@@ -27,6 +27,8 @@ class QStandardItem;
 class QTextCursor;
 class QHBoxLayout;
 class QVBoxLayout;
+class QPoint;
+
 
 class appGUI : public QMainWindow
 {
@@ -38,11 +40,12 @@ public:
     void colorTextDifferences();
     void setLabels(QString desc, bool PDDB);
     void setLabel(QLabel * label, std::string text);
+    void refreshGMCView();
     std::vector<QString> parseXmlByEndLine(std::string XML);
 
 
 private slots:
-    void loadPathToDoc(const QString&);
+    void loadPathToDoc(const QString &);
     void save();
     void generateRaport();
     void help();
@@ -50,6 +53,7 @@ private slots:
     void compare();
     void showSelectedPDDBResult();
     void showSelectedGMCResult();
+    void onGMCRClick(const QPoint &);
 
 private:
     void createActions();
@@ -98,6 +102,9 @@ private:
     QAction * saveFileAct;
     QAction * generateRaportAct;
     QAction * displayHelpAct;
+    QAction * addToGMC;
+    QAction * delFromGMC;
+
 
     QPushButton * clearListsBut;
     QPushButton * compareBut;
@@ -111,6 +118,8 @@ private:
     QDockWidget * PDDBResultDock;
     QTreeView * PDDBResultView;
     resultItemModel * PDDBResultModel;
+
+    QMenu* contextMenu;
 
     QDockWidget * GMCResultDock;
     QTreeView * GMCResultView;
