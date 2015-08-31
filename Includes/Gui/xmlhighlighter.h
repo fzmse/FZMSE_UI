@@ -1,3 +1,5 @@
+#pragma once
+
 #include <QSyntaxHighlighter>
 
 class XMLHighlighter : public QSyntaxHighlighter

@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Includes/InternalTypes/gmcaction.h"
 #include "Includes/InternalTypes/gmcmanagedobjectparameter.h"
 #include "Includes/InternalTypes/PDDBManagedObjectParameter.h"
@@ -18,6 +20,7 @@ public:
     void appendItem(gmcResultItem *item);
     void setParetn(gmcResultItem *item);
     void updateIncludedInGMC(bool state);
+    bool isChecked();
     QString getLocation();
     gmcResultItem *item(int row);
     int itemCount() const;

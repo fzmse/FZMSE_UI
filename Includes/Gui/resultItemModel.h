@@ -1,3 +1,5 @@
+#pragma once
+
 #include <QAbstractItemModel>
 #include "Includes/Gui/resultItem.h"
 #include "Includes/InternalTypes/PDDBManagedObjectCompareResult.h"

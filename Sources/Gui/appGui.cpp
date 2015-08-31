@@ -1,8 +1,5 @@
-#include <QtWidgets>
 #include "Gui/appGui.h"
-#include <cstring>
-#include <QTextCursor>
-#include <QTextCursor>
+
 using namespace InternalTypes;
 
 appGUI::appGUI()
@@ -111,12 +108,6 @@ void appGUI::save()
     }
 }
 
-void appGUI::generateRaport()
-{
-
-    qDebug() << ReportUtilities::getReportTemplate();
-}
-
 void appGUI::help()
 {
     QMessageBox::information(this, tr("Help"),
@@ -141,46 +132,40 @@ void appGUI::clean()
 void appGUI::onGMCRClick(const QPoint &pos)
 {
     QPoint globalPos = GMCResultView->mapToGlobal(pos);
-    // for QAbstractScrollArea and derived classes you would use:
-    // QPoint globalPos = myWidget->viewport()->mapToGlobal(pos);
-
-    QMenu myMenu;
-    myMenu.addAction(addToGMC);
-    myMenu.addAction(delFromGMC);
-
-    QAction* selectedItem = myMenu.exec(globalPos);
     auto index = GMCResultView->indexAt(pos);
     auto item = GMCResultModel->getItemFromRow(index.row());
+    if ( index.parent().row() == -1)
+    {
+        QMenu myMenu;
+        myMenu.addAction(addToGMC);
+        myMenu.addAction(delFromGMC);
 
-    if (addToGMC == selectedItem)
-    {
+        QAction* selectedItem = myMenu.exec(globalPos);
+
         int id = item->resultObj.getPDDBCompareResultId();
+
         for (int i = 0; i < actions.size(); i++)
         {
             if ( actions[i].getPDDBCompareResultId() == id )
             {
-                actions[i].setIncludedInGMC(true);
-                break;
+                if (addToGMC == selectedItem)
+                {
+                    actions[i].setIncludedInGMC(true);
+                    item->resultObj.setIncludedInGMC(true);
+                    item->updateIncludedInGMC(true);
+                    break;
+                } else if ( delFromGMC == selectedItem )
+                {
+                    actions[i].setIncludedInGMC(false);
+                    item->resultObj.setIncludedInGMC(false);
+                    item->updateIncludedInGMC(false);
+                    break;
+                }
             }
         }
-        item->resultObj.setIncludedInGMC(true);
-        item->updateIncludedInGMC(true);
-    }
-    else if (delFromGMC == selectedItem)
-    {
-        int id = item->resultObj.getPDDBCompareResultId();
-        for (int i = 0; i < actions.size(); i++)
-        {
-            if ( actions[i].getPDDBCompareResultId() == id )
-            {
-                actions[i].setIncludedInGMC(false);
-                break;
-            }
-        }
-        item->resultObj.setIncludedInGMC(false);
-        item->updateIncludedInGMC(false);
     }
 }
+
 
 void appGUI::compare()
 {
@@ -201,7 +186,7 @@ void appGUI::compare()
         GMCResultView->setModel(GMCResultModel);
 
         GMCResultView->setColumnWidth(0, 40);
-        GMCResultView->setColumnWidth(1, 40);
+        GMCResultView->setColumnWidth(1, 30);
         GMCResultView->setColumnWidth(2, 80);
         GMCResultView->setColumnWidth(3, 35);
         GMCResultView->setColumnWidth(4, 100);
@@ -215,6 +200,8 @@ void appGUI::compare()
                 SIGNAL(customContextMenuRequested(const QPoint &)),
                 this,
                 SLOT(onGMCRClick(const QPoint &)));
+
+
 
         GMCResultView->show();
         statusBar()->showMessage(tr("Ready"));
@@ -333,8 +320,34 @@ void appGUI::setLabel(QLabel * label, std::string text)
     label->setText(QString::fromStdString(text));
 }
 
+void appGUI::changeUserInteraction(gmcResultItem *item)
+{
+    int id = item->resultObj.getPDDBCompareResultId();
+    for (int i = 0; i < actions.size(); i++)
+    {
+        if ( actions[i].getPDDBCompareResultId() == id )
+        {
+            if ( !item->resultObj.isIncludedInGMC() )
+            {
+                actions[i].setIncludedInGMC(true);
+                item->resultObj.setIncludedInGMC(true);
+                item->updateIncludedInGMC(true);
+                break;
+            } else
+            {
+                actions[i].setIncludedInGMC(false);
+                item->resultObj.setIncludedInGMC(false);
+                item->updateIncludedInGMC(false);
+                break;
+            }
+        }
+    }
+}
+
 void appGUI::showSelectedPDDBResult()
 {
+    GMCResultView->clearSelection();
+    PDDBResultView->clearSelection();
     statusBar()->showMessage(tr("Filling boxes"));
     QModelIndex index = PDDBResultView->currentIndex();
     int currIntexRow = index.row();
@@ -343,18 +356,36 @@ void appGUI::showSelectedPDDBResult()
     printDiff(r);
     setLabels(r->data(2).toString(), true);
     setLabels("", false);
+
+    for ( int i = 0; i < actions.size(); i++)
+    {
+        if ( actions[i].getPDDBCompareResultId() == r->resultObj.getId() )
+        {
+            printDiff(r);
+            setLabels(r->data(2).toString(), true);
+            setLabels(r->data(2).toString(), false);
+            pair<string, string> gmcPair = GMCDocument::resolveGMCCompareText(oldGMCdoc.get(), newGMCdoc.get(), actions[i]);
+            oldGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.first));
+            newGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.second));
+
+            GMCResultView->selectionModel()->select(GMCResultModel->index(i,0),
+                                                     QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+            GMCResultView->scrollTo(GMCResultModel->index(i,0));
+        }
+    }
     statusBar()->showMessage(tr("Ready"));
 }
 
 void appGUI::showSelectedGMCResult()
 {
+    PDDBResultView->clearSelection();
+    GMCResultView->clearSelection();
+
     statusBar()->showMessage(tr("Filling boxes"));
     QModelIndex index = GMCResultView->currentIndex();
 
     int currIntexRow = index.row();
-
     QItemSelection selection = QItemSelection();
-    PDDBResultView->clearSelection();
 
     if ( index.parent().row() >= 0 )
     {
@@ -368,7 +399,6 @@ void appGUI::showSelectedGMCResult()
         pair<string, string> gmcPair = GMCDocument::resolveGMCCompareText(oldGMCdoc.get(), newGMCdoc.get(), gmcChild->resultObj);
         oldGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.first));
         newGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.second));
-
     }
     else
     {
@@ -384,7 +414,7 @@ void appGUI::showSelectedGMCResult()
                 PDDBResultView->selectionModel()->select(PDDBResultModel->index(i,0),
                                                          QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
                 PDDBResultView->scrollTo(PDDBResultModel->index(i,0));
-                break;
+
             }
         }
 
@@ -395,6 +425,7 @@ void appGUI::showSelectedGMCResult()
         pair<string, string> gmcPair = GMCDocument::resolveGMCCompareText(oldGMCdoc.get(), newGMCdoc.get(), gmcItem->resultObj);
         oldGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.first));
         newGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.second));
+
 
     }
     statusBar()->showMessage(tr("Ready"));
@@ -435,7 +466,7 @@ void appGUI::createPDDBTextDock()
     newPDDBTextEdit->setLineWrapMode(QTextEdit::NoWrap);
 
 
-    xmlHighlighterOldPDDB = make_shared<XMLHighlighter>(oldPDDBTextEdit ->document());
+    xmlHighlighterOldPDDB = make_shared<XMLHighlighter>(oldPDDBTextEdit->document());
     xmlHighlighterNewPDDB = make_shared<XMLHighlighter>(newPDDBTextEdit->document());
 
     connect(oldPDDBTextEdit->verticalScrollBar(),
@@ -588,10 +619,6 @@ void appGUI::createActions()
     saveFileAct->setStatusTip(tr("Save current file"));
     connect(saveFileAct, SIGNAL(triggered(bool)), this, SLOT(save()));
 
-    generateRaportAct = new QAction(tr("&Generate raport"), this);
-    generateRaportAct->setStatusTip(tr("Generate changes file"));
-    connect(generateRaportAct, SIGNAL(triggered(bool)), this, SLOT(generateRaport()));
-
     displayHelpAct = new QAction(tr("&Help"), this);
     displayHelpAct->setStatusTip(tr("Help"));
     connect(displayHelpAct, SIGNAL(triggered(bool)), this, SLOT(help()));
@@ -609,9 +636,6 @@ void appGUI::createMenus()
     fileMenu->addAction(saveFileAct);
     fileMenu->addSeparator();
 
-    raportMenu = menuBar()->addMenu(tr("&Raport"));
-    raportMenu->addAction(generateRaportAct);
-
     viewMenu = menuBar()->addMenu(tr("&View"));
 
     menuBar()->addSeparator();
@@ -627,9 +651,6 @@ void appGUI::createToolBar()
     fileToolBar->addAction(openNewPDDBAct);
     fileToolBar->addAction(openOldGMCAct);
     fileToolBar->addAction(saveFileAct);
-
-    raportToolBar = addToolBar(tr("&Raport"));
-    raportToolBar->addAction(generateRaportAct);
 
 }
 
@@ -666,18 +687,12 @@ void appGUI::createGMCResultDock()
     GMCResultDock->setAllowedAreas(Qt::RightDockWidgetArea);
     GMCResultDock->setMinimumWidth(this->width() * 0.3);
     GMCResultView = new QTreeView(GMCResultDock);
-    GMCResultView->setStyleSheet("QTreeView {"
-                                 "    selection-background-color: navy;"
-                                 "    alternate-background-color: rgb(240,240,240);"
-                                 "    show-decoration-selected: 1;"
-                                 "}"
-                                 "QTreeView::item:selected {"
+    GMCResultView->setStyleSheet("QTreeView::item:selected {"
                                  "background-color: rgb(102,255,102);"
                                  "color: black;"
                                  "}");
 
-    GMCResultModel = new gmcResultItemModel();
-
+    GMCResultModel = new gmcResultItemModel(this);
     GMCResultDock->setWidget(GMCResultView);
 
     addDockWidget(Qt::RightDockWidgetArea, GMCResultDock);
@@ -708,6 +723,11 @@ std::vector<QString> appGUI::parseXmlByEndLine(std::string XML)
     result.push_back(QString::fromStdString(XML.substr(prev)));
 
     return result;
+}
+
+vector<GMCAction> * appGUI::getActions()
+{
+    return &actions;
 }
 
 inline moveToLine(QTextCursor &cur, int line)
@@ -745,8 +765,6 @@ void appGUI::colorTextDifferences()
 
     dark_pink.setBackground(QBrush(QColor(120, 0, 97, 60)));
     grey.setBackground(QBrush(QColor(60, 60, 60, 30)));
-
-    //qDebug()<< "First doc lines: " << up_doc->lineCount() << "\n Second doc lines: " << bt_doc->lineCount();
 
     std::vector<pair<int, int>> repetedLines;
 

@@ -3,9 +3,9 @@
 
 using namespace InternalTypes;
 
-gmcResultItemModel::gmcResultItemModel(QObject *parent) : QAbstractItemModel(parent)
+gmcResultItemModel::gmcResultItemModel(appGUI * appGui ,QObject *parent) : QAbstractItemModel(parent)
 {
-
+    app = appGui;
 }
 
 gmcResultItemModel::~gmcResultItemModel()
@@ -19,6 +19,7 @@ gmcResultItemModel::~gmcResultItemModel()
 void gmcResultItemModel::setResultVector(std::vector<GMCAction> resultList)
 {
     int i = 0;
+
     if (!results.empty())
         results.clear();
 
@@ -28,6 +29,32 @@ void gmcResultItemModel::setResultVector(std::vector<GMCAction> resultList)
         ++i;
     }
     qDebug() << i << " GMC Actions Detected";
+}
+
+void gmcResultItemModel::changeIncludeInGMC(const QModelIndex & index)
+{
+    auto item = getItemFromRow(index.row());
+    int id = item->resultObj.getPDDBCompareResultId();
+    for (int i = 0; i < results.size(); i++)
+    {
+        if ( results[i].getPDDBCompareResultId() == id )
+        {
+            auto actions = app->getActions();
+            if ( !item->resultObj.isIncludedInGMC() )
+            {
+                (*actions)[i].setIncludedInGMC(true);
+                item->resultObj.setIncludedInGMC(true);
+                item->updateIncludedInGMC(true);
+                break;
+            } else
+            {
+                (*actions)[i].setIncludedInGMC(false);
+                item->resultObj.setIncludedInGMC(false);
+                item->updateIncludedInGMC(false);
+                break;
+            }
+        }
+    }
 }
 
 void gmcResultItemModel::setRoot()
@@ -40,6 +67,7 @@ void gmcResultItemModel::clean()
     results.clear();
     rootItem = NULL;
 }
+
 
 int gmcResultItemModel::columnCount(const QModelIndex &parent) const
 {
@@ -54,22 +82,14 @@ QVariant gmcResultItemModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
+    gmcResultItem *item = static_cast<gmcResultItem*>(index.internalPointer());
+
+    if ( index.column() == 0 )
+            return static_cast< int >( item->isChecked() ? Qt::Checked : Qt::Unchecked );
+
     if (role != Qt::DisplayRole)
         return QVariant();
 
-    gmcResultItem *item = static_cast<gmcResultItem*>(index.internalPointer());
-
-//    if (item->data(index.column()) == true)
-//    {
-//        qDebug() << item->data(index.column());
-//        return QVariant( QBrush( Qt::green ) );
-//    }
-
-//    if (item->data(index.column()) == false)
-//    {
-//        qDebug() << item->data(index.column());
-//        return QVariant( QBrush( Qt::red ) );
-//    }
     return item->data(index.column());
 }
 
@@ -77,7 +97,13 @@ Qt::ItemFlags gmcResultItemModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
         return 0;
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+    Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+    if ( index.column() == 0 )
+        flags |= Qt::ItemIsUserCheckable;
+
+    return flags;
 }
 
 QVariant gmcResultItemModel::headerData(int section, Qt::Orientation orientation,
@@ -126,6 +152,19 @@ QModelIndex gmcResultItemModel::parent(const QModelIndex &index) const
     return createIndex(parentItem->row(), 0, parentItem);
 }
 
+bool gmcResultItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+    if ( index.isValid())
+    {
+        if (role == Qt::CheckStateRole)
+        {
+            changeIncludeInGMC(index);
+            return true;
+        }
+    }
+    return false;
+}
+
 int gmcResultItemModel::rowCount(const QModelIndex &parent) const
 {
     gmcResultItem *parentItem;
@@ -157,7 +196,6 @@ void gmcResultItemModel::setupModelData()
         if ( item->resultObj.getChangeScope() == GMCAction::ManagedObject && item->resultObj.getActionType() == GMCAction::Add)
         {
             auto children = item->resultObj.getChildActions();
-            qDebug() << "Children cound "<< children.size();
             for (vector<GMCAction>::iterator it = children.begin(); it != children.end(); it++)
             {
                 gmcResultItem * child = new gmcResultItem((*it), item);

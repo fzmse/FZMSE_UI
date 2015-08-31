@@ -65,6 +65,11 @@ void gmcResultItem::updateIncludedInGMC(bool state)
     itemData[0].setValue(state);
 }
 
+bool gmcResultItem::isChecked()
+{
+    return resultObj.isIncludedInGMC();
+}
+
 QString gmcResultItem::getLocation()
 {
     return itemData.value(2).toString();

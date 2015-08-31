@@ -1,3 +1,5 @@
+#pragma once
+
 #include "Includes/InternalTypes/PDDBManagedObjectCompareResult.h"
 #include "Includes/InternalTypes/PDDBManagedObjectParameter.h"
 #include <QList>

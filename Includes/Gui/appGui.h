@@ -1,3 +1,6 @@
+#pragma once
+
+class appGUI;
 
 #include <QMainWindow>
 #include "Xml/XmlReader.h"
@@ -13,6 +16,8 @@
 #include "Includes/Gui/xmlhighlighter.h"
 #include "Includes/InternalTypes/PDDBManagedObjectCompareResult.h"
 #include "Includes/Report/ReportUtilities.h"
+#include <QtWidgets>
+#include <cstring>
 
 class QLabel;
 class QAction;
@@ -42,13 +47,13 @@ public:
     void setLabels(QString desc, bool PDDB);
     void setLabel(QLabel * label, std::string text);
     void refreshGMCView();
+    void changeUserInteraction(gmcResultItem * item);
     std::vector<QString> parseXmlByEndLine(std::string XML);
-
+    vector<InternalTypes::GMCAction> * getActions();
 
 private slots:
     void loadPathToDoc(const QString &);
     void save();
-    void generateRaport();
     void help();
     void clean();
     void compare();
@@ -90,18 +95,15 @@ private:
     QGroupBox * centralButtonSubGroup;
 
     QMenu * fileMenu;
-    QMenu * raportMenu;
     QMenu * helpMenu;
     QMenu * viewMenu;
 
     QToolBar * fileToolBar;
-    QToolBar * raportToolBar;
 
     QAction * openOldPDDBAct;
     QAction * openNewPDDBAct;
     QAction * openOldGMCAct;
     QAction * saveFileAct;
-    QAction * generateRaportAct;
     QAction * displayHelpAct;
     QAction * addToGMC;
     QAction * delFromGMC;

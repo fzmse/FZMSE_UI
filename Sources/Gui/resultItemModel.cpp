@@ -133,10 +133,7 @@ void resultItemModel::setupModelData()
 
     QList<QVariant> rootData;
     rootData << "Type" << "Origin" << "Location" << "Changes";
-    if (rootItem != NULL)
-    {
-        //delete rootItem;
-    }
+
 
     rootItem = new resultItem(rootData);
     rootItem->setParetn(rootItem);
