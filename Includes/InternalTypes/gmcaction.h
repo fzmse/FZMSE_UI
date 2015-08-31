@@ -5,6 +5,7 @@
 
 #include "InternalTypes/ManagedObjectRelativeElement.h"
 #include "InternalTypes/GMCManagedObject.h"
+#include "PDDBManagedObjectCompareResult.h"
 
 namespace InternalTypes
 {
@@ -25,11 +26,13 @@ namespace InternalTypes
             ComplexParameter
         };
         GMCAction();
-        GMCAction(bool interaction, ManagedObjectRelativeElement * item,
+        GMCAction(PDDBManagedObjectCompareResult cmpRes, bool interaction, ManagedObjectRelativeElement * item,
                   ActionType actionType, ChangeScope actionScope, int pddbCompareResultId,
                   std::string helpNote = "",
                   std::vector<GMCManagedObject * > gmcMocsInvolved = std::vector<GMCManagedObject *>(),
-                  std::vector<GMCAction> childActions = std::vector<GMCAction>());
+                  std::vector<GMCAction> childActions = std::vector<GMCAction>(),
+                  ManagedObjectRelativeElement * oldItem = NULL
+                  );
 
         ~GMCAction();
 
@@ -45,14 +48,20 @@ namespace InternalTypes
         ActionType getActionType();
         ChangeScope getChangeScope();
         std::vector<GMCAction> getChildActions();
+        ManagedObjectRelativeElement * getOldItem();
         ManagedObjectRelativeElement * getItem();
         std::vector<GMCManagedObject*> getGmcMocsInvolved();
+        PDDBManagedObjectCompareResult getCompareResult();
+        PDDBManagedObjectCompareResult compareResult;
+
         std::string getHelpNote();
         bool isReaderInteractionRequired();
 
     protected:
+
         std::vector<GMCManagedObject * > gmcMocsInvolved;
         std::vector<GMCAction> childActions;
+        ManagedObjectRelativeElement * oldItem;
         ManagedObjectRelativeElement * item;
         ActionType actionType; ChangeScope actionScope;
         int pddbCompareResultId;

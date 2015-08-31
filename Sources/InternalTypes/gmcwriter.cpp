@@ -238,17 +238,63 @@ void GMCWriter::modifyParameterComplexType(GMCDocument * gmc, GMCManagedObjectPa
     }
 }
 
-void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
+
+inline std::string getAddReason(PDDBManagedObjectCompareResult r, PDDBManagedObjectParameter * p)
 {
+    std::string result = "";
+    if ( r.containsChange(PDDBManagedObjectCompareResult::CreationPriority) )
+        result += "changed to mandatory in PDDB";
+    else
+        result += "added in PDDB";
+    if ( p->getLteName() != "" )
+    {
+        result += " ( ";
+        result += p->getLteName();
+        result += " )";
+    }
+    return result;
+}
+
+inline std::string getRemoveReason(PDDBManagedObjectCompareResult r, PDDBManagedObjectParameter * p)
+{
+    std::string result = "";
+    if ( r.containsChange(PDDBManagedObjectCompareResult::CreationPriority) && p->getCreationPriority() == "optional" )
+        result += "changed to optional in PDDB";
+    else
+        result += "deleted in PDDB";
+    return result;
+}
+
+inline std::string getModifyReason(PDDBManagedObjectCompareResult r, PDDBManagedObjectParameter * p)
+{
+    std::string result = "";
+
+    if ( p->getLteName() != "" )
+    {
+        result += "( ";
+        result += p->getLteName();
+        result += " )";
+    }
+    return result;
+}
+
+vector<ReportEntry> GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
+{
+    vector<ReportEntry> entries;
     if ( action.getActionType() == GMCAction::ActionType::Add )
     {
         if ( action.getChangeScope() == GMCAction::ChangeScope::ManagedObject )
         {
+            string mocClassName = ((PDDBManagedObject*)action.getItem())->getClassName();
+
+            entries.push_back(ReportEntry(ReportEntry::Add, mocClassName, "", "", "class added"));
+
             insertMoc(gmc, ((PDDBManagedObject*)action.getItem())->getClassName());
             gmc->reinitialize();
-            GMCManagedObject * gmcNewMoc = gmc->getManagedObjectByClassName( ((PDDBManagedObject*)action.getItem())->getClassName());
+            GMCManagedObject * gmcNewMoc = gmc->getManagedObjectByClassName( mocClassName );
             if ( action.getChildActions().size() > 0 )
             {
+                bool justOnceIncludedInReport = false;
                 vector<GMCAction> childActions = action.getChildActions();
                 for ( vector<GMCAction>::iterator it = childActions.begin(); it != childActions.end(); it ++ )
                 {
@@ -257,6 +303,15 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                     PDDBDefaultValue * val = p->getPDDBValue();
                     if ( val->isComplexType() == false )
                     {
+                        if ( justOnceIncludedInReport == false )
+                        {
+                            string paramString = ((PDDBManagedObject*)p->getMocParent())->getClassName();
+                            paramString += " / ";
+                            paramString += p->getName();
+                            entries.push_back(ReportEntry(ReportEntry::Add, paramString, getAddReason(action.getCompareResult(), p), "", ((PDDBSimpleTypeValue*)val)->getEvaluatedValueForAdd()));
+                            justOnceIncludedInReport = true;
+                        }
+
                         insertParameterSimpleType(gmc, gmcNewMoc, p->getName(), ((PDDBSimpleTypeValue*)val)->getEvaluatedValueForAdd() );
                         gmc->reinitialize();
                     }
@@ -274,26 +329,47 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                             nameVal.push_back(parPair);
                         }
 
+                        if ( justOnceIncludedInReport == false )
+                        {
+                            string paramString = ((PDDBManagedObject*)p->getMocParent())->getClassName();
+                            paramString += " / ";
+                            paramString += p->getName();
+                            entries.push_back(ReportEntry(ReportEntry::Add, paramString, getAddReason(action.getCompareResult(), p), "", "structure added"));
+                            justOnceIncludedInReport = true;
+                        }
+
                         insertParameterComplexType(gmc, gmcNewMoc, p->getName(), nameVal);
                         gmc->reinitialize();
 
                     }
                 }
             }
-            delete gmcNewMoc;
+            //delete gmcNewMoc;
         }
         else
         {
             if ( action.getChangeScope() == GMCAction::ChangeScope::ManagedObjectParameter )
             {
-                for ( vector<GMCManagedObject*>::iterator it = action.getGmcMocsInvolved().begin();
-                      it != action.getGmcMocsInvolved().end(); it ++ )
+                auto invMocs = action.getGmcMocsInvolved();
+                bool justOnceIncludedInReport = false;
+                for ( vector<GMCManagedObject*>::iterator it = invMocs.begin();
+                      it != invMocs.end(); it ++ )
                 {
                     GMCAction a = action;
                     PDDBManagedObjectParameter * p = (PDDBManagedObjectParameter*)a.getItem();
                     PDDBDefaultValue * val = p->getPDDBValue();
                     if ( val->isComplexType() == false )
                     {
+                        if ( justOnceIncludedInReport == false )
+                        {
+                            string paramString = ((PDDBManagedObject*)p->getMocParent())->getClassName();
+                            paramString += " / ";
+                            paramString += p->getName();
+
+                            entries.push_back(ReportEntry(ReportEntry::Add, paramString, getAddReason(action.getCompareResult(), p), "", ((PDDBSimpleTypeValue*)val)->getEvaluatedValueForAdd()));
+                            justOnceIncludedInReport = true;
+                        }
+
                         insertParameterSimpleType(gmc, (*it), p->getName(), ((PDDBSimpleTypeValue*)val)->getEvaluatedValueForAdd() );
                         gmc->reinitialize();
                     }
@@ -310,6 +386,14 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                             parPair.second = ((PDDBSimpleTypeValue*)(*pIt)->getPDDBValue())->getEvaluatedValueForAdd();
                             nameVal.push_back(parPair);
                         }
+                        if ( justOnceIncludedInReport == false )
+                        {
+                            string paramString = ((PDDBManagedObject*)p->getMocParent())->getClassName();
+                            paramString += " / ";
+                            paramString += p->getName();
+                            entries.push_back(ReportEntry(ReportEntry::Add, paramString, getAddReason(action.getCompareResult(), p), "", "structure added"));
+                            justOnceIncludedInReport = true;
+                        }
 
                         insertParameterComplexType(gmc, (*it), p->getName(), nameVal);
                         gmc->reinitialize();
@@ -321,14 +405,25 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
             {
                 if ( action.getChangeScope() == GMCAction::ChangeScope::ComplexParameter )
                 {
-                    for ( vector<GMCManagedObject*>::iterator it = action.getGmcMocsInvolved().begin();
-                          it != action.getGmcMocsInvolved().end(); it ++ )
+                    bool justOnceIncludedInReport = false;
+                    auto mocsInv = action.getGmcMocsInvolved();
+                    for ( vector<GMCManagedObject*>::iterator it = mocsInv.begin();
+                          it != mocsInv.end(); it ++ )
                     {
                         GMCAction a = action;
                         PDDBManagedObjectParameter * p = (PDDBManagedObjectParameter*)a.getItem();
                         PDDBDefaultValue * val = p->getPDDBValue();
                         if ( val->isComplexType() == false )
                         {
+                            if ( justOnceIncludedInReport == false )
+                            {
+                                string paramString = ((PDDBManagedObject*)p->getMocParent())->getClassName();
+                                paramString += " / ";
+                                paramString += p->getName();
+                                entries.push_back(ReportEntry(ReportEntry::Add, paramString, getAddReason(action.getCompareResult(), p), "", ((PDDBSimpleTypeValue*)val)->getEvaluatedValueForAdd() ));
+                                justOnceIncludedInReport = true;
+                            }
+
                             insertParameterSimpleType(gmc, (*it), p->getName(), ((PDDBSimpleTypeValue*)val)->getEvaluatedValueForAdd() );
                             gmc->reinitialize();
                         }
@@ -344,6 +439,15 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                                 parPair.first = (*pIt)->getName();
                                 parPair.second = ((PDDBSimpleTypeValue*)(*pIt)->getPDDBValue())->getEvaluatedValueForAdd();
                                 nameVal.push_back(parPair);
+                            }
+
+                            if ( justOnceIncludedInReport == false )
+                            {
+                                string paramString = ((PDDBManagedObject*)p->getMocParent())->getClassName();
+                                paramString += " / ";
+                                paramString += p->getName();
+                                entries.push_back(ReportEntry(ReportEntry::Add, paramString, getAddReason(action.getCompareResult(), p), "", "structure added"));
+                                justOnceIncludedInReport = true;
                             }
 
                             insertParameterComplexType(gmc, (*it), p->getName(), nameVal);
@@ -362,10 +466,18 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
     {
         if ( action.getChangeScope() == GMCAction::ManagedObject )
         {
+            bool justOnceIncludedInReport = false;
             auto els = action.getGmcMocsInvolved();
             for ( vector<GMCManagedObject*>::iterator it = els.begin();
                   it != els.end(); it ++ )
             {
+
+                if ( justOnceIncludedInReport == false )
+                {
+                    entries.push_back(ReportEntry(ReportEntry::Remove, (*it)->getClassName(), "deleted in PDDB"));
+                    justOnceIncludedInReport = true;
+                }
+
                 removeMoc(gmc, *it );
                 gmc->reinitialize();
             }
@@ -374,6 +486,7 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
         if ( action.getChangeScope() == GMCAction::ManagedObjectParameter )
         {
             auto els = action.getGmcMocsInvolved();
+            bool justOnceIncludedInReport = false;
             for ( vector<GMCManagedObject*>::iterator it = els.begin();
                   it != els.end(); it ++ )
             {
@@ -383,11 +496,27 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
                 PDDBDefaultValue * val = p->getPDDBValue();
                 if ( val->isComplexType() == false )
                 {
+                    if ( justOnceIncludedInReport == false )
+                    {
+                        string paramString = ((PDDBManagedObject*)p->getMocParent())->getClassName();
+                        paramString += " / ";
+                        paramString += p->getName();
+                        entries.push_back(ReportEntry(ReportEntry::Remove, paramString, getRemoveReason(action.getCompareResult(), p)));
+                        justOnceIncludedInReport = true;
+                    }
                     removeParameterSimpleType(gmc, (*it), p->getName());
                     gmc->reinitialize();
                 }
                 else
                 {
+                    if ( justOnceIncludedInReport == false )
+                    {
+                        string paramString = ((PDDBManagedObject*)p->getMocParent())->getClassName();
+                        paramString += " / ";
+                        paramString += p->getName();
+                        entries.push_back(ReportEntry(ReportEntry::Remove, paramString, getRemoveReason(action.getCompareResult(), p)));
+                        justOnceIncludedInReport = true;
+                    }
                     GMCManagedObjectParameter * currPar = (*it)->getParameterByName(p->getName());
                     removeParameterComplexType(gmc, currPar, p->getName() );
                     gmc->reinitialize();
@@ -403,45 +532,70 @@ void GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action)
     {
         if ( action.getChangeScope() == GMCAction::ManagedObjectParameter )
         {
+            bool justOnceIncludedInReport = false;
             auto els = action.getGmcMocsInvolved();
             for ( vector<GMCManagedObject*>::iterator it = els.begin();
                   it != els.end(); it ++ )
             {
                 GMCAction a = action;
+                PDDBManagedObjectParameter * oldP = (PDDBManagedObjectParameter*)a.getOldItem();
                 PDDBManagedObjectParameter * p = (PDDBManagedObjectParameter*)a.getItem();
                 PDDBDefaultValue * val = p->getPDDBValue();
 
                 GMCManagedObjectParameter * gmcParam = (*it)->getParameterByName(p->getName());
-                if ( val->isComplexType() == false )
+                if ( gmcParam != NULL )
                 {
-                    modifyParameterSimpleType(gmc, gmcParam, ((PDDBSimpleTypeValue*)val)->getEvaluatedValue() );
-                }
-                else
-                {
-                    // NOT HANDLED
-                    //removeParameterComplexType(gmc, (*it), p->getName() );
+                    if ( val->isComplexType() == false )
+                    {
+                        if ( justOnceIncludedInReport == false )
+                        {
+                            string paramString = ((PDDBManagedObject*)p->getMocParent())->getClassName();
+                            paramString += " / ";
+                            paramString += p->getName();
+                            entries.push_back(ReportEntry(ReportEntry::Modify, paramString , getModifyReason(action.getCompareResult(), p), ((PDDBSimpleTypeValue*)oldP->getPDDBValue())->getEvaluatedValue() , ((PDDBSimpleTypeValue*)val)->getEvaluatedValue()));
+                            justOnceIncludedInReport = true;
+                        }
+                        modifyParameterSimpleType(gmc, gmcParam, ((PDDBSimpleTypeValue*)val)->getEvaluatedValue() );
+                    }
+                    else
+                    {
+                        // NOT HANDLED
+                        //removeParameterComplexType(gmc, (*it), p->getName() );
+                    }
                 }
             }
         }
     }
 
     gmc->reinitialize();
+
+    return entries;
 }
 
 
-void GMCWriter::reactToAll( GMCDocument * gmc, std::vector<GMCAction> actions)
+std::vector<ReportEntry> GMCWriter::reactToAll( GMCDocument * gmc, std::vector<GMCAction> actions)
 {
+    std::vector<ReportEntry> report;
     for ( vector<GMCAction>::iterator it = actions.begin(); it != actions.end(); it ++ )
     {
-        reactToAction(gmc, *it);
+        auto reports = reactToAction(gmc, *it);
+        for ( vector<ReportEntry>::iterator rit = reports.begin(); rit != reports.end(); rit ++ )
+            report.push_back(*rit);
     }
+    return report;
 }
 
-void GMCWriter::reactToAllIncluded( GMCDocument * gmc, std::vector<GMCAction> actions)
+std::vector<ReportEntry> GMCWriter::reactToAllIncluded( GMCDocument * gmc, std::vector<GMCAction> actions)
 {
+    std::vector<ReportEntry> report;
     for ( vector<GMCAction>::iterator it = actions.begin(); it != actions.end(); it ++ )
     {
         if ((*it).isIncludedInGMC() == true)
-            reactToAction(gmc, *it);
+        {
+            auto reports = reactToAction(gmc, *it);
+            for ( vector<ReportEntry>::iterator rit = reports.begin(); rit != reports.end(); rit ++ )
+                report.push_back(*rit);
+        }
     }
+    return report;
 }

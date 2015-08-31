@@ -74,14 +74,23 @@ void appGUI::save()
         QString savePath = QFileDialog::getSaveFileName(
                     this,
                     tr("Save file"),
-                    "",
+                    tr(oldGMCPath.c_str()),
                     tr("XML (*.xml)"));
         if (savePath.length() > 0)
         {
             newGMCdoc = make_shared<GMCDocument>(oldGMCdoc.get());
-            GMCWriter::reactToAllIncluded(newGMCdoc.get(), actions);
+            auto report = GMCWriter::reactToAllIncluded(newGMCdoc.get(), actions);
             if (XmlWriter::save(newGMCdoc.get()->getXMLDocument(), savePath.toStdString()))
             {
+                QDir d = QFileInfo(savePath).absoluteDir();
+                QString fName = QFileInfo(savePath).fileName();
+                QString logoPath = d.absolutePath() + "/logo.png";
+                QString reportPath = savePath;
+                reportPath += ".html";
+                ReportUtilities::saveLogo(logoPath.toStdString());
+                ReportUtilities::generateReport(report, reportPath.toStdString(),
+                                                getFileName(oldPDDBPath), getFileName(newPDDBPath),
+                                                getFileName(oldGMCPath), fName.toStdString());
                 QMessageBox::information(this, tr("Saving file"),
                                                tr("Success !         "),
                                                QMessageBox::Ok);
@@ -104,9 +113,8 @@ void appGUI::save()
 
 void appGUI::generateRaport()
 {
-    QMessageBox::information(this, tr("Raport"),
-                                   tr("Not implemented yet !     "),
-                                   QMessageBox::Ok);
+
+    qDebug() << ReportUtilities::getReportTemplate();
 }
 
 void appGUI::help()
@@ -588,8 +596,8 @@ void appGUI::createActions()
     displayHelpAct->setStatusTip(tr("Help"));
     connect(displayHelpAct, SIGNAL(triggered(bool)), this, SLOT(help()));
 
-    addToGMC = new QAction(tr("Add to GMC"), this);
-    delFromGMC = new QAction(tr("Delete from GMC"), this);
+    addToGMC = new QAction(tr("Include in GMC"), this);
+    delFromGMC = new QAction(tr("Exclude from GMC"), this);
 }
 
 void appGUI::createMenus()

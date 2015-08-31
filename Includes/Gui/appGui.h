@@ -12,6 +12,7 @@
 #include "InternalTypes/gmcwriter.h"
 #include "Includes/Gui/xmlhighlighter.h"
 #include "Includes/InternalTypes/PDDBManagedObjectCompareResult.h"
+#include "Includes/Report/ReportUtilities.h"
 
 class QLabel;
 class QAction;

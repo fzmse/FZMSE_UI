@@ -40,6 +40,7 @@ namespace InternalTypes
         std::vector< std::pair < std::string , std::string > > getRelatedParameters();
         std::string getName();
         std::string getMaxOccurs();
+        std::string getLteName();
 
         bool isList();
 
@@ -62,6 +63,7 @@ namespace InternalTypes
         std::string retrieveRelatedParametersRawXml();
         std::vector< std::pair < std::string , std::string > > retrieveRelatedParameters();
         std::string retrieveMaxOccurs();
+        std::string retrieveLteName();
 
         std::vector<ManagedObjectRelativeElement* > properties;
 		bool validMocParameter;
@@ -78,6 +80,7 @@ namespace InternalTypes
         std::string relatedFeaturesRawXml;
         std::string historyRawXml;
 
+        std::string lteName;
         std::string maxOccurs;
 
         bool list;

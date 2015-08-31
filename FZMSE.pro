@@ -61,7 +61,9 @@ SOURCES += main.cpp \
     Sources/Xml/XmlWriter.cpp \
     UT/Doubles/Sources/Xml/XmlWriterTest.cpp \
     UT/Doubles/Sources/InternalTypes/GMCWriterTest.cpp \
-    Sources/InternalTypes/GMCWriter.cpp
+    Sources/InternalTypes/GMCWriter.cpp \
+    Sources/Report/ReportUtilities.cpp \
+    Sources/Report/ReportEntry.cpp
 
 
 HEADERS  += \
@@ -102,7 +104,9 @@ HEADERS  += \
     Includes/Gui/gmcresultitem.h \
     Includes/Gui/gmcresultitemmodel.h \
     Includes/Xml/XmlWriter.h \
-    Includes/InternalTypes/GMCWriter.h
+    Includes/InternalTypes/GMCWriter.h \
+    Includes/Report/ReportUtilities.h \
+    Includes/Report/ReportEntry.h
 
 FORMS    += mainwindow.ui
 
@@ -147,3 +151,5 @@ DISTFILES += \
     Includes/Gui/lineTextEdit \
     UT/TestFiles/PDDB/pddb1507_mychanges.xml \
     UT/TestFiles/PDDB/f13.xml
+
+RESOURCES += appresources.qrc

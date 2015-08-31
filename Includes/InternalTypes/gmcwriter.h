@@ -7,6 +7,8 @@
 
 #include "Xml/XmlWriter.h"
 
+#include "Report/ReportEntry.h"
+
 #include "InternalTypes/pddbsimpletypevalue.h"
 #include "InternalTypes/PDDBComplexTypeValue.h"
 
@@ -32,9 +34,9 @@ namespace InternalTypes
         static void modifyParameterComplexType(GMCDocument * gmc, GMCManagedObjectParameter * complexPar,
                                                std::string name, std::string value);
 
-        static void reactToAction(GMCDocument * gmc, GMCAction action);
+        static std::vector<ReportEntry> reactToAction(GMCDocument * gmc, GMCAction action);
 
-        static void reactToAllIncluded( GMCDocument * gmc, std::vector<GMCAction> actions);
-        static void reactToAll( GMCDocument * gmc, std::vector<GMCAction> actions);
+        static std::vector<ReportEntry> reactToAllIncluded( GMCDocument * gmc, std::vector<GMCAction> actions);
+        static std::vector<ReportEntry> reactToAll( GMCDocument * gmc, std::vector<GMCAction> actions);
     };
 }

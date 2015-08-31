@@ -49,6 +49,9 @@ PDDBManagedObjectParameter::PDDBManagedObjectParameter(XMLElement * e, ManagedOb
         // retrieve relatedParameters
         this->relatedParameters = retrieveRelatedParameters();
 
+        // retrieve lte name
+        this->lteName = retrieveLteName();
+
         // retrieve maxOccurs Attribute
         this->maxOccurs = retrieveMaxOccurs();
         this->list = this->maxOccurs.size() > 0 && this->maxOccurs != "1";
@@ -232,6 +235,37 @@ std::string PDDBManagedObjectParameter::getMaxOccurs()
 std::string PDDBManagedObjectParameter::retrieveMaxOccurs()
 {
     return XmlElementReader::getAttributeByName(this->element, "maxOccurs");
+}
+
+std::string PDDBManagedObjectParameter::getLteName()
+{
+    return this->lteName;
+}
+
+std::string PDDBManagedObjectParameter::retrieveLteName()
+{
+    //feature
+    std::vector<XMLElement *> elems = XmlReader::getElementsWithSpecificNameAndAttribute(this->getElement(), "feature");
+    if ( elems.size() > 0 )
+    {
+        XMLElement * lastElement = elems[elems.size() - 1];
+        if ( lastElement != NULL )
+        {
+            std::string featureName = XmlElementReader::getAttributeByName(lastElement, "name");
+            if ( featureName.size() >= 7 )
+            {
+                std::string newStr = "";
+                for ( int i = 0; i <= 7; i ++ )
+                {
+                    if ( featureName[i] == ' ' )
+                        return newStr;
+                    newStr += featureName[i];
+                }
+                return newStr;
+            }
+        }
+    }
+    return "";
 }
 
 

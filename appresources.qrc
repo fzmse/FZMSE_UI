@@ -1,0 +1,6 @@
+<RCC>
+    <qresource>
+        <file>report/logo.png</file>
+        <file>report/reptemp.html</file>
+    </qresource>
+</RCC>

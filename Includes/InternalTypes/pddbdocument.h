@@ -8,6 +8,8 @@
 #include "InternalTypes/PDDBManagedObject.h"
 #include "InternalTypes/PDDBManagedObjectCompareResult.h"
 
+#include "InternalTypes/PDDBComplexTypeValue.h"
+
 namespace InternalTypes
 {
     class PDDBDocument
