@@ -1,5 +1,7 @@
 #pragma once
 
+#include <chrono>
+
 #include "TinyXML/tinyxml2.h"
 
 #include "GMCAction.h"
@@ -22,7 +24,7 @@ namespace InternalTypes
         static void insertParameterComplexType(GMCDocument * gmc, GMCManagedObject * moc, std::string name,
                                                std::vector< std::pair< std::string, std::string> > values);
 
-        static tinyxml2::XMLElement * insertMoc(GMCDocument * gmc, std::string className);
+        static tinyxml2::XMLElement * insertMoc(GMCDocument * gmc, std::string className, std::string version);
 
         static void removeParameterSimpleType(GMCDocument * gmc, GMCManagedObject * moc, std::string name);
         static void removeParameterComplexType(GMCDocument * gmc, GMCManagedObjectParameter * complexPar,
@@ -38,5 +40,7 @@ namespace InternalTypes
 
         static std::vector<ReportEntry> reactToAllIncluded( GMCDocument * gmc, std::vector<GMCAction> actions);
         static std::vector<ReportEntry> reactToAll( GMCDocument * gmc, std::vector<GMCAction> actions);
+
+        static void updateVersionInGmc(GMCDocument * gmc, std::string version);
     };
 }

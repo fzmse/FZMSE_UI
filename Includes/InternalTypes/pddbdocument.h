@@ -24,13 +24,21 @@ namespace InternalTypes
         PDDBManagedObject * getManagedObjectByClassName(std::string name);
         tinyxml2::XMLDocument * getXMLDocument();
 
+        std::string getReleaseName();
+        std::string getReleaseVersion();
+
 
 
     protected:
 
         std::vector<PDDBManagedObject*> retrieveManagedObjects();
+        std::string retrieveReleaseName();
+        std::string retrieveReleaseVersion(std::string rel);
 
         std::vector<PDDBManagedObject*> managedObjects;
         tinyxml2::XMLDocument * doc;
+
+        std::string releaseName;
+        std::string releaseVersion;
     };
 }

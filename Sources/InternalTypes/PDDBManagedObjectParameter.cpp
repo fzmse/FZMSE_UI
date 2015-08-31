@@ -56,6 +56,9 @@ PDDBManagedObjectParameter::PDDBManagedObjectParameter(XMLElement * e, ManagedOb
         this->maxOccurs = retrieveMaxOccurs();
         this->list = this->maxOccurs.size() > 0 && this->maxOccurs != "1";
 
+        // retrieve pronto
+        this->pronto = retrievePronto();
+
     }
 }
 
@@ -252,10 +255,10 @@ std::string PDDBManagedObjectParameter::retrieveLteName()
         if ( lastElement != NULL )
         {
             std::string featureName = XmlElementReader::getAttributeByName(lastElement, "name");
-            if ( featureName.size() >= 7 )
+            if ( featureName.size() >= 8 )
             {
                 std::string newStr = "";
-                for ( int i = 0; i <= 7; i ++ )
+                for ( int i = 0; i <= 8; i ++ )
                 {
                     if ( featureName[i] == ' ' )
                         return newStr;
@@ -382,4 +385,29 @@ std::string PDDBManagedObjectParameter::getPropertyXMLByTagName(std::string tag)
     }
 
     return "";
+}
+
+std::string PDDBManagedObjectParameter::getPronto()
+{
+    return this->pronto;
+}
+
+std::string PDDBManagedObjectParameter::retrievePronto()
+{
+    std::vector<XMLElement *> elems = XmlReader::getElementsWithSpecificNameAndAttributeFromChildrenLevel(this->getElement(), "history");
+    if ( elems.size() > 0 )
+    {
+        XMLElement * e = elems[0];
+        std::vector<XMLElement *> paraElems = XmlReader::getElementsWithSpecificNameAndAttribute(this->getElement(), "para");
+        if ( paraElems.size() > 0 )
+        {
+            XMLElement * elPara = paraElems[ paraElems.size() - 1 ];
+            const std::vector<std::string> stringMatches({ "PR ", "NA", "CN", "CR", "CRL", "PR", "LTE", "LBT" });
+            std::string resultString;
+
+
+
+
+        }
+    }
 }

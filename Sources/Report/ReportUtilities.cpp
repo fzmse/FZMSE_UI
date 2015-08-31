@@ -209,7 +209,7 @@ inline QString generateModifiedHTML(vector<ReportEntry> entries)
 }
 
 
-bool ReportUtilities::generateReport( vector<ReportEntry> entries, string filename, string oldPDDBName, string newPDDBName, string oldGMCName, string newGMCName)
+bool ReportUtilities::generateReport( vector<ReportEntry> entries, string filename, string oldPDDBName, string newPDDBName, string oldGMCName, string newGMCName, string pddbRelease)
 {
     QFile outFile(QString::fromStdString(filename));
     if ( outFile.open(QIODevice::WriteOnly | QIODevice::Text ) )
@@ -221,6 +221,9 @@ bool ReportUtilities::generateReport( vector<ReportEntry> entries, string filena
         transformedText = transformedText.replace("<@@@NEW_PDDB_NAME@@@>", QString::fromStdString(newPDDBName));
         transformedText = transformedText.replace("<@@@OLD_GMC_NAME@@@>", QString::fromStdString(oldGMCName));
         transformedText = transformedText.replace("<@@@NEW_GMC_NAME@@@>", QString::fromStdString(newGMCName));
+
+        transformedText = transformedText.replace("<@@@NEW_PDDB_RELEASE@@@>", QString::fromStdString(pddbRelease));
+        transformedText = transformedText.replace("<@@@NEW_PDDB_RELEASE@@@>", QString::fromStdString(pddbRelease));
 
         QString addTableContentHTML = generateAddedHTML(entries);
         transformedText = transformedText.replace("<@@@ADDED_ENTRIES@@@>", addTableContentHTML);

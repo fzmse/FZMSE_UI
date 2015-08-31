@@ -16,10 +16,11 @@ using namespace tinyxml2;
 std::vector<shared_ptr<PDDBManagedObject> > d1Mocs;
 std::vector<shared_ptr<PDDBManagedObject> > d2Mocs;
 
-PDDBManagedObject::PDDBManagedObject(XMLElement * e)
+PDDBManagedObject::PDDBManagedObject(XMLElement * e, std::string version)
 	: ManagedObjectRelativeElement::ManagedObjectRelativeElement(e)
 {
 	this->validMocObject = false;
+    this->version = version;
 	if ( e != NULL )
 	{
 		if ( XmlElementReader::getName(e) == MANAGED_OBJECT_XML_NAME )
@@ -48,6 +49,11 @@ PDDBManagedObject::~PDDBManagedObject()
     {
         delete (*it);
     }
+}
+
+std::string PDDBManagedObject::getVersion()
+{
+    return this->version;
 }
 
 bool PDDBManagedObject::isValidMocObject()
@@ -157,3 +163,6 @@ PDDBManagedObjectParameter * PDDBManagedObject::retrieveMocIdParameter()
     }
     return NULL;
 }
+
+
+

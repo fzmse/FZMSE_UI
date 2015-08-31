@@ -19,5 +19,5 @@ public:
     static bool saveLogo(std::string filename);
     static bool generateReport( std::vector<ReportEntry> entries, std::string filename,
                                 std::string oldPDDBName, std::string newPDDBName,
-                                std::string oldGMCName, std::string newGMCName);
+                                std::string oldGMCName, std::string newGMCName, std::string pddbRelease);
 };

@@ -80,6 +80,7 @@ void appGUI::save()
         {
             newGMCdoc = make_shared<GMCDocument>(oldGMCdoc.get());
             auto report = GMCWriter::reactToAllIncluded(newGMCdoc.get(), actions);
+            GMCWriter::updateVersionInGmc(newGMCdoc.get(), newPDDBdoc->getReleaseVersion());
             if (XmlWriter::save(newGMCdoc.get()->getXMLDocument(), savePath.toStdString()))
             {
                 QDir d = QFileInfo(savePath).absoluteDir();
@@ -90,7 +91,7 @@ void appGUI::save()
                 ReportUtilities::saveLogo(logoPath.toStdString());
                 ReportUtilities::generateReport(report, reportPath.toStdString(),
                                                 getFileName(oldPDDBPath), getFileName(newPDDBPath),
-                                                getFileName(oldGMCPath), fName.toStdString());
+                                                getFileName(oldGMCPath), fName.toStdString(), newPDDBdoc->getReleaseName());
                 QMessageBox::information(this, tr("Saving file"),
                                                tr("Success !         "),
                                                QMessageBox::Ok);
