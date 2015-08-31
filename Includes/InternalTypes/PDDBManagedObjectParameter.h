@@ -42,6 +42,8 @@ namespace InternalTypes
         std::string getMaxOccurs();
         std::string getLteName();
 
+        std::string getPronto();
+
         bool isList();
 
         std::string getPropertyXMLByTagName(std::string tag);
@@ -64,6 +66,7 @@ namespace InternalTypes
         std::vector< std::pair < std::string , std::string > > retrieveRelatedParameters();
         std::string retrieveMaxOccurs();
         std::string retrieveLteName();
+        std::string retrievePronto();
 
         std::vector<ManagedObjectRelativeElement* > properties;
 		bool validMocParameter;
@@ -82,6 +85,8 @@ namespace InternalTypes
 
         std::string lteName;
         std::string maxOccurs;
+
+        std::string pronto;
 
         bool list;
 

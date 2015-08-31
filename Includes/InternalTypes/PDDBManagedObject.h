@@ -33,14 +33,19 @@ namespace InternalTypes
         const std::string MANAGED_OBJECT_XML_NAME = "managedObject";
         const std::string MANAGED_OBJECT_PARAMETER_XML_NAME = "p";
 
-        PDDBManagedObject(tinyxml2::XMLElement * e);
+        PDDBManagedObject(tinyxml2::XMLElement * e, std::string version);
         ~PDDBManagedObject();
 
         std::vector<PDDBManagedObjectCompareResult> compare(PDDBManagedObject * moc);
 
         std::vector<PDDBManagedObjectParameter*> getParameters();
         std::string getClassName();
+
+
+
         PDDBManagedObjectParameter * getMocIdParameter();
+
+        std::string getVersion();
 
 		bool isValidMocObject();
 	protected:
@@ -49,12 +54,17 @@ namespace InternalTypes
         std::string retrieveClassName(tinyxml2::XMLElement * e);
         PDDBManagedObjectParameter * retrieveMocIdParameter();
 
+
+
         std::vector<PDDBManagedObjectParameter*> parameters; // TODO
 
         PDDBManagedObjectParameter * mocIdParameter;
 
         std::string className;
+        std::string version;
 
 		bool validMocObject;
+
+
 	};
 }

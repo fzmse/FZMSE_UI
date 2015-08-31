@@ -116,7 +116,7 @@ void GMCWriter::insertParameterComplexType(GMCDocument * gmc, GMCManagedObject *
 
 }
 
-XMLElement * GMCWriter::insertMoc(GMCDocument * gmc, std::string className)
+XMLElement * GMCWriter::insertMoc(GMCDocument * gmc, std::string className, std::string version)
 {
     XMLElement * insertAfter = NULL;
     GMCManagedObject * firstMoc = gmc->getManagedObjects()[0];
@@ -145,6 +145,9 @@ XMLElement * GMCWriter::insertMoc(GMCDocument * gmc, std::string className)
         // insert first child
         XMLElement * n = gmc->getXMLDocument()->NewElement("managedObject");
         n->SetAttribute("class", className.c_str());
+        n->SetAttribute("operation", "create");
+        n->SetAttribute("version", version.c_str());
+
         XmlWriter::insertChild( (XMLElement*)gmc->getXMLDocument(), n);
         return n;
     }
@@ -153,6 +156,8 @@ XMLElement * GMCWriter::insertMoc(GMCDocument * gmc, std::string className)
         // insert after
         XMLElement * n = gmc->getXMLDocument()->NewElement("managedObject");
         n->SetAttribute("class", className.c_str());
+        n->SetAttribute("operation", "create");
+        n->SetAttribute("version", version.c_str());
         XmlWriter::insertAfter( insertAfter, n);
         return n;
     }
@@ -255,6 +260,17 @@ inline std::string getAddReason(PDDBManagedObjectCompareResult r, PDDBManagedObj
     return result;
 }
 
+inline std::string getAddReason(PDDBManagedObjectCompareResult r, PDDBManagedObject * moc)
+{
+    std::string result = "";
+    if ( r.containsChange(PDDBManagedObjectCompareResult::CreationPriority) )
+        result += "changed to mandatory in PDDB";
+    else
+        result += "added in PDDB";
+
+    return result;
+}
+
 inline std::string getRemoveReason(PDDBManagedObjectCompareResult r, PDDBManagedObjectParameter * p)
 {
     std::string result = "";
@@ -287,9 +303,9 @@ vector<ReportEntry> GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action
         {
             string mocClassName = ((PDDBManagedObject*)action.getItem())->getClassName();
 
-            entries.push_back(ReportEntry(ReportEntry::Add, mocClassName, "", "", "class added"));
+            entries.push_back(ReportEntry(ReportEntry::Add, mocClassName, getAddReason(action.getCompareResult(), ((PDDBManagedObject*)action.getItem())), "", "class added"));
 
-            insertMoc(gmc, ((PDDBManagedObject*)action.getItem())->getClassName());
+            insertMoc(gmc, ((PDDBManagedObject*)action.getItem())->getClassName(), ((PDDBManagedObject*)action.getItem())->getVersion());
             gmc->reinitialize();
             GMCManagedObject * gmcNewMoc = gmc->getManagedObjectByClassName( mocClassName );
             if ( action.getChildActions().size() > 0 )
@@ -598,4 +614,40 @@ std::vector<ReportEntry> GMCWriter::reactToAllIncluded( GMCDocument * gmc, std::
         }
     }
     return report;
+}
+
+
+void GMCWriter::updateVersionInGmc(GMCDocument * gmc, std::string version)
+{
+    XMLElement * el = XmlReader::getFirstElementWithSpecificNameAndAttribute((XMLElement*)gmc->getXMLDocument(), "log");
+    if ( el != NULL )
+    {
+        if ( el->Parent() != NULL )
+        {
+            if ( XmlElementReader::getName((XMLElement*)(el->Parent())) == "header" )
+            {
+                el->SetAttribute("appVersion", version.c_str());
+
+                time_t t = time(0);   // get time now
+                struct tm * now = localtime( & t );
+
+                const int BUFFER_SIZE = 50;
+                char buff[BUFFER_SIZE];
+                for ( int i = 0; i < BUFFER_SIZE; i ++ )
+                    buff[i] = 0;
+
+                strftime(buff, BUFFER_SIZE, "%Y-%m-%d %H:%M:%S" , now);
+
+                el->SetAttribute("dateTime", buff);
+            }
+        }
+    }
+
+
+    auto elements = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*)gmc->getXMLDocument(), "managedObject");
+    for ( std::vector<XMLElement*>::iterator it = elements.begin(); it != elements.end(); it ++ )
+    {
+        XMLElement * e = *it;
+        e->SetAttribute("version", version.c_str());
+    }
 }

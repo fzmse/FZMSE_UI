@@ -8,6 +8,10 @@ PDDBDocument::PDDBDocument(std::string fileName)
 {
     this->doc = XmlWrapper::loadDocument(fileName);
 
+    this->releaseName = retrieveReleaseName();
+
+    this->releaseVersion = retrieveReleaseVersion(this->releaseName);
+
     this->managedObjects = retrieveManagedObjects();
 }
 
@@ -43,7 +47,7 @@ std::vector<PDDBManagedObject*> PDDBDocument::retrieveManagedObjects()
     XMLElement * d1FirstElement = XmlReader::getFirstElementWithSpecificNameAndAttribute((XMLElement*)this->doc, "managedObject");
     for( XMLElement* node = d1FirstElement; node != NULL; node = node->NextSiblingElement() )
     {
-        PDDBManagedObject * curr = new PDDBManagedObject(node);
+        PDDBManagedObject * curr = new PDDBManagedObject(node, this->releaseVersion);
         results.push_back(curr);
     }
     return results;
@@ -104,4 +108,43 @@ std::vector<PDDBManagedObjectCompareResult> PDDBDocument::compareDocuments( PDDB
     return results;
 }
 
+
+std::string PDDBDocument::getReleaseName()
+{
+    return this->releaseName;
+}
+
+std::string PDDBDocument::getReleaseVersion()
+{
+    return this->releaseVersion;
+}
+
+std::string PDDBDocument::retrieveReleaseName()
+{
+    XMLElement * el = XmlReader::getFirstElementWithSpecificNameAndAttribute((XMLElement*)this->doc, "header");
+    if ( el != NULL )
+    {
+        std::string rel = XmlElementReader::getAttributeByName(el, "release");
+        return rel;
+    }
+
+    return "";
+}
+
+std::string PDDBDocument::retrieveReleaseVersion(std::string relName)
+{
+    if ( relName != "" )
+    {
+        std::string result = "";
+        for ( int i = 0; i < relName.length(); i ++ )
+        {
+            if ( relName[i] == '_' )
+                break;
+            result += relName[i];
+        }
+
+        return result;
+    }
+    return "";
+}
 
