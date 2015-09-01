@@ -392,6 +392,33 @@ std::string PDDBManagedObjectParameter::getPronto()
     return this->pronto;
 }
 
+
+// returns index of the end of allowed sequence or -1 if not found
+inline int isStartOfSequence(string s, int index)
+{
+    const std::vector<std::string> stringMatches({ "PR ", "NA", "CN", "CR", "CRL", "PR", "LTE", "LBT" });
+    int sLen = s.length();
+    for ( vector<string>::const_iterator it  = stringMatches.begin(); it != stringMatches.end(); it ++)
+    {
+        string sMatch = *it;
+        if ( sLen > (index + sMatch.length() + 1) )
+            if ( s.substr(index, sMatch.length()) == sMatch )
+            {
+                char nextChar = s[index + sMatch.length()];
+
+                // Check if there are numbers or capital letters following the sequence
+                if ( ( nextChar >= 'A' && nextChar <= 'Z' ) || ( nextChar >= '0' && nextChar <= '9' ) )
+                    return index + sMatch.length();
+            }
+    }
+    return -1;
+}
+
+inline bool isNotEndOfProntoChar(char c)
+{
+    return (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || ( c >= 'a' && c <= 'z' ) || c == '-' ;
+}
+
 std::string PDDBManagedObjectParameter::retrievePronto()
 {
     std::vector<XMLElement *> elems = XmlReader::getElementsWithSpecificNameAndAttributeFromChildrenLevel(this->getElement(), "history");
@@ -402,12 +429,37 @@ std::string PDDBManagedObjectParameter::retrievePronto()
         if ( paraElems.size() > 0 )
         {
             XMLElement * elPara = paraElems[ paraElems.size() - 1 ];
-            const std::vector<std::string> stringMatches({ "PR ", "NA", "CN", "CR", "CRL", "PR", "LTE", "LBT" });
-            std::string resultString;
+            std::string paraText = "";
+            auto s = elPara->GetText();
+            if ( s != NULL )
+                paraText = s;
+            std::string resultString = "";
 
-
+            bool isFetchingSequence = false;
+            for ( int i = 0; i < paraText.length(); i ++ )
+            {
+                if ( isFetchingSequence )
+                {
+                    if ( isNotEndOfProntoChar(paraText[i]) )
+                        resultString += paraText[i];
+                    else
+                        return resultString;
+                }
+                else
+                {
+                    int index = isStartOfSequence(paraText, i);
+                    if ( index > 0 )
+                    {
+                        isFetchingSequence = true;
+                        string txtToAdd = paraText.substr(i, index - i + 1);
+                        resultString += txtToAdd;
+                        i = index;
+                    }
+                }
+            }
 
 
         }
     }
+    return "";
 }
