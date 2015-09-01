@@ -144,11 +144,13 @@ inline isFoundInGMCAction(vector<pair<string, string> > relParams, std::vector<G
 }
 
 
-inline std::vector<GMCAction> resolveGMCActionForMocAdd ( PDDBManagedObjectCompareResult r, GMCDocument * gmc, vector<GMCAction> actionsPost )
+inline std::vector<GMCAction> resolveGMCActionForMocAdd ( PDDBManagedObjectCompareResult r, GMCDocument * gmc, vector<GMCAction> actionsPost, PDDBManagedObject * currMoc = NULL )
 {
     vector<GMCAction> actions;
 
-    PDDBManagedObject * currPDDBMoc = (PDDBManagedObject*)r.getSecondElement();
+    PDDBManagedObject * currPDDBMoc = currMoc;
+    if ( currMoc == NULL )
+        currPDDBMoc = (PDDBManagedObject*)r.getSecondElement();
     auto gmcMocs = gmc->getMocsByClassName(currPDDBMoc->getClassName());
     if ( gmcMocs.size() > 0 )
     {
@@ -582,7 +584,6 @@ std::vector<GMCAction> GMCDocument::resolveGMCActionsPostProcessing( PDDBDocumen
                                                                              oldPar));
                                             }
                                         }
-
                                     }
                                 }
                             }
@@ -591,7 +592,23 @@ std::vector<GMCAction> GMCDocument::resolveGMCActionsPostProcessing( PDDBDocumen
                 }
                 else
                 {
-
+                    if ( r.containsChange(PDDBManagedObjectCompareResult::MoMinOccurs) )
+                    {
+                        PDDBManagedObjectParameter * mocParId = (PDDBManagedObjectParameter*)r.getSecondElement();
+                        PDDBManagedObject * mocParIdParentMoc = (PDDBManagedObject*)mocParId->getMocParent();
+                        if ( mocParIdParentMoc != NULL )
+                        {
+                            if ( mocParIdParentMoc->getMocIdParameter() == mocParId )
+                            {
+                                if ( mocParId->getMoMinOccurs() != "" && mocParId->getMoMinOccurs() != "0" )
+                                {
+                                    auto newAction = resolveGMCActionForMocAdd(r, gmc, actionsPost, mocParIdParentMoc);
+                                    if ( newAction.size() > 0 )
+                                        actions.push_back(newAction[0]);
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
