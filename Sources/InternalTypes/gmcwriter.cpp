@@ -251,11 +251,21 @@ inline std::string getAddReason(PDDBManagedObjectCompareResult r, PDDBManagedObj
         result += "changed to mandatory in PDDB";
     else
         result += "added in PDDB";
-    if ( p->getLteName() != "" )
+    if ( p->getPronto() != "" )
     {
-        result += " ( ";
-        result += p->getLteName();
+        result += "( ";
+        result += p->getPronto();
         result += " )";
+    }
+    else
+    {
+        if ( p->getLteName() != "" )
+        {
+            result += "( ";
+
+            result += p->getLteName();
+            result += " )";
+        }
     }
     return result;
 }
@@ -285,11 +295,21 @@ inline std::string getModifyReason(PDDBManagedObjectCompareResult r, PDDBManaged
 {
     std::string result = "";
 
-    if ( p->getLteName() != "" )
+    if ( p->getPronto() != "" )
     {
         result += "( ";
-        result += p->getLteName();
+        result += p->getPronto();
         result += " )";
+    }
+    else
+    {
+        if ( p->getLteName() != "" )
+        {
+            result += "( ";
+
+            result += p->getLteName();
+            result += " )";
+        }
     }
     return result;
 }
