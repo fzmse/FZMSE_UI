@@ -111,9 +111,9 @@ void appGUI::save()
 
 void appGUI::help()
 {
-    QMessageBox::information(this, tr("Help"),
-                                   tr("Not implemented yet !     "),
-                                   QMessageBox::Ok);
+    helpDialog * dialog = new helpDialog();
+
+
 }
 
 
@@ -192,8 +192,8 @@ void appGUI::compare()
         GMCResultView->setColumnWidth(3, 35);
         GMCResultView->setColumnWidth(4, 100);
 
-        connect(GMCResultView->selectionModel(),
-                SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+        connect(GMCResultView,
+                SIGNAL(clicked(QModelIndex)),
                 this,
                 SLOT(showSelectedGMCResult()));
 
@@ -201,8 +201,6 @@ void appGUI::compare()
                 SIGNAL(customContextMenuRequested(const QPoint &)),
                 this,
                 SLOT(onGMCRClick(const QPoint &)));
-
-
 
         GMCResultView->show();
         statusBar()->showMessage(tr("Ready"));
@@ -233,8 +231,8 @@ void appGUI::comparePDDB()
         PDDBResultView->setColumnWidth(1, 35);
         PDDBResultView->setColumnWidth(2, 100);
 
-        connect(PDDBResultView->selectionModel(),
-                SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
+        connect(PDDBResultView,
+                SIGNAL(clicked(QModelIndex)),
                 this,
                 SLOT(showSelectedPDDBResult()));
 
@@ -347,20 +345,21 @@ void appGUI::changeUserInteraction(gmcResultItem *item)
 
 void appGUI::showSelectedPDDBResult()
 {
-    qDebug() << " Show PDDB";
-    GMCResultView->clearSelection();
-    PDDBResultView->clearSelection();
 
     statusBar()->showMessage(tr("Filling boxes"));
     QModelIndex index = PDDBResultView->currentIndex();
     int currIntexRow = index.row();
     resultItem * r = PDDBResultModel->getItemFromRow(currIntexRow);
+
     GMCResultView->clearSelection();
+    auto pddbIndex = PDDBResultView->currentIndex();
+    PDDBResultView->selectionModel()->select(PDDBResultModel->index(pddbIndex.row(), pddbIndex.column()),
+                                             QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+
     printDiff(r);
 
     setLabels(r->data(2).toString(), true);
     setLabels("", false);
-
     for ( int i = 0; i < actions.size(); i++)
     {
         if ( actions[i].getPDDBCompareResultId() == r->resultObj.getId() )
@@ -375,6 +374,7 @@ void appGUI::showSelectedPDDBResult()
             GMCResultView->selectionModel()->select(GMCResultModel->index(i,0),
                                                      QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
             GMCResultView->scrollTo(GMCResultModel->index(i,0));
+            break;
         }
     }
     statusBar()->showMessage(tr("Ready"));
@@ -382,10 +382,7 @@ void appGUI::showSelectedPDDBResult()
 
 void appGUI::showSelectedGMCResult()
 {
-    qDebug() << " Show GMC";
-    GMCResultView->clearSelection();
     PDDBResultView->clearSelection();
-
 
     statusBar()->showMessage(tr("Filling boxes"));
     QModelIndex index = GMCResultView->currentIndex();
@@ -395,6 +392,11 @@ void appGUI::showSelectedGMCResult()
 
     if ( index.parent().row() >= 0 )
     {
+        auto gmcIndex = GMCResultView->currentIndex();
+
+        GMCResultView->selectionModel()->select(GMCResultModel->index(index.parent().row(), gmcIndex.column()),
+                                                 QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+
         gmcResultItem * gmcParentItem = GMCResultModel->getItemFromRow(index.parent().row());
         gmcResultItem * gmcChild = gmcParentItem->item(currIntexRow);
         string text = XmlElementReader::getXML(gmcChild->resultObj.getItem()->getElement());
@@ -408,10 +410,14 @@ void appGUI::showSelectedGMCResult()
     }
     else
     {
+        auto gmcIndex = GMCResultView->currentIndex();
+
+        GMCResultView->selectionModel()->select(GMCResultModel->index(gmcIndex.row(), gmcIndex.column()),
+                                                 QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+
         gmcResultItem * gmcItem = GMCResultModel->getItemFromRow(currIntexRow);
         int gmcID = gmcItem->resultObj.getPDDBCompareResultId();
         resultItem * r = PDDBResultModel->getRoot()->findItemById(gmcID);
-
 
         for ( int i = 0; i < differences.size(); i++)
         {
@@ -420,10 +426,9 @@ void appGUI::showSelectedGMCResult()
                 PDDBResultView->selectionModel()->select(PDDBResultModel->index(i,0),
                                                          QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
                 PDDBResultView->scrollTo(PDDBResultModel->index(i,0));
-
+                break;
             }
         }
-
 
         printDiff(r);
         setLabels(r->data(2).toString(), true);
@@ -447,6 +452,7 @@ void appGUI::createGMCResultView()
 {
     GMCResultView->setSelectionMode(QAbstractItemView::SingleSelection);
     GMCResultView->setContextMenuPolicy(Qt::CustomContextMenu);
+    GMCResultView->setFocusPolicy(Qt::ClickFocus);
 }
 
 void appGUI::createPDDBTextDock()

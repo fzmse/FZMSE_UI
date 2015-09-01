@@ -63,7 +63,8 @@ SOURCES += main.cpp \
     UT/Doubles/Sources/InternalTypes/GMCWriterTest.cpp \
     Sources/InternalTypes/GMCWriter.cpp \
     Sources/Report/ReportUtilities.cpp \
-    Sources/Report/ReportEntry.cpp
+    Sources/Report/ReportEntry.cpp \
+    Sources/Gui/helpdialog.cpp
 
 
 HEADERS  += \
@@ -106,7 +107,8 @@ HEADERS  += \
     Includes/Xml/XmlWriter.h \
     Includes/InternalTypes/GMCWriter.h \
     Includes/Report/ReportUtilities.h \
-    Includes/Report/ReportEntry.h
+    Includes/Report/ReportEntry.h \
+    Includes/Gui/helpdialog.h
 
 FORMS    += mainwindow.ui
 

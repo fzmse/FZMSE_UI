@@ -16,6 +16,7 @@ class appGUI;
 #include "Includes/Gui/xmlhighlighter.h"
 #include "Includes/InternalTypes/PDDBManagedObjectCompareResult.h"
 #include "Includes/Report/ReportUtilities.h"
+#include "Includes/Gui/helpdialog.h"
 #include <QtWidgets>
 #include <cstring>
 
