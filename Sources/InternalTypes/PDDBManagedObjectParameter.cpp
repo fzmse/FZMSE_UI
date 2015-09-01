@@ -56,15 +56,8 @@ PDDBManagedObjectParameter::PDDBManagedObjectParameter(XMLElement * e, ManagedOb
         this->maxOccurs = retrieveMaxOccurs();
         this->list = this->maxOccurs.size() > 0 && this->maxOccurs != "1";
 
-        if ( this->name == "ulamcAllTbEn" )
-        {
-            bool sth = false;
-        }
-
         // retrieve pronto
         this->pronto = retrievePronto();
-
-        cout << this->name << " -> " << this->pronto << endl;
     }
 }
 
