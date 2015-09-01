@@ -1,6 +1,10 @@
 <RCC>
-    <qresource>
+    <qresource prefix="/">
         <file>report/logo.png</file>
         <file>report/reptemp.html</file>
+		<file>report/npic.png</file>
+		<file>report/ogic.png</file>
+		<file>report/opic.png</file>
+		<file>report/sic.png</file>
     </qresource>
 </RCC>
