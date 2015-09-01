@@ -56,9 +56,15 @@ PDDBManagedObjectParameter::PDDBManagedObjectParameter(XMLElement * e, ManagedOb
         this->maxOccurs = retrieveMaxOccurs();
         this->list = this->maxOccurs.size() > 0 && this->maxOccurs != "1";
 
+        if ( this->name == "ulamcAllTbEn" )
+        {
+            bool sth = false;
+        }
+
         // retrieve pronto
         this->pronto = retrievePronto();
 
+        cout << this->name << " -> " << this->pronto << endl;
     }
 }
 
@@ -425,7 +431,7 @@ std::string PDDBManagedObjectParameter::retrievePronto()
     if ( elems.size() > 0 )
     {
         XMLElement * e = elems[0];
-        std::vector<XMLElement *> paraElems = XmlReader::getElementsWithSpecificNameAndAttribute(this->getElement(), "para");
+        std::vector<XMLElement *> paraElems = XmlReader::getElementsWithSpecificNameAndAttribute(e, "para");
         if ( paraElems.size() > 0 )
         {
             XMLElement * elPara = paraElems[ paraElems.size() - 1 ];
