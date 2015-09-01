@@ -347,14 +347,17 @@ void appGUI::changeUserInteraction(gmcResultItem *item)
 
 void appGUI::showSelectedPDDBResult()
 {
+    qDebug() << " Show PDDB";
     GMCResultView->clearSelection();
     PDDBResultView->clearSelection();
+
     statusBar()->showMessage(tr("Filling boxes"));
     QModelIndex index = PDDBResultView->currentIndex();
     int currIntexRow = index.row();
     resultItem * r = PDDBResultModel->getItemFromRow(currIntexRow);
     GMCResultView->clearSelection();
     printDiff(r);
+
     setLabels(r->data(2).toString(), true);
     setLabels("", false);
 
@@ -379,8 +382,10 @@ void appGUI::showSelectedPDDBResult()
 
 void appGUI::showSelectedGMCResult()
 {
-    PDDBResultView->clearSelection();
+    qDebug() << " Show GMC";
     GMCResultView->clearSelection();
+    PDDBResultView->clearSelection();
+
 
     statusBar()->showMessage(tr("Filling boxes"));
     QModelIndex index = GMCResultView->currentIndex();
