@@ -36,7 +36,6 @@ class QHBoxLayout;
 class QVBoxLayout;
 class QPoint;
 
-
 class appGUI : public QMainWindow
 {
     Q_OBJECT

@@ -526,6 +526,12 @@ void appGUI::createPDDBTextDock()
     verCentralLayout->addLayout(labels);
     verCentralLayout->addLayout(texts);
 
+    QFont font = oldPDDBLabel->font();
+    font.setBold(true);
+
+    oldPDDBLabel->setFont(font);
+    newPDDBLabel->setFont(font);
+
 }
 
 void appGUI::createGMCTextDock()
@@ -545,7 +551,9 @@ void appGUI::createGMCTextDock()
     xmlHighlighterNewGMC = make_shared<XMLHighlighter>(newGMCTextEdit->document());
 
     oldGMCTextEdit->setMaximumHeight(this->height() * 0.2);
+    oldGMCTextEdit->setMinimumWidth(400);
     newGMCTextEdit->setMaximumHeight(this->height() * 0.2);
+    newGMCTextEdit->setMinimumWidth(400);
 
     connect(oldGMCTextEdit->verticalScrollBar(),
             SIGNAL(valueChanged(int)),
@@ -576,6 +584,7 @@ void appGUI::createGMCTextDock()
     labels = new QHBoxLayout;
 
     oldGMCLabel = new QLabel(this);
+
     oldGMCLabel->setAlignment(Qt::AlignTop | Qt::AlignLeft);
     oldGMCLabel->setText(tr("Old GMC"));
     oldGMCLabel->setWordWrap(true);
@@ -591,6 +600,11 @@ void appGUI::createGMCTextDock()
     verCentralLayout->addLayout(labels);
     verCentralLayout->addLayout(texts);
 
+    QFont font = oldGMCLabel->font();
+    font.setBold(true);
+
+    oldGMCLabel->setFont(font);
+    newGMCLabel->setFont(font);
 }
 
 std::string appGUI::getFileName(string path)
@@ -652,13 +666,19 @@ void appGUI::createMenus()
 
     menuBar()->addSeparator();
 
-    helpMenu = menuBar()->addMenu(tr("Help"));
+    helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(displayHelpAct);
 }
 
 void appGUI::createToolBar()
 {
-    fileToolBar = addToolBar(tr("&File"));
+    fileToolBar = new QToolBar(tr("&File"));
+    addToolBar(Qt::LeftToolBarArea, fileToolBar);
+    fileToolBar->setIconSize(QSize(48, 48));
+    openOldPDDBAct->setIcon(QIcon(":/report/opic.png"));
+    openNewPDDBAct->setIcon(QIcon(":/report/npic.png"));
+    openOldGMCAct->setIcon(QIcon(":/report/ogic.png"));
+    saveFileAct->setIcon(QIcon(":/report/sic.png"));
     fileToolBar->addAction(openOldPDDBAct);
     fileToolBar->addAction(openNewPDDBAct);
     fileToolBar->addAction(openOldGMCAct);
@@ -675,7 +695,6 @@ void appGUI::createPDDBResultDock()
 {
     PDDBResultDock = new QDockWidget(tr("PDDB differences"), this);
     PDDBResultDock->setAllowedAreas(Qt::RightDockWidgetArea);
-
     PDDBResultDock->setMinimumWidth(this->width() * 0.3);
 
     PDDBResultView = new QTreeView(PDDBResultDock);
@@ -684,6 +703,11 @@ void appGUI::createPDDBResultDock()
                                   "background-color: rgb(102,255,102);"
                                   "color: black;"
                                   "}");
+
+    PDDBResultDock->setStyleSheet("QDockWidget {"
+                                 "font-size: 13px;"
+                                 "font-weight: bold;"
+                                 "}");
 
     PDDBResultModel = new resultItemModel();
 
@@ -703,6 +727,12 @@ void appGUI::createGMCResultDock()
                                  "background-color: rgb(102,255,102);"
                                  "color: black;"
                                  "}");
+
+    GMCResultDock->setStyleSheet("QDockWidget {"
+                                 "font-size: 13px;"
+                                 "font-weight: bold;"
+                                 "}");
+
 
     GMCResultModel = new gmcResultItemModel(this);
     GMCResultDock->setWidget(GMCResultView);
