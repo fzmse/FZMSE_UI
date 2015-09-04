@@ -87,7 +87,14 @@ QVariant gmcResultItemModel::data(const QModelIndex &index, int role) const
     if ( index.column() == 0 )
         return static_cast< int >( item->isChecked() ? Qt::Checked : Qt::Unchecked );
 
-    if ( index.column() == 3 && role == Qt::DecorationRole)
+    if ( index.column() == 1 && role == Qt::DecorationRole )
+    {
+        auto op = item->data(1).toString();
+        if ( op == "Reader Interaction" )
+            return QIcon(":/report/alert.png");
+    }
+
+    if ( index.column() == 3 && role == Qt::DecorationRole )
     {
         auto op = item->data(3).toString();
         if ( op == "Add" )

@@ -9,5 +9,6 @@
 		<file>report/add.png</file>
 		<file>report/del.png</file>
 		<file>report/mod.png</file>
+		<file>report/alert.png</file>
     </qresource>
 </RCC>

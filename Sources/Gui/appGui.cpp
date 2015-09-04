@@ -197,7 +197,7 @@ void appGUI::compare()
         GMCResultView->setModel(GMCResultModel);
 
         GMCResultView->setColumnWidth(0, 40);
-        GMCResultView->setColumnWidth(1, 30);
+        GMCResultView->setColumnWidth(1, 20);
         GMCResultView->setColumnWidth(2, 75);
         GMCResultView->setColumnWidth(3, 20);
         GMCResultView->setColumnWidth(4, 100);

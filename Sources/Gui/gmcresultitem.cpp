@@ -101,9 +101,9 @@ void gmcResultItem::setData()
    itemData << r.isIncludedInGMC();
 
     if ( r.isReaderInteractionRequired() )
-        itemData << "[!]";
+        itemData << "Reader Interaction";
     else
-        itemData << "  ";
+        itemData << "";
 
     switch(r.getActionType())
     {
