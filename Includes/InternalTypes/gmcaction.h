@@ -31,7 +31,8 @@ namespace InternalTypes
                   std::string helpNote = "",
                   std::vector<GMCManagedObject * > gmcMocsInvolved = std::vector<GMCManagedObject *>(),
                   std::vector<GMCAction> childActions = std::vector<GMCAction>(),
-                  ManagedObjectRelativeElement * oldItem = NULL
+                  ManagedObjectRelativeElement * oldItem = NULL,
+                  std::string gmcMocOperation = "create"
                   );
 
         ~GMCAction();
@@ -53,7 +54,7 @@ namespace InternalTypes
         std::vector<GMCManagedObject*> getGmcMocsInvolved();
         PDDBManagedObjectCompareResult getCompareResult();
         PDDBManagedObjectCompareResult compareResult;
-
+        std::string getGmcMocOperation();
         std::string getHelpNote();
         bool isReaderInteractionRequired();
 
@@ -69,6 +70,8 @@ namespace InternalTypes
         std::string helpNote;
 
         bool requiresReaderInteraction;
+
+        std::string gmcMocOperation;
 
         bool includedInGMC;
 

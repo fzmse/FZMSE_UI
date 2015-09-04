@@ -20,16 +20,21 @@ namespace InternalTypes
         const std::string MANAGED_OBJECT_PARAMETER_XML_NAME = "p";
 
         GMCManagedObject(tinyxml2::XMLElement * e);
+
         ~GMCManagedObject();
 
         void reinitialize();
 
         std::vector<GMCManagedObjectParameter * > getParameters();
+
         GMCManagedObjectParameter * getParameterByName(std::string name);
+
+        std::string getDistName();
 
         std::string getClassName();
 
         bool isValidMocObject();
+
     protected:
         GMCManagedObject();
 
@@ -38,7 +43,12 @@ namespace InternalTypes
 
         std::string retrieveClassName(tinyxml2::XMLElement * e);
 
+        std::string retrieveDistName(tinyxml2::XMLElement * e);
+
         std::string className;
+
+        std::string distName;
+
 
         bool validMocObject;
 
