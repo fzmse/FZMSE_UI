@@ -85,7 +85,18 @@ QVariant gmcResultItemModel::data(const QModelIndex &index, int role) const
     gmcResultItem *item = static_cast<gmcResultItem*>(index.internalPointer());
 
     if ( index.column() == 0 )
-            return static_cast< int >( item->isChecked() ? Qt::Checked : Qt::Unchecked );
+        return static_cast< int >( item->isChecked() ? Qt::Checked : Qt::Unchecked );
+
+    if ( index.column() == 3 && role == Qt::DecorationRole)
+    {
+        auto op = item->data(3).toString();
+        if ( op == "Add" )
+            return QIcon(":/report/add.png");
+        if ( op == "Del" )
+            return QIcon(":/report/del.png");
+        if ( op == "Mod" )
+            return QIcon(":/report/mod.png");
+    }
 
     if (role != Qt::DisplayRole)
         return QVariant();
@@ -100,8 +111,9 @@ Qt::ItemFlags gmcResultItemModel::flags(const QModelIndex &index) const
 
     Qt::ItemFlags flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
-    if ( index.column() == 0 )
+    if ( index.column() == 0  )
         flags |= Qt::ItemIsUserCheckable;
+
 
     return flags;
 }
@@ -156,10 +168,14 @@ bool gmcResultItemModel::setData(const QModelIndex &index, const QVariant &value
 {
     if ( index.isValid())
     {
+        return false;
+    }
+    else
+    {
         if (role == Qt::CheckStateRole)
         {
             changeIncludeInGMC(index);
-            return true;
+
         }
     }
     return false;
@@ -182,7 +198,7 @@ int gmcResultItemModel::rowCount(const QModelIndex &parent) const
 void gmcResultItemModel::setupModelData()
 {
     QList<QVariant> rootData;
-    rootData << " " << " " << "Type" << "Origin" << "Location" << "Changes";
+    rootData << " " << " " << "Type" << " " << "Location" << "Changes";
 
     rootItem = new gmcResultItem(rootData);
     rootItem->setParetn(rootItem);

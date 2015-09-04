@@ -40,6 +40,17 @@ void resultItemModel::clean()
     rootItem = NULL;
 }
 
+bool resultItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
+{
+
+    if ( index.isValid())
+    {
+        return false;
+    }
+    return false;
+
+}
+
 int resultItemModel::columnCount(const QModelIndex &parent) const
 {
     if (parent.isValid())
@@ -53,10 +64,21 @@ QVariant resultItemModel::data(const QModelIndex &index, int role) const
     if (!index.isValid())
         return QVariant();
 
+    resultItem *item = static_cast<resultItem*>(index.internalPointer());
+
+    if ( index.column() == 1 && role == Qt::DecorationRole)
+    {
+        auto op = item->data(1).toString();
+        if ( op == "Add" )
+            return QIcon(":/report/add.png");
+        if ( op == "Del" )
+            return QIcon(":/report/del.png");
+        if ( op == "Mod" )
+            return QIcon(":/report/mod.png");
+    }
+
     if (role != Qt::DisplayRole)
         return QVariant();
-
-    resultItem *item = static_cast<resultItem*>(index.internalPointer());
 
     return item->data(index.column());
 }
@@ -132,7 +154,7 @@ void resultItemModel::setupModelData()
 {
 
     QList<QVariant> rootData;
-    rootData << "Type" << "Origin" << "Location" << "Changes";
+    rootData << "Type" << " " << "Location" << "Changes";
 
 
     rootItem = new resultItem(rootData);

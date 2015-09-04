@@ -6,7 +6,6 @@
 #include <QList>
 #include <Qdebug>
 #include <QVariant>
-#include <QCheckBox>
 
 class gmcResultItem
 {

@@ -60,6 +60,8 @@ private slots:
     void showSelectedPDDBResult();
     void showSelectedGMCResult();
     void onGMCRClick(const QPoint &);
+    void setPDDBHint(QModelIndex);
+    void setGMCHint(QModelIndex);
 
 private:
     void createActions();

@@ -4,6 +4,7 @@
 #include "Includes/Gui/resultItem.h"
 #include "Includes/InternalTypes/PDDBManagedObjectCompareResult.h"
 #include <QDebug>
+#include <QIcon>
 #include <vector>
 
 
@@ -28,6 +29,7 @@ public:
     void setRoot();
     void clean();
     void selectNode();
+    bool setData(const QModelIndex &index, const QVariant &value, int role);
     int rowCount(const QModelIndex &parent) const;
     int columnCount(const QModelIndex &parent) const;
 

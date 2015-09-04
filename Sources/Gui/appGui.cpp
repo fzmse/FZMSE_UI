@@ -167,6 +167,16 @@ void appGUI::onGMCRClick(const QPoint &pos)
     }
 }
 
+void appGUI::setPDDBHint(QModelIndex index)
+{
+    PDDBResultView->setToolTip(PDDBResultModel->data(index, Qt::DisplayRole).toString());
+}
+
+void appGUI::setGMCHint(QModelIndex index)
+{
+    GMCResultView->setToolTip(GMCResultModel->data(index, Qt::DisplayRole).toString());
+}
+
 
 void appGUI::compare()
 {
@@ -189,8 +199,10 @@ void appGUI::compare()
         GMCResultView->setColumnWidth(0, 40);
         GMCResultView->setColumnWidth(1, 30);
         GMCResultView->setColumnWidth(2, 80);
-        GMCResultView->setColumnWidth(3, 35);
+        GMCResultView->setColumnWidth(3, 20);
         GMCResultView->setColumnWidth(4, 100);
+
+        GMCResultView->setMouseTracking(true);
 
         connect(GMCResultView,
                 SIGNAL(clicked(QModelIndex)),
@@ -201,6 +213,11 @@ void appGUI::compare()
                 SIGNAL(customContextMenuRequested(const QPoint &)),
                 this,
                 SLOT(onGMCRClick(const QPoint &)));
+
+        connect(GMCResultView,
+                SIGNAL(entered(QModelIndex)),
+                this,
+                SLOT(setGMCHint(QModelIndex)));
 
         GMCResultView->show();
         statusBar()->showMessage(tr("Ready"));
@@ -228,13 +245,19 @@ void appGUI::comparePDDB()
         PDDBResultView->setModel(PDDBResultModel);
 
         PDDBResultView->setColumnWidth(0, 80);
-        PDDBResultView->setColumnWidth(1, 35);
+        PDDBResultView->setColumnWidth(1, 20);
         PDDBResultView->setColumnWidth(2, 100);
+        PDDBResultView->setMouseTracking(true);
 
         connect(PDDBResultView,
                 SIGNAL(clicked(QModelIndex)),
                 this,
                 SLOT(showSelectedPDDBResult()));
+
+        connect(PDDBResultView,
+                SIGNAL(entered(QModelIndex)),
+                this,
+                SLOT(setPDDBHint(QModelIndex)));
 
         PDDBResultView->show();
         statusBar()->showMessage(tr("Ready"));
@@ -452,7 +475,6 @@ void appGUI::createGMCResultView()
 {
     GMCResultView->setSelectionMode(QAbstractItemView::SingleSelection);
     GMCResultView->setContextMenuPolicy(Qt::CustomContextMenu);
-    GMCResultView->setFocusPolicy(Qt::ClickFocus);
 }
 
 void appGUI::createPDDBTextDock()
@@ -704,10 +726,13 @@ void appGUI::createPDDBResultDock()
                                   "color: black;"
                                   "}");
 
+
     PDDBResultDock->setStyleSheet("QDockWidget {"
                                  "font-size: 13px;"
                                  "font-weight: bold;"
                                  "}");
+
+
 
     PDDBResultModel = new resultItemModel();
 

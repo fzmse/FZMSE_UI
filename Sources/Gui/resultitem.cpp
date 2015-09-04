@@ -1,6 +1,6 @@
 
 #include "Includes/Gui/resultItem.h"
-
+#include <QIcon>
 using namespace InternalTypes;
 
 resultItem::resultItem(const QList<QVariant> &data,
