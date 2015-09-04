@@ -9,7 +9,8 @@ GMCAction::GMCAction(PDDBManagedObjectCompareResult r, bool interaction, Managed
                      std::string helpNote,
                      std::vector<GMCManagedObject * > gmcMocsInvolved,
                      std::vector<GMCAction> childActions,
-                     ManagedObjectRelativeElement * oldItem)
+                     ManagedObjectRelativeElement * oldItem,
+                     std::string gmcMocOperation)
 {
     this->compareResult = r;
 
@@ -25,6 +26,8 @@ GMCAction::GMCAction(PDDBManagedObjectCompareResult r, bool interaction, Managed
     this->oldItem = oldItem;
 
     this->includedInGMC = !this->requiresReaderInteraction;
+
+    this->gmcMocOperation = gmcMocOperation;
 }
 
 
@@ -99,3 +102,7 @@ PDDBManagedObjectCompareResult GMCAction::getCompareResult()
     return this->compareResult;
 }
 
+std::string GMCAction::getGmcMocOperation()
+{
+    return this->gmcMocOperation;
+}

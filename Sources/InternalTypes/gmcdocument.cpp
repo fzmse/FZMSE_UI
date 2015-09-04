@@ -174,38 +174,43 @@ inline std::vector<GMCAction> resolveGMCActionForMocAdd ( PDDBManagedObjectCompa
                       paramsIt != pddbMocParams.end(); paramsIt ++)
                 {
                     PDDBManagedObjectParameter * currPar = *paramsIt;
-                    if ( currPar->getCreationPriority() == "mandatory" && currPar->isVendorSpecific() == false )
+                    if ( currPar != idPar )
                     {
-
-                        actionsForParams.push_back( GMCAction(r, false,
-                                                              currPar,
-                                                              GMCAction::ActionType::Add,
-                                                              GMCAction::ChangeScope::ManagedObjectParameter,
-                                                              r.getId()) );
-                    }
-                    else
-                    {
-                        if ( currPar->getCreationPriority() == "optional" && currPar->isVendorSpecific() == false )
+                        if ( currPar->getCreationPriority() == "mandatory" && currPar->isVendorSpecific() == false )
                         {
-                            bool refsFoundPost = isFoundInGMCAction(currPar->getRelatedParameters(), actionsPost);
-                            bool refsFoundStandard = isAnyOfReferencesValid(currPar->getRelatedParameters(), gmc);
-                            if ( refsFoundStandard )
-                            {
-                                actionsForParams.push_back( GMCAction(r, true,
+
+
+                                actionsForParams.push_back( GMCAction(r, false,
                                                                       currPar,
                                                                       GMCAction::ActionType::Add,
                                                                       GMCAction::ChangeScope::ManagedObjectParameter,
-                                                                      r.getId(), "Related Parameters references found in GMC"));
-                            }
-                            else
+                                                                      r.getId()) );
+
+                        }
+                        else
+                        {
+                            if ( currPar->getCreationPriority() == "optional" && currPar->isVendorSpecific() == false )
                             {
-                                if ( refsFoundPost )
+                                bool refsFoundPost = isFoundInGMCAction(currPar->getRelatedParameters(), actionsPost);
+                                bool refsFoundStandard = isAnyOfReferencesValid(currPar->getRelatedParameters(), gmc);
+                                if ( refsFoundStandard )
                                 {
                                     actionsForParams.push_back( GMCAction(r, true,
                                                                           currPar,
                                                                           GMCAction::ActionType::Add,
                                                                           GMCAction::ChangeScope::ManagedObjectParameter,
-                                                                          r.getId(), "Related Parameters references found in GMCActions!!!"));
+                                                                          r.getId(), "Related Parameters references found in GMC"));
+                                }
+                                else
+                                {
+                                    if ( refsFoundPost )
+                                    {
+                                        actionsForParams.push_back( GMCAction(r, true,
+                                                                              currPar,
+                                                                              GMCAction::ActionType::Add,
+                                                                              GMCAction::ChangeScope::ManagedObjectParameter,
+                                                                              r.getId(), "Related Parameters references found in GMCActions!!!"));
+                                    }
                                 }
                             }
                         }
@@ -216,7 +221,7 @@ inline std::vector<GMCAction> resolveGMCActionForMocAdd ( PDDBManagedObjectCompa
                                              GMCAction::ChangeScope::ManagedObject, r.getId(),
                                              "",
                                              vector<GMCManagedObject*>(),
-                                             actionsForParams) );
+                                             actionsForParams, NULL, "update") );
 
             }
             else
@@ -230,43 +235,45 @@ inline std::vector<GMCAction> resolveGMCActionForMocAdd ( PDDBManagedObjectCompa
                               paramsIt != pddbMocParams.end(); paramsIt ++)
                         {
                             PDDBManagedObjectParameter * currPar = *paramsIt;
-                            if ( currPar->getCreationPriority() == "mandatory" && currPar->isVendorSpecific() == false )
+                            if ( currPar != idPar )
                             {
-
-                                actionsForParams.push_back( GMCAction(r, false,
-                                                                      currPar,
-                                                                      GMCAction::ActionType::Add,
-                                                                      GMCAction::ChangeScope::ManagedObjectParameter,
-                                                                      r.getId()) );
-                            }
-                            else
-                            {
-                                if ( currPar->getCreationPriority() == "optional" && currPar->isVendorSpecific() == false )
+                                if ( currPar->getCreationPriority() == "mandatory" && currPar->isVendorSpecific() == false )
                                 {
-                                    bool refsFoundPost = isFoundInGMCAction( currPar->getRelatedParameters(), actionsPost);
-                                    bool refsFoundStandard = isAnyOfReferencesValid(currPar->getRelatedParameters(), gmc);
-                                    if ( refsFoundStandard )
+
+                                    actionsForParams.push_back( GMCAction(r, false,
+                                                                          currPar,
+                                                                          GMCAction::ActionType::Add,
+                                                                          GMCAction::ChangeScope::ManagedObjectParameter,
+                                                                          r.getId()) );
+                                }
+                                else
+                                {
+                                    if ( currPar->getCreationPriority() == "optional" && currPar->isVendorSpecific() == false )
                                     {
-                                        actionsForParams.push_back( GMCAction(r, true,
-                                                                              currPar,
-                                                                              GMCAction::ActionType::Add,
-                                                                              GMCAction::ChangeScope::ManagedObjectParameter,
-                                                                              r.getId(), "Related Parameters references found in GMC"));
-                                    }
-                                    else
-                                    {
-                                        if ( refsFoundPost )
+                                        bool refsFoundPost = isFoundInGMCAction( currPar->getRelatedParameters(), actionsPost);
+                                        bool refsFoundStandard = isAnyOfReferencesValid(currPar->getRelatedParameters(), gmc);
+                                        if ( refsFoundStandard )
                                         {
                                             actionsForParams.push_back( GMCAction(r, true,
                                                                                   currPar,
                                                                                   GMCAction::ActionType::Add,
                                                                                   GMCAction::ChangeScope::ManagedObjectParameter,
-                                                                                  r.getId(), "Related Parameters references found in GMCActions!!!"));
+                                                                                  r.getId(), "Related Parameters references found in GMC"));
+                                        }
+                                        else
+                                        {
+                                            if ( refsFoundPost )
+                                            {
+                                                actionsForParams.push_back( GMCAction(r, true,
+                                                                                      currPar,
+                                                                                      GMCAction::ActionType::Add,
+                                                                                      GMCAction::ChangeScope::ManagedObjectParameter,
+                                                                                      r.getId(), "Related Parameters references found in GMCActions!!!"));
+                                            }
                                         }
                                     }
                                 }
                             }
-
 
                         }
                         actions.push_back( GMCAction(r, true, currPDDBMoc, GMCAction::ActionType::Add,

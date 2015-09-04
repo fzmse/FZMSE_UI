@@ -38,6 +38,7 @@ namespace InternalTypes
         std::vector<GMCManagedObject*> retrieveManagedObjects();
 
         std::vector<GMCManagedObject*> managedObjects;
+
         tinyxml2::XMLDocument * doc;
     };
 }

@@ -17,6 +17,8 @@ GMCManagedObject::GMCManagedObject(XMLElement *e) :
 
             this->className = retrieveClassName(e);
 
+            this->distName = retrieveDistName(e);
+
             vector<XMLElement * > pElements = XmlReader::getChildren(e, "");
             for ( vector<XMLElement * >::iterator it = pElements.begin(); it != pElements.end(); ++ it )
             {
@@ -65,4 +67,14 @@ std::string GMCManagedObject::getClassName()
 std::string GMCManagedObject::retrieveClassName(XMLElement * e)
 {
     return XmlElementReader::getAttributeByName(e, "class");
+}
+
+std::string GMCManagedObject::getDistName()
+{
+    return this->distName;
+}
+
+std::string GMCManagedObject::retrieveDistName(XMLElement *e)
+{
+    return XmlElementReader::getAttributeByName(e, "distName");
 }

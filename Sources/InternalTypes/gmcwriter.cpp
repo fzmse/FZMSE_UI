@@ -116,27 +116,30 @@ void GMCWriter::insertParameterComplexType(GMCDocument * gmc, GMCManagedObject *
 
 }
 
-XMLElement * GMCWriter::insertMoc(GMCDocument * gmc, std::string className, std::string version)
+XMLElement * GMCWriter::insertMoc(GMCDocument * gmc, std::string className, std::string version, std::string operation)
 {
     XMLElement * insertAfter = NULL;
-    GMCManagedObject * firstMoc = gmc->getManagedObjects()[0];
-    if ( firstMoc != NULL )
+    if ( gmc->getManagedObjects().size() > 0 )
     {
-        vector<XMLElement*> elements = XmlReader::getElementsWithSpecificNameAndAttributeFromChildrenLevel((XMLElement*)firstMoc->getElement()->Parent(), "");
-        for ( vector<XMLElement*>::iterator it = elements.begin(); it != elements.end(); it ++ )
+        GMCManagedObject * firstMoc = gmc->getManagedObjects()[0];
+        if ( firstMoc != NULL )
         {
-            if ( XmlElementReader::getName(*it) < "managedObject" )
-                insertAfter = *it;
-            else
+            vector<XMLElement*> elements = XmlReader::getElementsWithSpecificNameAndAttributeFromChildrenLevel((XMLElement*)firstMoc->getElement()->Parent(), "");
+            for ( vector<XMLElement*>::iterator it = elements.begin(); it != elements.end(); it ++ )
             {
-                if ( className < XmlElementReader::getAttributeByName(*it, "class") )
-                    break;
-                else
+                if ( XmlElementReader::getName(*it) < "managedObject" )
                     insertAfter = *it;
+                else
+                {
+                    if ( className < XmlElementReader::getAttributeByName(*it, "class") )
+                        break;
+                    else
+                        insertAfter = *it;
+                }
             }
+
+
         }
-
-
     }
 
 
@@ -145,7 +148,7 @@ XMLElement * GMCWriter::insertMoc(GMCDocument * gmc, std::string className, std:
         // insert first child
         XMLElement * n = gmc->getXMLDocument()->NewElement("managedObject");
         n->SetAttribute("class", className.c_str());
-        n->SetAttribute("operation", "create");
+        n->SetAttribute("operation", operation.c_str());
         n->SetAttribute("version", version.c_str());
 
         XmlWriter::insertChild( (XMLElement*)gmc->getXMLDocument(), n);
@@ -156,7 +159,7 @@ XMLElement * GMCWriter::insertMoc(GMCDocument * gmc, std::string className, std:
         // insert after
         XMLElement * n = gmc->getXMLDocument()->NewElement("managedObject");
         n->SetAttribute("class", className.c_str());
-        n->SetAttribute("operation", "create");
+        n->SetAttribute("operation", operation.c_str());
         n->SetAttribute("version", version.c_str());
         XmlWriter::insertAfter( insertAfter, n);
         return n;
@@ -323,9 +326,22 @@ vector<ReportEntry> GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action
         {
             string mocClassName = ((PDDBManagedObject*)action.getItem())->getClassName();
 
-            entries.push_back(ReportEntry(ReportEntry::Add, mocClassName, getAddReason(action.getCompareResult(), ((PDDBManagedObject*)action.getItem())), "", "class added"));
+            entries.push_back(ReportEntry(ReportEntry::Add, mocClassName, getAddReason(action.getCompareResult(),
+                                                                                       ((PDDBManagedObject*)action.getItem())), "", "class added"));
 
-            insertMoc(gmc, ((PDDBManagedObject*)action.getItem())->getClassName(), ((PDDBManagedObject*)action.getItem())->getVersion());
+            // Resolve gmc Moc version
+            std::string versionOfGmcMoc = ((PDDBManagedObject*)action.getItem())->getVersion();
+            std::string releaseName = ((PDDBManagedObject*)action.getItem())->getReleaseName();
+            if ( releaseName.find("TRS") != string::npos )
+            {
+                if ( gmc->getManagedObjects().size() > 0 )
+                {
+                    GMCManagedObject * gmcNew = gmc->getManagedObjects()[0];
+                    versionOfGmcMoc = XmlElementReader::getAttributeByName( gmcNew->getElement(), "version");
+                }
+            }
+            insertMoc(gmc, ((PDDBManagedObject*)action.getItem())->getClassName(), versionOfGmcMoc,
+                      action.getGmcMocOperation());
             gmc->reinitialize();
             GMCManagedObject * gmcNewMoc = gmc->getManagedObjectByClassName( mocClassName );
             if ( action.getChildActions().size() > 0 )
@@ -637,8 +653,10 @@ std::vector<ReportEntry> GMCWriter::reactToAllIncluded( GMCDocument * gmc, std::
 }
 
 
-void GMCWriter::updateVersionInGmc(GMCDocument * gmc, std::string version)
+void GMCWriter::updateVersionInGmc(GMCDocument * gmc, std::string version, std::string releaseName)
 {
+
+
     XMLElement * el = XmlReader::getFirstElementWithSpecificNameAndAttribute((XMLElement*)gmc->getXMLDocument(), "log");
     if ( el != NULL )
     {
@@ -646,7 +664,9 @@ void GMCWriter::updateVersionInGmc(GMCDocument * gmc, std::string version)
         {
             if ( XmlElementReader::getName((XMLElement*)(el->Parent())) == "header" )
             {
-                el->SetAttribute("appVersion", version.c_str());
+                // If transport PDDB then don't update
+                if ( releaseName.find("TRS", 0) == string::npos )
+                    el->SetAttribute("appVersion", version.c_str());
 
                 time_t t = time(0);   // get time now
                 struct tm * now = localtime( & t );
@@ -663,7 +683,9 @@ void GMCWriter::updateVersionInGmc(GMCDocument * gmc, std::string version)
         }
     }
 
-
+    // If transport PDDB then don't update
+    if ( releaseName.find("TRS", 0) != string::npos )
+        return;
     auto elements = XmlReader::getElementsWithSpecificNameAndAttribute((XMLElement*)gmc->getXMLDocument(), "managedObject");
     for ( std::vector<XMLElement*>::iterator it = elements.begin(); it != elements.end(); it ++ )
     {

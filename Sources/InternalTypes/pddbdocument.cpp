@@ -47,7 +47,7 @@ std::vector<PDDBManagedObject*> PDDBDocument::retrieveManagedObjects()
     XMLElement * d1FirstElement = XmlReader::getFirstElementWithSpecificNameAndAttribute((XMLElement*)this->doc, "managedObject");
     for( XMLElement* node = d1FirstElement; node != NULL; node = node->NextSiblingElement() )
     {
-        PDDBManagedObject * curr = new PDDBManagedObject(node, this->releaseVersion);
+        PDDBManagedObject * curr = new PDDBManagedObject(node, this->releaseVersion, this->releaseName);
         results.push_back(curr);
     }
     return results;

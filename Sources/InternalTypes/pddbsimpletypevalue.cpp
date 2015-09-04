@@ -162,6 +162,16 @@ std::string PDDBSimpleTypeValue::resolveEvaluatedValue()
 
     // Return raw value if no modifiers are present
 
+    if ( range.size() > 0 )
+    {
+        if ( range[0].first != "" )
+        {
+            std::string equatedValue = extractAnswerFromExpression(this->getEvaluation(), range[0].first);
+            if ( equatedValue != "" )
+                return equatedValue;
+        }
+
+    }
 
     return this->value;
 }

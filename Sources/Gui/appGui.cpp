@@ -77,7 +77,7 @@ void appGUI::save()
         {
             newGMCdoc = make_shared<GMCDocument>(oldGMCdoc.get());
             auto report = GMCWriter::reactToAllIncluded(newGMCdoc.get(), actions);
-            GMCWriter::updateVersionInGmc(newGMCdoc.get(), newPDDBdoc->getReleaseVersion());
+            GMCWriter::updateVersionInGmc(newGMCdoc.get(), newPDDBdoc->getReleaseVersion(), newPDDBdoc->getReleaseName());
             if (XmlWriter::save(newGMCdoc.get()->getXMLDocument(), savePath.toStdString()))
             {
                 QDir d = QFileInfo(savePath).absoluteDir();

@@ -314,64 +314,66 @@ std::vector<PDDBManagedObjectCompareResult> PDDBManagedObjectParameter::compareT
     PDDBDefaultValue * p1DefValue = p1->getPDDBValue();
     PDDBDefaultValue * p2DefValue = p2->getPDDBValue();
 
-    // SimpleType changed
-    if ( p1DefValue->isComplexType() == false && p2DefValue->isComplexType() == false )
+    if ( p1DefValue != NULL && p2DefValue != NULL )
     {
-        if ( ((PDDBSimpleTypeValue*)p1DefValue)->getEvaluatedValue().compare( ((PDDBSimpleTypeValue*)p2DefValue)->getEvaluatedValue() ) )
-            changes.push_back(PDDBManagedObjectCompareResult::SimpleTypeValue);
-
-        if ( ((PDDBSimpleTypeValue*)p1DefValue)->getRange().size() > 0 && ((PDDBSimpleTypeValue*)p2DefValue)->getRange().size() > 0 )
+        // SimpleType changed
+        if ( p1DefValue->isComplexType() == false && p2DefValue->isComplexType() == false )
         {
-            if ( ((PDDBSimpleTypeValue*)p1DefValue)->getRange()[0].first.compare( ((PDDBSimpleTypeValue*)p2DefValue)->getRange()[0].first ) != 0 ||
-                 ((PDDBSimpleTypeValue*)p1DefValue)->getRange()[0].second.compare( ((PDDBSimpleTypeValue*)p2DefValue)->getRange()[0].second ) != 0 )
-            changes.push_back(PDDBManagedObjectCompareResult::SimpleTypeValue_RangeChanged);
+            if ( ((PDDBSimpleTypeValue*)p1DefValue)->getEvaluatedValue().compare( ((PDDBSimpleTypeValue*)p2DefValue)->getEvaluatedValue() ) )
+                changes.push_back(PDDBManagedObjectCompareResult::SimpleTypeValue);
+
+            if ( ((PDDBSimpleTypeValue*)p1DefValue)->getRange().size() > 0 && ((PDDBSimpleTypeValue*)p2DefValue)->getRange().size() > 0 )
+            {
+                if ( ((PDDBSimpleTypeValue*)p1DefValue)->getRange()[0].first.compare( ((PDDBSimpleTypeValue*)p2DefValue)->getRange()[0].first ) != 0 ||
+                     ((PDDBSimpleTypeValue*)p1DefValue)->getRange()[0].second.compare( ((PDDBSimpleTypeValue*)p2DefValue)->getRange()[0].second ) != 0 )
+                changes.push_back(PDDBManagedObjectCompareResult::SimpleTypeValue_RangeChanged);
+            }
         }
+
+        // SimpleType -> ComplexType
+        if ( p1DefValue->isComplexType() == false && p2DefValue->isComplexType() == true )
+            changes.push_back(PDDBManagedObjectCompareResult::SimpleToComplex);
+
+        // ComplexType -> SimpleType
+        if ( p1DefValue->isComplexType() == true && p2DefValue->isComplexType() == false )
+            changes.push_back(PDDBManagedObjectCompareResult::ComplexToSimple);
+
+        // ComplexType changed
+        if ( p1DefValue->isComplexType() == true && p2DefValue->isComplexType() == true )
+        {
+            std::vector<PDDBManagedObjectCompareResult> complexCompareResults =
+                    ((PDDBComplexTypeValue*)p1DefValue)->compareTo( ((PDDBComplexTypeValue*)p2DefValue) ) ;
+
+            for ( std::vector<PDDBManagedObjectCompareResult>::iterator itComplexRes = complexCompareResults.begin();
+                    itComplexRes != complexCompareResults.end(); itComplexRes ++)
+                results.push_back(*itComplexRes);
+
+    // // UNCOMMENT IF WANT SEPARATE INFO THAT COMPLEX VALUE CHANGED
+    //        if ( complexCompareResults.size() > 0 )
+    //            changes.push_back(PDDBManagedObjectCompareResult::ComplexTypeValue);
+        }
+
+        // Vendor Specific
+        if ( p1->isVendorSpecific() != p2->isVendorSpecific() )
+            changes.push_back(PDDBManagedObjectCompareResult::VendorSpecific);
+
+        //Creation Priority
+        if ( p1->creationPriority.compare( p2->creationPriority) != 0 )
+            changes.push_back(PDDBManagedObjectCompareResult::CreationPriority);
+
+        // MOMinOccurs
+        if ( p1->moMinOccurs.compare(p2->moMinOccurs) != 0 )
+            changes.push_back(PDDBManagedObjectCompareResult::MoMinOccurs);
+
+        // Related parameters
+        if ( p1->relatedParametersRawXml.compare(p2->relatedParametersRawXml) != 0 )
+            changes.push_back(PDDBManagedObjectCompareResult::RelatedParameters);
+
+
+        // Pack all simple changes in one result
+        if ( changes.size() > 0 )
+            results.push_back(PDDBManagedObjectCompareResult::createParamChanged(p1, p2, changes));
     }
-
-    // SimpleType -> ComplexType
-    if ( p1DefValue->isComplexType() == false && p2DefValue->isComplexType() == true )
-        changes.push_back(PDDBManagedObjectCompareResult::SimpleToComplex);
-
-    // ComplexType -> SimpleType
-    if ( p1DefValue->isComplexType() == true && p2DefValue->isComplexType() == false )
-        changes.push_back(PDDBManagedObjectCompareResult::ComplexToSimple);
-
-    // ComplexType changed
-    if ( p1DefValue->isComplexType() == true && p2DefValue->isComplexType() == true )
-    {
-        std::vector<PDDBManagedObjectCompareResult> complexCompareResults =
-                ((PDDBComplexTypeValue*)p1DefValue)->compareTo( ((PDDBComplexTypeValue*)p2DefValue) ) ;
-
-        for ( std::vector<PDDBManagedObjectCompareResult>::iterator itComplexRes = complexCompareResults.begin();
-                itComplexRes != complexCompareResults.end(); itComplexRes ++)
-            results.push_back(*itComplexRes);
-
-// // UNCOMMENT IF WANT SEPARATE INFO THAT COMPLEX VALUE CHANGED
-//        if ( complexCompareResults.size() > 0 )
-//            changes.push_back(PDDBManagedObjectCompareResult::ComplexTypeValue);
-    }
-
-    // Vendor Specific
-    if ( p1->isVendorSpecific() != p2->isVendorSpecific() )
-        changes.push_back(PDDBManagedObjectCompareResult::VendorSpecific);
-
-    //Creation Priority
-    if ( p1->creationPriority.compare( p2->creationPriority) != 0 )
-        changes.push_back(PDDBManagedObjectCompareResult::CreationPriority);
-
-    // MOMinOccurs
-    if ( p1->moMinOccurs.compare(p2->moMinOccurs) != 0 )
-        changes.push_back(PDDBManagedObjectCompareResult::MoMinOccurs);
-
-    // Related parameters
-    if ( p1->relatedParametersRawXml.compare(p2->relatedParametersRawXml) != 0 )
-        changes.push_back(PDDBManagedObjectCompareResult::RelatedParameters);
-
-
-    // Pack all simple changes in one result
-    if ( changes.size() > 0 )
-        results.push_back(PDDBManagedObjectCompareResult::createParamChanged(p1, p2, changes));
-
     return results;
 }
 
