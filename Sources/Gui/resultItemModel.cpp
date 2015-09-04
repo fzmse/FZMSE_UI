@@ -71,9 +71,9 @@ QVariant resultItemModel::data(const QModelIndex &index, int role) const
         auto op = item->data(1).toString();
         if ( op == "Add" )
             return QIcon(":/report/add.png");
-        if ( op == "Del" )
+        if ( op == "Deleted" )
             return QIcon(":/report/del.png");
-        if ( op == "Mod" )
+        if ( op == "Modified" )
             return QIcon(":/report/mod.png");
     }
 

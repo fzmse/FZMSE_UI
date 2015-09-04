@@ -145,7 +145,7 @@ void gmcResultItem::setData()
     case GMCAction::Remove:
         if ( r.getChangeScope() == GMCAction::ManagedObjectParameter )
         {
-            itemData << "Parameter" << "Del";
+            itemData << "Parameter" << "Delete";
             addStdToQ(d, "[ ");
             if ( ((PDDBManagedObjectParameter*)r.getItem())->getMocParent() != NULL )
             {
@@ -159,7 +159,7 @@ void gmcResultItem::setData()
 
         if ( r.getChangeScope() == GMCAction::ManagedObject )
         {
-            itemData << "Managed Object" << "Del";
+            itemData << "Managed Object" << "Delete";
             addStdToQ(d, "[ ");
             addStdToQ(d, ((PDDBManagedObject*)r.getItem())->getClassName());
             addStdToQ(d, " ]");
@@ -169,7 +169,7 @@ void gmcResultItem::setData()
         break;
     case GMCAction::Modify:
         {
-        itemData << "Parameter" << "Mod";
+        itemData << "Parameter" << "Modify";
         addStdToQ(d, "[ ");
             if ( ((PDDBManagedObjectParameter*)r.getItem())->getMocParent() != NULL )
             {

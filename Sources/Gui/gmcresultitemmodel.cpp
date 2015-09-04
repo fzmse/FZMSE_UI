@@ -92,9 +92,9 @@ QVariant gmcResultItemModel::data(const QModelIndex &index, int role) const
         auto op = item->data(3).toString();
         if ( op == "Add" )
             return QIcon(":/report/add.png");
-        if ( op == "Del" )
+        if ( op == "Delete" )
             return QIcon(":/report/del.png");
-        if ( op == "Mod" )
+        if ( op == "Modify" )
             return QIcon(":/report/mod.png");
     }
 

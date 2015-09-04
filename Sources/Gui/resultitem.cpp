@@ -20,8 +20,7 @@ resultItem::resultItem(PDDBManagedObjectCompareResult resultObj,
 
 resultItem::~resultItem()
 {
-//    if (!itemList.empty())
-//        qDeleteAll(itemList);
+
 }
 
 void resultItem::appendItem(resultItem *item)
@@ -128,7 +127,7 @@ void resultItem::setData()
     case PDDBManagedObjectCompareResult::Removed:
         if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameter )
         {
-            itemData << "Parameter" << "Del";
+            itemData << "Parameter" << "Deleted";
             description.append("[ ");
             if ( ((PDDBManagedObjectParameter*)resultObj.getFirstElement())->getMocParent() != NULL )
             {
@@ -143,7 +142,7 @@ void resultItem::setData()
 
         else if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObject )
         {
-            itemData << "Managed Object" << "Del";
+            itemData << "Managed Object" << "Deleted";
             description.append("[ ");
             description.append(QString::fromStdString(((PDDBManagedObject*)resultObj.getFirstElement())->getClassName()));
             description.append(" ]");
@@ -152,7 +151,7 @@ void resultItem::setData()
 
         else if ( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
         {
-            itemData << "Complex Parameter" << "Del";
+            itemData << "Complex Parameter" << "Deleted";
             description.append("[ ");
             if ( ((PDDBManagedObjectParameter*)resultObj.getFirstElement())->getMocParent() != NULL )
             {
@@ -171,12 +170,12 @@ void resultItem::setData()
         {
             if( resultObj.getScope() == PDDBManagedObjectCompareResult::ManagedObjectParameterComplexTypeParameter )
             {
-                itemData << "Complex Parameter" << "Mod";
+                itemData << "Complex Parameter" << "Modified";
                 description.append("[ ");
             }
             else
             {
-                itemData << "Parameter" << "Mod";
+                itemData << "Parameter" << "Modified";
                 description.append("[ ");
             }
 
