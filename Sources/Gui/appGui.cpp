@@ -238,6 +238,8 @@ void appGUI::setGMCHint(QModelIndex index)
 void appGUI::choiceDistName()
 {
     dialogList = new QDialog();
+    dialogList->setWindowFlags(Qt::WindowStaysOnTopHint);
+    dialogList->setModal(true);
     dialogList->setWindowTitle(tr("GMC Action"));
     QVBoxLayout * dialogLayout = new QVBoxLayout();
     QStringList distNameList;
