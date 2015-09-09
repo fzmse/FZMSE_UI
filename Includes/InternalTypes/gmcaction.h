@@ -6,6 +6,8 @@
 #include "InternalTypes/ManagedObjectRelativeElement.h"
 #include "InternalTypes/GMCManagedObject.h"
 #include "PDDBManagedObjectCompareResult.h"
+#include "PDDBManagedObject.h"
+#include "PDDBSimpleTypeValue.h"
 
 namespace InternalTypes
 {
@@ -57,6 +59,10 @@ namespace InternalTypes
         std::string getGmcMocOperation();
         std::string getHelpNote();
         bool isReaderInteractionRequired();
+        std::string getDistName();
+
+
+        void buildDistNameFromBase(std::string distNameBase);
 
     protected:
 
@@ -72,6 +78,8 @@ namespace InternalTypes
         bool requiresReaderInteraction;
 
         std::string gmcMocOperation;
+
+        std::string distName;
 
         bool includedInGMC;
 

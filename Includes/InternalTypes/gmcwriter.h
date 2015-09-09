@@ -24,7 +24,7 @@ namespace InternalTypes
         static void insertParameterComplexType(GMCDocument * gmc, GMCManagedObject * moc, std::string name,
                                                std::vector< std::pair< std::string, std::string> > values);
 
-        static tinyxml2::XMLElement * insertMoc(GMCDocument * gmc, std::string className, std::string version, std::string operation);
+        static tinyxml2::XMLElement * insertMoc(GMCDocument * gmc, std::string className, std::string version, std::string operation, std::string distName);
 
         static void removeParameterSimpleType(GMCDocument * gmc, GMCManagedObject * moc, std::string name);
         static void removeParameterComplexType(GMCDocument * gmc, GMCManagedObjectParameter * complexPar,

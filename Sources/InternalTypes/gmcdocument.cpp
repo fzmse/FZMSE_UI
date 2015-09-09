@@ -302,61 +302,64 @@ inline std::vector<GMCAction> resolveGMCActionForMocParameterAdd ( PDDBManagedOb
 
         // There are mocs like these
         //if (  )
-        if ( currPar->getCreationPriority() == "mandatory" && currPar->isVendorSpecific() == false )
+        if ( gmcMocs[0]->getParameterByName(currPar->getName()) == NULL )
         {
-
-            actions.push_back( GMCAction(r, false, currPar, GMCAction::ActionType::Add,
-                                          GMCAction::ChangeScope::ManagedObjectParameter,
-                                          r.getId(),"", gmcMocs) );
-        }
-        else
-        {
-            if ( currPar->getCreationPriority() == "optional" && currPar->isVendorSpecific() == false )
+            if ( currPar->getCreationPriority() == "mandatory" && currPar->isVendorSpecific() == false )
             {
-                bool anyLuck = true;
-                bool refsFoundPost = isFoundInGMCAction( currPar->getRelatedParameters(), actionsPost);
-                bool refsFoundStandard = isAnyOfReferencesValid(currPar->getRelatedParameters(), gmc);
-                if ( refsFoundStandard )
-                {
-                    actions.push_back( GMCAction(r, true, currPar, GMCAction::ActionType::Add,
+
+                actions.push_back( GMCAction(r, false, currPar, GMCAction::ActionType::Add,
                                               GMCAction::ChangeScope::ManagedObjectParameter,
-                                              r.getId(),
-                                              "Related Parameters references found in GMC",
-                                                 gmcMocs));
-                    anyLuck = false;
-                }
-                else
+                                              r.getId(),"", gmcMocs) );
+            }
+            else
+            {
+                if ( currPar->getCreationPriority() == "optional" && currPar->isVendorSpecific() == false )
                 {
-                    if ( refsFoundPost )
+                    bool anyLuck = true;
+                    bool refsFoundPost = isFoundInGMCAction( currPar->getRelatedParameters(), actionsPost);
+                    bool refsFoundStandard = isAnyOfReferencesValid(currPar->getRelatedParameters(), gmc);
+                    if ( refsFoundStandard )
                     {
                         actions.push_back( GMCAction(r, true, currPar, GMCAction::ActionType::Add,
                                                   GMCAction::ChangeScope::ManagedObjectParameter,
                                                   r.getId(),
-                                                  "Related Parameters references found in GMCActions!!!",
+                                                  "Related Parameters references found in GMC",
                                                      gmcMocs));
                         anyLuck = false;
                     }
-                }
-
-                // Look for complex types
-                if ( anyLuck == true )
-                {
-                    if ( currPar->getPDDBValue()->isComplexType() )
+                    else
                     {
-                        auto childPars = ((PDDBComplexTypeValue*)currPar->getPDDBValue())->getValueParameters();
-                        for ( vector<PDDBManagedObjectParameter*>::iterator it = childPars.begin(); it != childPars.end(); it ++ )
+                        if ( refsFoundPost )
                         {
-                            PDDBManagedObjectParameter * childP = *it;
-                            if ( childP->getCreationPriority() == "mandatory" && childP->isVendorSpecific() == false  )
+                            actions.push_back( GMCAction(r, true, currPar, GMCAction::ActionType::Add,
+                                                      GMCAction::ChangeScope::ManagedObjectParameter,
+                                                      r.getId(),
+                                                      "Related Parameters references found in GMCActions!!!",
+                                                         gmcMocs));
+                            anyLuck = false;
+                        }
+                    }
+
+                    // Look for complex types
+                    if ( anyLuck == true )
+                    {
+                        if ( currPar->getPDDBValue()->isComplexType() )
+                        {
+                            auto childPars = ((PDDBComplexTypeValue*)currPar->getPDDBValue())->getValueParameters();
+                            for ( vector<PDDBManagedObjectParameter*>::iterator it = childPars.begin(); it != childPars.end(); it ++ )
                             {
-                                bool refsFoundPost = isFoundInGMCAction( childP->getRelatedParameters(), actionsPost);
-                                if ( refsFoundPost )
+                                PDDBManagedObjectParameter * childP = *it;
+                                if ( childP->getCreationPriority() == "mandatory" && childP->isVendorSpecific() == false  )
                                 {
-                                    actions.push_back( GMCAction(r, true, currPar, GMCAction::ActionType::Add,
-                                                              GMCAction::ChangeScope::ManagedObjectParameter,
-                                                              r.getId(),
-                                                              "Related Parameters references found in GMCActions!!!",
-                                                                 gmcMocs));
+                                    bool refsFoundPost = isFoundInGMCAction( childP->getRelatedParameters(), actionsPost);
+                                    if ( refsFoundPost )
+                                    {
+                                        actions.push_back( GMCAction(r, true, currPar, GMCAction::ActionType::Add,
+                                                                  GMCAction::ChangeScope::ManagedObjectParameter,
+                                                                  r.getId(),
+                                                                  "Related Parameters references found in GMCActions!!!",
+                                                                     gmcMocs));
+                                    }
                                 }
                             }
                         }
@@ -492,12 +495,11 @@ std::vector<GMCAction> GMCDocument::resolveGMCActionsPostProcessing( PDDBDocumen
                                         if ( oldValue == val->getValue() && newValue != val->getValue())
                                         {
 
-                                            actions.push_back( GMCAction(r, r.containsChange(PDDBManagedObjectCompareResult::SimpleTypeValue_RangeChanged),
+                                            actions.push_back( GMCAction(r, false,
                                                                         newPar, GMCAction::ActionType::Modify,
                                                                         GMCAction::ChangeScope::ManagedObjectParameter,
                                                                         r.getId(),
-                                                                        r.containsChange(PDDBManagedObjectCompareResult::SimpleTypeValue_RangeChanged)
-                                                                                        ? "Range changed, attention required" : "",
+                                                                        "",
                                                                         gmcMocs, vector<GMCAction>(), oldPar));
                                         }
                                     }
@@ -579,16 +581,25 @@ std::vector<GMCAction> GMCDocument::resolveGMCActionsPostProcessing( PDDBDocumen
                                     {
                                         if ( r.containsChange(PDDBManagedObjectCompareResult::SimpleTypeValue) )
                                         {
+                                            string oldValue = ((PDDBSimpleTypeValue*)oldPar->getPDDBValue())->getEvaluatedValue();
+                                            string newValue = ((PDDBSimpleTypeValue*)newPar->getPDDBValue())->getEvaluatedValue();
                                             if ( gmcMocs[0]->getParameterByName(newPar->getName()) != NULL ) // in gmc
                                             {
-                                                actions.push_back( GMCAction(r, r.containsChange(PDDBManagedObjectCompareResult::SimpleTypeValue_RangeChanged),
-                                                                            newPar, GMCAction::ActionType::Modify,
-                                                                            GMCAction::ChangeScope::ManagedObjectParameter,
-                                                                            r.getId(),
-                                                                            r.containsChange(PDDBManagedObjectCompareResult::SimpleTypeValue_RangeChanged)
-                                                                                            ? "Range changed, attention required" : "",
-                                                                            gmcMocs, vector<GMCAction>(),
-                                                                             oldPar));
+                                                GMCManagedObjectParameter * gmcCurrPar = gmcMocs[0]->getParameterByName(newPar->getName());
+                                                auto val = (GMCParameterSingleValue*)gmcCurrPar->getValue();
+                                                if ( val != NULL )
+                                                {
+                                                    if ( oldValue == val->getValue() && newValue != val->getValue())
+                                                    {
+                                                        actions.push_back( GMCAction(r, false,
+                                                                                    newPar, GMCAction::ActionType::Modify,
+                                                                                    GMCAction::ChangeScope::ManagedObjectParameter,
+                                                                                    r.getId(),
+                                                                                    "",
+                                                                                    gmcMocs, vector<GMCAction>(),
+                                                                                     oldPar));
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -798,4 +809,23 @@ std::pair< std::string, std::string> GMCDocument::resolveGMCCompareText(GMCDocum
     }
 
     return result;
+}
+
+std::vector<std::string> GMCDocument::getDistNames()
+{
+    vector<string> results;
+
+    vector<GMCManagedObject*> mocs =  this->getManagedObjects();
+    for ( vector<GMCManagedObject*>::iterator it = mocs.begin(); it != mocs.end(); it ++ )
+    {
+        XMLElement * e = (*it)->getElement();
+        if ( e != NULL )
+        {
+            string dName = XmlElementReader::getAttributeByName(e, "distName");
+            if ( dName != "" )
+                results.push_back(dName);
+        }
+    }
+
+    return results;
 }

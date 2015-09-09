@@ -29,6 +29,8 @@ namespace InternalTypes
 
         std::vector<GMCManagedObject * > getMocsByClassName(std::string name);
 
+        std::vector<std::string> getDistNames();
+
         static std::pair< std::string, std::string> resolveGMCCompareText(GMCDocument * original, GMCDocument * modified, GMCAction action);
         static std::vector<GMCAction> resolveGMCActions( PDDBDocument * oldPDDB, PDDBDocument * newPDDB, GMCDocument * gmc, std::vector<PDDBManagedObjectCompareResult> * compareResults );
 

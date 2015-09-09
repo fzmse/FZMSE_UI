@@ -116,7 +116,7 @@ void GMCWriter::insertParameterComplexType(GMCDocument * gmc, GMCManagedObject *
 
 }
 
-XMLElement * GMCWriter::insertMoc(GMCDocument * gmc, std::string className, std::string version, std::string operation)
+XMLElement * GMCWriter::insertMoc(GMCDocument * gmc, std::string className, std::string version, std::string operation, std::string distName)
 {
     XMLElement * insertAfter = NULL;
     if ( gmc->getManagedObjects().size() > 0 )
@@ -148,6 +148,8 @@ XMLElement * GMCWriter::insertMoc(GMCDocument * gmc, std::string className, std:
         // insert first child
         XMLElement * n = gmc->getXMLDocument()->NewElement("managedObject");
         n->SetAttribute("class", className.c_str());
+        if ( distName != "" )
+            n->SetAttribute("distName", distName.c_str());
         n->SetAttribute("operation", operation.c_str());
         n->SetAttribute("version", version.c_str());
 
@@ -159,8 +161,11 @@ XMLElement * GMCWriter::insertMoc(GMCDocument * gmc, std::string className, std:
         // insert after
         XMLElement * n = gmc->getXMLDocument()->NewElement("managedObject");
         n->SetAttribute("class", className.c_str());
+        if ( distName != "" )
+            n->SetAttribute("distName", distName.c_str());
         n->SetAttribute("operation", operation.c_str());
         n->SetAttribute("version", version.c_str());
+
         XmlWriter::insertAfter( insertAfter, n);
         return n;
     }
@@ -341,7 +346,7 @@ vector<ReportEntry> GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action
                 }
             }
             insertMoc(gmc, ((PDDBManagedObject*)action.getItem())->getClassName(), versionOfGmcMoc,
-                      action.getGmcMocOperation());
+                      action.getGmcMocOperation(), action.getDistName());
             gmc->reinitialize();
             GMCManagedObject * gmcNewMoc = gmc->getManagedObjectByClassName( mocClassName );
             if ( action.getChildActions().size() > 0 )
