@@ -2,13 +2,16 @@
     <qresource prefix="/">
         <file>report/logo.png</file>
         <file>report/reptemp.html</file>
-		<file>report/npic.png</file>
-		<file>report/ogic.png</file>
-		<file>report/opic.png</file>
-		<file>report/sic.png</file>
-		<file>report/add.png</file>
-		<file>report/del.png</file>
-		<file>report/mod.png</file>
-		<file>report/alert.png</file>
+        <file>report/npic.png</file>
+        <file>report/ogic.png</file>
+        <file>report/opic.png</file>
+        <file>report/sic.png</file>
+        <file>report/add.png</file>
+        <file>report/del.png</file>
+        <file>report/mod.png</file>
+        <file>report/alert.png</file>
+        <file>report/icon.png</file>
+        <file>report/icon_window.ico</file>
+        <file>report/icon_win.png</file>
     </qresource>
 </RCC>

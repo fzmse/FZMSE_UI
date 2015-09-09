@@ -17,9 +17,11 @@ appGUI::appGUI()
     createPDDBTextDock();
     createGMCTextDock();
 
-    setWindowTitle(tr("FZMSE"));
+    setWindowTitle(tr("GMC Automation Tool"));
 
     setUnifiedTitleAndToolBarOnMac(true);
+
+    setWindowIcon(QIcon(":report/icon_win.png"));
 }
 
 void appGUI::loadPathToDoc(const QString &type)
@@ -64,13 +66,26 @@ void appGUI::loadPathToDoc(const QString &type)
     }
 }
 
-//void appGUI::includeInGMC(bool var)
-//{
-//    qDebug() << var;
-//    actions[i].setIncludedInGMC(var);
-//    item->resultObj.setIncludedInGMC(var);
-//    item->updateIncludedInGMC(var);
-//}
+void appGUI::setCurrDist(QModelIndex index)
+{
+    auto var = distListModel->data(index, Qt::DisplayRole);
+    currDist = var.toString();
+}
+
+void appGUI::setDistToAction()
+{
+    string var = currDist.toStdString();
+    currAction->buildDistNameFromBase(var);
+    newGMCdoc = make_shared<GMCDocument>(oldGMCdoc.get());
+    GMCWriter::reactToAll(newGMCdoc.get(), actions);
+    dialogList->close();
+    showSelectedGMCResult();
+}
+
+void appGUI::closeDistNameDialog()
+{
+    dialogList->close();
+}
 
 void appGUI::save()
 {
@@ -170,6 +185,10 @@ void appGUI::onGMCRClick(const QPoint &pos)
                     item->resultObj.setIncludedInGMC(false);
                     item->updateIncludedInGMC(false);
                     break;
+                } else if ( setDistName == selectedItem )
+                {
+                    currAction = &actions[i];
+                    choiceDistName();
                 }
             }
         }
@@ -218,19 +237,25 @@ void appGUI::setGMCHint(QModelIndex index)
 
 void appGUI::choiceDistName()
 {
-    QDialog * dialogList = new QDialog();
+    dialogList = new QDialog();
     dialogList->setWindowTitle(tr("GMC Action"));
     QVBoxLayout * dialogLayout = new QVBoxLayout();
     QStringList distNameList;
 
-    distNameList << "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik";
+    vector<string> distV = oldGMCdoc->getDistNames();
 
-    QStringListModel * distListModel = new QStringListModel(this);
+    for (vector<string>::iterator it = distV.begin(); it != distV.end(); it++)
+    {
+        distNameList << QString::fromStdString(*it);
+    }
+
+    distListModel = new QStringListModel(this);
 
     distListModel->setStringList(distNameList);
 
     QListView * distListView = new QListView(this);
 
+    distListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
     distListView->setModel(distListModel);
 
@@ -239,6 +264,12 @@ void appGUI::choiceDistName()
     QPushButton * cancel = new QPushButton(tr("Cancel"));
     buttonsLayout->addWidget(select);
     buttonsLayout->addWidget(cancel);
+
+    connect(distListView, SIGNAL(pressed(QModelIndex)), this, SLOT(setCurrDist(QModelIndex)));
+
+    connect(select, SIGNAL(clicked(bool)), this, SLOT(setDistToAction()));
+
+    connect(cancel, SIGNAL(clicked(bool)), this, SLOT(closeDistNameDialog()));
 
     QHBoxLayout * listLayout = new QHBoxLayout();
     listLayout->addWidget(distListView);
@@ -490,8 +521,6 @@ void appGUI::showSelectedPDDBResult()
 
 void appGUI::showSelectedGMCResult()
 {
-    PDDBResultView->clearSelection();
-
     statusBar()->showMessage(tr("Filling boxes"));
     QModelIndex index = GMCResultView->currentIndex();
 
@@ -763,7 +792,9 @@ void appGUI::createActions()
     //connect(delToGMC, SIGNAL(triggered(bool)), this, SLOT(includeInGMC(false)));
 
     setDistName = new QAction(tr("Setup MOC distName in GMC"), this);
-    connect(setDistName, SIGNAL(triggered(bool)), this, SLOT(choiceDistName()));
+    //connect(setDistName, SIGNAL(triggered(bool)), this, SLOT(choiceDistName(GMCAction)));
+
+    selectClicked = new QAction(tr("Confirm selection"), this);
 }
 
 void appGUI::createMenus()

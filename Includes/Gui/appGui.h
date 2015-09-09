@@ -62,8 +62,9 @@ private slots:
     void setPDDBHint(QModelIndex);
     void setGMCHint(QModelIndex);
     void loadPathToDoc(const QString &);
-    //void includeInGMC(bool);
-    void choiceDistName();
+    void setCurrDist(QModelIndex);
+    void setDistToAction();
+    void closeDistNameDialog();
 
 private:
     void createActions();
@@ -85,6 +86,9 @@ private:
 
     void comparePDDB();
     void printDiff(resultItem * r);
+
+    void choiceDistName();
+
 
     QVBoxLayout * verCentralLayout;
     QWidget * centralWid;
@@ -112,6 +116,7 @@ private:
     QAction * addToGMC;
     QAction * delFromGMC;
     QAction * setDistName;
+    QAction * selectClicked;
 
     QPushButton * clearListsBut;
     QPushButton * compareBut;
@@ -125,6 +130,11 @@ private:
     QDockWidget * PDDBResultDock;
     QTreeView * PDDBResultView;
     resultItemModel * PDDBResultModel;
+
+    QDialog * dialogList;
+    QStringListModel * distListModel;
+    QString currDist;
+    InternalTypes::GMCAction * currAction;
 
     QMenu* contextMenu;
 

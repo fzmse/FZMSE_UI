@@ -16,6 +16,8 @@ TEMPLATE = app
 DEFINES += PROJECT_PATH="\"$PWD\""
 DEFINES += BUILD_PATH="\"$OUT_PWD\""
 
+RC_FILE = FZMSE.rc
+
 SOURCES += main.cpp \
         Includes/TinyXML/tinyxml2.cpp \
         Sources/Xml/XmlReader.cpp \
@@ -152,6 +154,7 @@ DISTFILES += \
     UT/TestFiles/PDDB/FL161507.xml \
     Includes/Gui/lineTextEdit \
     UT/TestFiles/PDDB/pddb1507_mychanges.xml \
-    UT/TestFiles/PDDB/f13.xml
+    UT/TestFiles/PDDB/f13.xml \
+    FZMSE.rc
 
 RESOURCES += appresources.qrc
