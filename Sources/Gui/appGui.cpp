@@ -64,6 +64,14 @@ void appGUI::loadPathToDoc(const QString &type)
     }
 }
 
+//void appGUI::includeInGMC(bool var)
+//{
+//    qDebug() << var;
+//    actions[i].setIncludedInGMC(var);
+//    item->resultObj.setIncludedInGMC(var);
+//    item->updateIncludedInGMC(var);
+//}
+
 void appGUI::save()
 {
     if (!(oldPDDBPath.empty() || newPDDBPath.empty() || oldGMCPath.empty()))
@@ -135,7 +143,38 @@ void appGUI::onGMCRClick(const QPoint &pos)
     QPoint globalPos = GMCResultView->mapToGlobal(pos);
     auto index = GMCResultView->indexAt(pos);
     auto item = GMCResultModel->getItemFromRow(index.row());
-    if ( index.parent().row() == -1)
+    if ( index.parent().row() == -1 && item->resultObj.getChangeScope() == GMCAction::ManagedObject)
+    {
+        QMenu myMenu;
+        myMenu.addAction(setDistName);
+        myMenu.addAction(addToGMC);
+        myMenu.addAction(delFromGMC);
+
+        QAction* selectedItem = myMenu.exec(globalPos);
+
+        int id = item->resultObj.getPDDBCompareResultId();
+
+        for (int i = 0; i < actions.size(); i++)
+        {
+            if ( actions[i].getPDDBCompareResultId() == id )
+            {
+                if (addToGMC == selectedItem)
+                {
+                    actions[i].setIncludedInGMC(true);
+                    item->resultObj.setIncludedInGMC(true);
+                    item->updateIncludedInGMC(true);
+                    break;
+                } else if ( delFromGMC == selectedItem )
+                {
+                    actions[i].setIncludedInGMC(false);
+                    item->resultObj.setIncludedInGMC(false);
+                    item->updateIncludedInGMC(false);
+                    break;
+                }
+            }
+        }
+    }
+    else if ( index.parent().row() == -1)
     {
         QMenu myMenu;
         myMenu.addAction(addToGMC);
@@ -177,6 +216,40 @@ void appGUI::setGMCHint(QModelIndex index)
     GMCResultView->setToolTip(GMCResultModel->data(index, Qt::DisplayRole).toString());
 }
 
+void appGUI::choiceDistName()
+{
+    QDialog * dialogList = new QDialog();
+    dialogList->setWindowTitle(tr("GMC Action"));
+    QVBoxLayout * dialogLayout = new QVBoxLayout();
+    QStringList distNameList;
+
+    distNameList << "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik"<< "Pierszy" << "Test" << "321 tescik";
+
+    QStringListModel * distListModel = new QStringListModel(this);
+
+    distListModel->setStringList(distNameList);
+
+    QListView * distListView = new QListView(this);
+
+
+    distListView->setModel(distListModel);
+
+    QHBoxLayout * buttonsLayout = new QHBoxLayout();
+    QPushButton * select = new QPushButton(tr("Select"));
+    QPushButton * cancel = new QPushButton(tr("Cancel"));
+    buttonsLayout->addWidget(select);
+    buttonsLayout->addWidget(cancel);
+
+    QHBoxLayout * listLayout = new QHBoxLayout();
+    listLayout->addWidget(distListView);
+
+    dialogLayout->addLayout(listLayout);
+    dialogLayout->addLayout(buttonsLayout);
+
+    dialogList->setLayout(dialogLayout);
+    dialogList->show();
+}
+
 
 void appGUI::compare()
 {
@@ -195,12 +268,17 @@ void appGUI::compare()
         GMCResultModel->setRoot();
         GMCResultView->reset();
         GMCResultView->setModel(GMCResultModel);
+        QHeaderView *headerView = new QHeaderView(Qt::Horizontal, this);
+        GMCResultView->setHeader(headerView);
 
         GMCResultView->setColumnWidth(0, 40);
         GMCResultView->setColumnWidth(1, 20);
         GMCResultView->setColumnWidth(2, 75);
         GMCResultView->setColumnWidth(3, 20);
-        GMCResultView->setColumnWidth(4, 100);
+        headerView->setSectionResizeMode(4, QHeaderView::Stretch);
+        headerView->setSectionResizeMode(5, QHeaderView::Stretch);
+
+        headerView->setHidden(false);
 
         GMCResultView->setMouseTracking(true);
 
@@ -242,11 +320,18 @@ void appGUI::comparePDDB()
         PDDBResultModel->setResultVector(differences);
         PDDBResultModel->setRoot();
         PDDBResultView->reset();
+
         PDDBResultView->setModel(PDDBResultModel);
+
+        QHeaderView *headerView = new QHeaderView(Qt::Horizontal, this);
+        PDDBResultView->setHeader(headerView);
+
+        headerView->setSectionResizeMode(2, QHeaderView::Stretch);
+        headerView->setSectionResizeMode(3, QHeaderView::Stretch);
 
         PDDBResultView->setColumnWidth(0, 80);
         PDDBResultView->setColumnWidth(1, 20);
-        PDDBResultView->setColumnWidth(2, 100);
+        headerView->setHidden(false);
         PDDBResultView->setMouseTracking(true);
 
         connect(PDDBResultView,
@@ -672,7 +757,13 @@ void appGUI::createActions()
     connect(displayHelpAct, SIGNAL(triggered(bool)), this, SLOT(help()));
 
     addToGMC = new QAction(tr("Include in GMC"), this);
+    //connect(addToGMC, SIGNAL(triggered(bool)), this, SLOT(includeInGMC(true)));
+
     delFromGMC = new QAction(tr("Exclude from GMC"), this);
+    //connect(delToGMC, SIGNAL(triggered(bool)), this, SLOT(includeInGMC(false)));
+
+    setDistName = new QAction(tr("Setup MOC distName in GMC"), this);
+    connect(setDistName, SIGNAL(triggered(bool)), this, SLOT(choiceDistName()));
 }
 
 void appGUI::createMenus()

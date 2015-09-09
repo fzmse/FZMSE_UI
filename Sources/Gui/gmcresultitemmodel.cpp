@@ -173,7 +173,7 @@ QModelIndex gmcResultItemModel::parent(const QModelIndex &index) const
 
 bool gmcResultItemModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
-    if ( index.isValid())
+    if ( !index.isValid() )
     {
         return false;
     }

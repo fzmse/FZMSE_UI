@@ -52,7 +52,6 @@ public:
     vector<InternalTypes::GMCAction> * getActions();
 
 private slots:
-    void loadPathToDoc(const QString &);
     void save();
     void help();
     void clean();
@@ -62,6 +61,9 @@ private slots:
     void onGMCRClick(const QPoint &);
     void setPDDBHint(QModelIndex);
     void setGMCHint(QModelIndex);
+    void loadPathToDoc(const QString &);
+    //void includeInGMC(bool);
+    void choiceDistName();
 
 private:
     void createActions();
@@ -109,7 +111,7 @@ private:
     QAction * displayHelpAct;
     QAction * addToGMC;
     QAction * delFromGMC;
-
+    QAction * setDistName;
 
     QPushButton * clearListsBut;
     QPushButton * compareBut;

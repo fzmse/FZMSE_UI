@@ -3,8 +3,9 @@
 
 helpDialog::helpDialog()
 {
-    setMinimumWidth(300);
-    setMinimumHeight(500);
+    setMinimumWidth(150);
+    setMinimumHeight(100);
+    setBaseSize(QSize(200, 300));
     setWindowTitle(tr("Help"));
 
 //    QHBoxLayout *step_1 = new QHBoxLayout();
