@@ -106,3 +106,45 @@ std::string GMCAction::getGmcMocOperation()
 {
     return this->gmcMocOperation;
 }
+
+
+std::string GMCAction::getDistName()
+{
+    return this->distName;
+}
+
+
+
+void GMCAction::buildDistNameFromBase(std::string distNameBase)
+{
+    distName = "";
+    if ( this->actionType == Add && this->actionScope == ManagedObject )
+    {
+        // calculate addon
+        PDDBManagedObject * mocPDDB = (PDDBManagedObject*)this->compareResult.getSecondElement();
+        string className = mocPDDB->getClassName();
+        string resultString = "";
+        PDDBManagedObjectParameter * par = mocPDDB->getMocIdParameter();
+        if ( par != NULL )
+        {
+            string idString = ((PDDBSimpleTypeValue*) par->getPDDBValue() )->getEvaluatedValueForAdd();
+
+            // add base
+            if ( distNameBase == "")
+            {
+                resultString += className;
+                resultString += "-";
+                resultString += idString;
+            }
+            else
+            {
+                resultString += distNameBase;
+                resultString += "/";
+                resultString += className;
+                resultString += "-";
+                resultString += idString;
+            }
+            distName = resultString;
+        }
+    }
+}
