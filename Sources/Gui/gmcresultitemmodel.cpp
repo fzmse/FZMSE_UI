@@ -84,7 +84,7 @@ QVariant gmcResultItemModel::data(const QModelIndex &index, int role) const
 
     gmcResultItem *item = static_cast<gmcResultItem*>(index.internalPointer());
 
-    if ( index.column() == 0 )
+    if ( index.column() == 0)
         return static_cast< int >( item->isChecked() ? Qt::Checked : Qt::Unchecked );
 
     if ( index.column() == 1 && role == Qt::DecorationRole )

@@ -57,7 +57,7 @@ private slots:
     void clean();
     void compare();
     void showSelectedPDDBResult();
-    void showSelectedGMCResult();
+    void showSelectedGMCResult(QModelIndex);
     void onGMCRClick(const QPoint &);
     void setPDDBHint(QModelIndex);
     void setGMCHint(QModelIndex);
@@ -81,8 +81,9 @@ private:
     void createGMCResultView();
 
     void createPDDBTextDock();
-
     void createGMCTextDock();
+
+    void setConnections();
 
     void comparePDDB();
     void printDiff(resultItem * r);
@@ -135,6 +136,7 @@ private:
     QStringListModel * distListModel;
     QString currDist;
     InternalTypes::GMCAction * currAction;
+    QListView * distListView;
 
     QMenu* contextMenu;
 

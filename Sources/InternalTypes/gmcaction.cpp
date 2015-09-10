@@ -1,5 +1,5 @@
 #include "InternalTypes/GMCAction.h"
-\
+
 using namespace std;
 using namespace tinyxml2;
 using namespace InternalTypes;
@@ -28,6 +28,7 @@ GMCAction::GMCAction(PDDBManagedObjectCompareResult r, bool interaction, Managed
     this->includedInGMC = !this->requiresReaderInteraction;
 
     this->gmcMocOperation = gmcMocOperation;
+    buildDistNameFromBase("");
 }
 
 

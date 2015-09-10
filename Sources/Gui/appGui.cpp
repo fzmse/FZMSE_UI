@@ -16,12 +16,14 @@ appGUI::appGUI()
     createGMCResultView();
     createPDDBTextDock();
     createGMCTextDock();
-
-    setWindowTitle(tr("GMC Automation Tool"));
+    setConnections();
 
     setUnifiedTitleAndToolBarOnMac(true);
 
+    setWindowTitle(tr("GMC Automation Tool"));
     setWindowIcon(QIcon(":report/icon_win.png"));
+
+    dialogList = NULL;
 }
 
 void appGUI::loadPathToDoc(const QString &type)
@@ -74,12 +76,17 @@ void appGUI::setCurrDist(QModelIndex index)
 
 void appGUI::setDistToAction()
 {
-    string var = currDist.toStdString();
-    currAction->buildDistNameFromBase(var);
-    newGMCdoc = make_shared<GMCDocument>(oldGMCdoc.get());
-    GMCWriter::reactToAll(newGMCdoc.get(), actions);
-    dialogList->close();
-    showSelectedGMCResult();
+    if ( currAction != NULL)
+    {
+        string var = currDist.toStdString();
+        currAction->buildDistNameFromBase(var);
+        newGMCdoc = make_shared<GMCDocument>(oldGMCdoc.get());
+        GMCWriter::reactToAll(newGMCdoc.get(), actions);
+        dialogList->close();
+
+        showSelectedGMCResult(GMCResultView->currentIndex());
+        currAction = NULL;
+    }
 }
 
 void appGUI::closeDistNameDialog()
@@ -158,6 +165,11 @@ void appGUI::onGMCRClick(const QPoint &pos)
     QPoint globalPos = GMCResultView->mapToGlobal(pos);
     auto index = GMCResultView->indexAt(pos);
     auto item = GMCResultModel->getItemFromRow(index.row());
+    if (item == nullptr)
+    {
+        return;
+    }
+
     if ( index.parent().row() == -1 && item->resultObj.getChangeScope() == GMCAction::ManagedObject)
     {
         QMenu myMenu;
@@ -237,50 +249,59 @@ void appGUI::setGMCHint(QModelIndex index)
 
 void appGUI::choiceDistName()
 {
-    dialogList = new QDialog();
-    dialogList->setWindowFlags(Qt::WindowStaysOnTopHint);
-    dialogList->setModal(true);
-    dialogList->setWindowTitle(tr("GMC Action"));
-    QVBoxLayout * dialogLayout = new QVBoxLayout();
-    QStringList distNameList;
-
-    vector<string> distV = oldGMCdoc->getDistNames();
-
-    for (vector<string>::iterator it = distV.begin(); it != distV.end(); it++)
+    if (currAction != NULL)
     {
-        distNameList << QString::fromStdString(*it);
+        if (dialogList != NULL)
+        {
+            delete dialogList;
+        }
+
+        dialogList = new QDialog();
+        dialogList->setWindowFlags(Qt::WindowStaysOnTopHint);
+        dialogList->setModal(true);
+        dialogList->setWindowTitle(tr("GMC Action"));
+
+        QVBoxLayout * dialogLayout = new QVBoxLayout();
+        QStringList distNameList;
+
+        vector<string> distV = oldGMCdoc->getDistNames();
+
+        for (vector<string>::iterator it = distV.begin(); it != distV.end(); it++)
+        {
+            distNameList << QString::fromStdString(*it);
+        }
+
+        distListModel = new QStringListModel(this);
+
+        distListModel->setStringList(distNameList);
+
+        distListView = new QListView(this);
+
+        distListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+        distListView->setModel(distListModel);
+
+        QHBoxLayout * buttonsLayout = new QHBoxLayout();
+        QPushButton * select = new QPushButton(tr("Select"));
+        QPushButton * cancel = new QPushButton(tr("Cancel"));
+        buttonsLayout->addWidget(select);
+        buttonsLayout->addWidget(cancel);
+
+        connect(distListView, SIGNAL(pressed(QModelIndex)), this, SLOT(setCurrDist(QModelIndex)));
+
+        connect(select, SIGNAL(clicked(bool)), this, SLOT(setDistToAction()));
+
+        connect(cancel, SIGNAL(clicked(bool)), this, SLOT(closeDistNameDialog()));
+
+        QHBoxLayout * listLayout = new QHBoxLayout();
+        listLayout->addWidget(distListView);
+
+        dialogLayout->addLayout(listLayout);
+        dialogLayout->addLayout(buttonsLayout);
+
+        dialogList->setLayout(dialogLayout);
+        dialogList->show();
     }
-
-    distListModel = new QStringListModel(this);
-
-    distListModel->setStringList(distNameList);
-
-    QListView * distListView = new QListView(this);
-
-    distListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
-    distListView->setModel(distListModel);
-
-    QHBoxLayout * buttonsLayout = new QHBoxLayout();
-    QPushButton * select = new QPushButton(tr("Select"));
-    QPushButton * cancel = new QPushButton(tr("Cancel"));
-    buttonsLayout->addWidget(select);
-    buttonsLayout->addWidget(cancel);
-
-    connect(distListView, SIGNAL(pressed(QModelIndex)), this, SLOT(setCurrDist(QModelIndex)));
-
-    connect(select, SIGNAL(clicked(bool)), this, SLOT(setDistToAction()));
-
-    connect(cancel, SIGNAL(clicked(bool)), this, SLOT(closeDistNameDialog()));
-
-    QHBoxLayout * listLayout = new QHBoxLayout();
-    listLayout->addWidget(distListView);
-
-    dialogLayout->addLayout(listLayout);
-    dialogLayout->addLayout(buttonsLayout);
-
-    dialogList->setLayout(dialogLayout);
-    dialogList->show();
 }
 
 
@@ -314,21 +335,6 @@ void appGUI::compare()
         headerView->setHidden(false);
 
         GMCResultView->setMouseTracking(true);
-
-        connect(GMCResultView,
-                SIGNAL(clicked(QModelIndex)),
-                this,
-                SLOT(showSelectedGMCResult()));
-
-        connect(GMCResultView,
-                SIGNAL(customContextMenuRequested(const QPoint &)),
-                this,
-                SLOT(onGMCRClick(const QPoint &)));
-
-        connect(GMCResultView,
-                SIGNAL(entered(QModelIndex)),
-                this,
-                SLOT(setGMCHint(QModelIndex)));
 
         GMCResultView->show();
         statusBar()->showMessage(tr("Ready"));
@@ -521,64 +527,67 @@ void appGUI::showSelectedPDDBResult()
     statusBar()->showMessage(tr("Ready"));
 }
 
-void appGUI::showSelectedGMCResult()
+void appGUI::showSelectedGMCResult(QModelIndex index)
 {
-    statusBar()->showMessage(tr("Filling boxes"));
-    QModelIndex index = GMCResultView->currentIndex();
-
-    int currIntexRow = index.row();
-    QItemSelection selection = QItemSelection();
-
-    if ( index.parent().row() >= 0 )
+    if (index.column() != 0)
     {
-        auto gmcIndex = GMCResultView->currentIndex();
+        statusBar()->showMessage(tr("Filling boxes"));
+        //QModelIndex index = GMCResultView->currentIndex();
 
-        GMCResultView->selectionModel()->select(GMCResultModel->index(index.parent().row(), gmcIndex.column()),
-                                                 QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+        int currIntexRow = index.row();
+        QItemSelection selection = QItemSelection();
 
-        gmcResultItem * gmcParentItem = GMCResultModel->getItemFromRow(index.parent().row());
-        gmcResultItem * gmcChild = gmcParentItem->item(currIntexRow);
-        string text = XmlElementReader::getXML(gmcChild->resultObj.getItem()->getElement());
-        clean();
-        newPDDBTextEdit->setPlainText(QString::fromStdString(text));
-        setLabels(gmcChild->data(2).toString(), true);
-        setLabels(gmcChild->data(2).toString(), false);
-        pair<string, string> gmcPair = GMCDocument::resolveGMCCompareText(oldGMCdoc.get(), newGMCdoc.get(), gmcChild->resultObj);
-        oldGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.first));
-        newGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.second));
-    }
-    else
-    {
-        auto gmcIndex = GMCResultView->currentIndex();
-
-        GMCResultView->selectionModel()->select(GMCResultModel->index(gmcIndex.row(), gmcIndex.column()),
-                                                 QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
-
-        gmcResultItem * gmcItem = GMCResultModel->getItemFromRow(currIntexRow);
-        int gmcID = gmcItem->resultObj.getPDDBCompareResultId();
-        resultItem * r = PDDBResultModel->getRoot()->findItemById(gmcID);
-
-        for ( int i = 0; i < differences.size(); i++)
+        if ( index.parent().row() >= 0 )
         {
-            if ( differences[i].getId() == gmcID )
-            {
-                PDDBResultView->selectionModel()->select(PDDBResultModel->index(i,0),
-                                                         QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
-                PDDBResultView->scrollTo(PDDBResultModel->index(i,0));
-                break;
-            }
+            auto gmcIndex = GMCResultView->currentIndex();
+
+            GMCResultView->selectionModel()->select(GMCResultModel->index(index.parent().row(), gmcIndex.column()),
+                                                     QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+
+            gmcResultItem * gmcParentItem = GMCResultModel->getItemFromRow(index.parent().row());
+            gmcResultItem * gmcChild = gmcParentItem->item(currIntexRow);
+            string text = XmlElementReader::getXML(gmcChild->resultObj.getItem()->getElement());
+            clean();
+            newPDDBTextEdit->setPlainText(QString::fromStdString(text));
+            setLabels(gmcChild->data(2).toString(), true);
+            setLabels(gmcChild->data(2).toString(), false);
+            pair<string, string> gmcPair = GMCDocument::resolveGMCCompareText(oldGMCdoc.get(), newGMCdoc.get(), gmcChild->resultObj);
+            oldGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.first));
+            newGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.second));
         }
+        else
+        {
+            auto gmcIndex = GMCResultView->currentIndex();
 
-        printDiff(r);
-        setLabels(r->data(2).toString(), true);
-        setLabels(r->data(2).toString(), false);
-        pair<string, string> gmcPair = GMCDocument::resolveGMCCompareText(oldGMCdoc.get(), newGMCdoc.get(), gmcItem->resultObj);
-        oldGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.first));
-        newGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.second));
+            GMCResultView->selectionModel()->select(GMCResultModel->index(gmcIndex.row(), gmcIndex.column()),
+                                                     QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+
+            gmcResultItem * gmcItem = GMCResultModel->getItemFromRow(currIntexRow);
+            int gmcID = gmcItem->resultObj.getPDDBCompareResultId();
+            resultItem * r = PDDBResultModel->getRoot()->findItemById(gmcID);
+
+            for ( int i = 0; i < differences.size(); i++)
+            {
+                if ( differences[i].getId() == gmcID )
+                {
+                    PDDBResultView->selectionModel()->select(PDDBResultModel->index(i,0),
+                                                             QItemSelectionModel::ClearAndSelect | QItemSelectionModel::Rows);
+                    PDDBResultView->scrollTo(PDDBResultModel->index(i,0));
+                    break;
+                }
+            }
+
+            printDiff(r);
+            setLabels(r->data(2).toString(), true);
+            setLabels(r->data(2).toString(), false);
+            pair<string, string> gmcPair = GMCDocument::resolveGMCCompareText(oldGMCdoc.get(), newGMCdoc.get(), gmcItem->resultObj);
+            oldGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.first));
+            newGMCTextEdit->setPlainText(QString::fromStdString(gmcPair.second));
 
 
+        }
+        statusBar()->showMessage(tr("Ready"));
     }
-    statusBar()->showMessage(tr("Ready"));
 }
 
 void appGUI::createPDDBResultView()
@@ -743,6 +752,26 @@ void appGUI::createGMCTextDock()
 
     oldGMCLabel->setFont(font);
     newGMCLabel->setFont(font);
+}
+
+void appGUI::setConnections()
+{
+    GMCResultView->setMouseTracking(true);
+
+    connect(GMCResultView,
+            SIGNAL(clicked(QModelIndex)),
+            this,
+            SLOT(showSelectedGMCResult(QModelIndex)));
+
+    connect(GMCResultView,
+            SIGNAL(customContextMenuRequested(const QPoint &)),
+            this,
+            SLOT(onGMCRClick(const QPoint &)));
+
+    connect(GMCResultView,
+            SIGNAL(entered(QModelIndex)),
+            this,
+            SLOT(setGMCHint(QModelIndex)));
 }
 
 std::string appGUI::getFileName(string path)
