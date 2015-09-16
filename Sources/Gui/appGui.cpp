@@ -123,9 +123,10 @@ void appGUI::closeDistNameDialog()
 
 void appGUI::acceptReportSettings()
 {
-    reportSettings = ReportSetting(templatePath, toBeSorted);
-
-    qDebug() << QString::fromStdString(templatePath) << " " << toBeSorted;
+    if ( genNewRadio->isChecked() )
+        reportSettings = ReportSetting("", toBeSorted);
+    else
+        reportSettings = ReportSetting(templatePath, toBeSorted);
 
     templatePath = "";
     toBeSorted = false;
@@ -138,16 +139,26 @@ void appGUI::cancelReportSettings()
 {
     templatePath = "";
     toBeSorted = false;
+    reportSettings = ReportSetting(templatePath, toBeSorted);
     saveDialog->close();
 }
 
 void appGUI::loadTemplatePath()
 {
+    QSettings settings("HKEY_CURRENT_USER\\Software\\GMCAutomationTool",
+             QSettings::NativeFormat);
+
     QString openPath = QFileDialog::getOpenFileName(
                 this,
                 tr("Open Report file"),
-                tr(oldGMCPath.c_str()),
+                settings.value("Raport_path").toString(),
                 tr("HTML (*.html)"));
+
+    settings.setValue("Raport_path", openPath);
+
+    pathLine->setText(openPath);
+    acceptButton->setEnabled(true);
+
     templatePath = openPath.toStdString();
 }
 
@@ -156,16 +167,37 @@ void appGUI::setToBeSort(bool val)
     toBeSorted = val;
 }
 
+void appGUI::radioNewRaport(bool val)
+{
+    if ( val == true )
+    {
+        pathLine->setEnabled(false);
+        loadPathButton->setEnabled(false);
+    }
+    else
+    {
+        pathLine->setEnabled(true);
+        loadPathButton->setEnabled(true);
+        if (pathLine->text() == "")
+            acceptButton->setEnabled(false);
+    }
+}
+
 void appGUI::save()
 {
+    QSettings settings("HKEY_CURRENT_USER\\Software\\GMCAutomationTool",
+             QSettings::NativeFormat);
 
     QString savePath = QFileDialog::getSaveFileName(
                 this,
                 tr("Save file"),
-                tr(oldGMCPath.c_str()),
+                settings.value("New_GMC_path").toString(),
                 tr("XML (*.xml)"));
+
     if (savePath.length() > 0)
     {
+        settings.setValue("New_GMC_path", savePath);
+
         newGMCdoc = make_shared<GMCDocument>(oldGMCdoc.get());
         auto report = GMCWriter::reactToAllIncluded(newGMCdoc.get(), actions);
         GMCWriter::updateVersionInGmc(newGMCdoc.get(), newPDDBdoc->getReleaseVersion(), newPDDBdoc->getReleaseName());
@@ -805,40 +837,52 @@ void appGUI::createSaveDialog()
         if (saveDialog != NULL)
         {
             delete saveDialog;
+            delete loadPathButton;
+            delete genNewRadio;
+            delete acceptButton;
+            delete cancelButton;
         }
 
         saveDialog = new QDialog();
         saveDialog->setModal(true);
         saveDialog->setWindowTitle(tr("Save options"));
-
+        saveDialog->setMinimumWidth(300);
         QVBoxLayout * mainLayout = new QVBoxLayout();
 
         QVBoxLayout * radioButtonLayout = new QVBoxLayout();
-        QRadioButton * genNewRadio = new QRadioButton(tr("Generate new raport"));
-        QRadioButton * genFromTamplateRadio = new QRadioButton(tr("Generate raport from template"));
+        genNewRadio = new QRadioButton(tr("Generate new raport"));
+        genFromTamplateRadio = new QRadioButton(tr("Generate raport from template"));
+
+        genNewRadio->setChecked(true);
+
+        connect(genNewRadio, SIGNAL(toggled(bool)), this, SLOT(radioNewRaport(bool)));
 
         radioButtonLayout->addWidget(genNewRadio);
         radioButtonLayout->addWidget(genFromTamplateRadio);
 
         QHBoxLayout * loadTemplateLayout = new QHBoxLayout();
-        QLabel * pathLine = new QLabel(tr("Path here"));
-        QPushButton * loadPathButton = new QPushButton(tr("Open file"));
+        pathLine = new QLineEdit();
+        pathLine->setReadOnly(true);
+        loadPathButton = new QPushButton(tr("Open file"));
 
         connect(loadPathButton, SIGNAL(clicked(bool)), this, SLOT(loadTemplatePath()));
+
+        pathLine->setEnabled(false);
+        loadPathButton->setEnabled(false);
 
         loadTemplateLayout->addWidget(pathLine);
         loadTemplateLayout->addWidget(loadPathButton);
 
-        QVBoxLayout * checkboxLayout = new QVBoxLayout();
-        QCheckBox * toSort = new QCheckBox(tr("Sort Managed Object"));
+//        QVBoxLayout * checkboxLayout = new QVBoxLayout();
+//        QCheckBox * toSort = new QCheckBox(tr("Sort Managed Object"));
 
-        connect(toSort, SIGNAL(clicked(bool)), this, SLOT(setToBeSort(bool)));
+//        connect(toSort, SIGNAL(clicked(bool)), this, SLOT(setToBeSort(bool)));
 
-        checkboxLayout->addWidget(toSort);
+//        checkboxLayout->addWidget(toSort);
 
         QHBoxLayout * buttonsLayout = new QHBoxLayout();
-        QPushButton * acceptButton = new QPushButton(tr("Accept"));
-        QPushButton * cancelButton = new QPushButton(tr("Cancel"));
+        acceptButton = new QPushButton(tr("Save"));
+        cancelButton = new QPushButton(tr("Cancel"));
 
         connect(acceptButton, SIGNAL(clicked(bool)), this, SLOT(acceptReportSettings()));
         connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(cancelReportSettings()));
@@ -848,7 +892,7 @@ void appGUI::createSaveDialog()
 
         mainLayout->addLayout(radioButtonLayout);
         mainLayout->addLayout(loadTemplateLayout);
-        mainLayout->addLayout(checkboxLayout);
+        //mainLayout->addLayout(checkboxLayout);
         mainLayout->addLayout(buttonsLayout);
 
         saveDialog->setLayout(mainLayout);

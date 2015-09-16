@@ -71,6 +71,7 @@ private slots:
     void cancelReportSettings();
     void loadTemplatePath();
     void setToBeSort(bool);
+    void radioNewRaport(bool);
 
 private:
     void createActions();
@@ -149,6 +150,12 @@ private:
     std::string templatePath;
     bool toBeSorted;
     ReportSetting reportSettings;
+    QRadioButton * genNewRadio;
+    QRadioButton * genFromTamplateRadio;
+    QLineEdit * pathLine;
+    QPushButton * loadPathButton;
+    QPushButton * acceptButton;
+    QPushButton * cancelButton;
 
     QMenu* contextMenu;
 
