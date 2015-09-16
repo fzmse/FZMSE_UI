@@ -1,6 +1,12 @@
 #include "Report/reportsettings.h"
 
 
+ReportSetting::ReportSetting()
+{
+    templatePath = "";
+    toBeSorted = false;
+}
+
 ReportSetting::ReportSetting(std::string path, bool sort)
 {
     templatePath = path;

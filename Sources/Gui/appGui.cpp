@@ -25,6 +25,9 @@ appGUI::appGUI()
 
     dialogList = NULL;
     saveDialog = NULL;
+
+    toBeSorted = false;
+    templatePath = "";
 }
 
 void appGUI::loadPathToDoc(const QString &type)
@@ -120,8 +123,13 @@ void appGUI::closeDistNameDialog()
 
 void appGUI::acceptReportSettings()
 {
-    reportSettings = new ReportSetting(templatePath, toBeSorted);
+    reportSettings = ReportSetting(templatePath, toBeSorted);
+
     qDebug() << QString::fromStdString(templatePath) << " " << toBeSorted;
+
+    templatePath = "";
+    toBeSorted = false;
+
     saveDialog->close();
     save();
 }

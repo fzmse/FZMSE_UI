@@ -148,7 +148,7 @@ private:
     QDialog * saveDialog;
     std::string templatePath;
     bool toBeSorted;
-    ReportSetting * reportSettings;
+    ReportSetting reportSettings;
 
     QMenu* contextMenu;
 
