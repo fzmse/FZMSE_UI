@@ -17,6 +17,7 @@ class appGUI;
 #include "Includes/InternalTypes/PDDBManagedObjectCompareResult.h"
 #include "Includes/Report/ReportUtilities.h"
 #include "Includes/Gui/helpdialog.h"
+#include "Report/reportsettings.h"
 #include <QtWidgets>
 #include <cstring>
 
@@ -35,6 +36,7 @@ class QTextCursor;
 class QHBoxLayout;
 class QVBoxLayout;
 class QPoint;
+class QSettings;
 
 class appGUI : public QMainWindow
 {
@@ -52,7 +54,7 @@ public:
     vector<InternalTypes::GMCAction> * getActions();
 
 private slots:
-    void save();
+    void createSaveDialog();
     void help();
     void clean();
     void compare();
@@ -65,6 +67,10 @@ private slots:
     void setCurrDist(QModelIndex);
     void setDistToAction();
     void closeDistNameDialog();
+    void acceptReportSettings();
+    void cancelReportSettings();
+    void loadTemplatePath();
+    void setToBeSort(bool);
 
 private:
     void createActions();
@@ -85,11 +91,12 @@ private:
 
     void setConnections();
 
+    void save();
+
     void comparePDDB();
     void printDiff(resultItem * r);
 
-    void choiceDistName();
-
+    void createDistNameDialog();
 
     QVBoxLayout * verCentralLayout;
     QWidget * centralWid;
@@ -137,6 +144,11 @@ private:
     QString currDist;
     InternalTypes::GMCAction * currAction;
     QListView * distListView;
+
+    QDialog * saveDialog;
+    std::string templatePath;
+    bool toBeSorted;
+    ReportSetting * reportSettings;
 
     QMenu* contextMenu;
 

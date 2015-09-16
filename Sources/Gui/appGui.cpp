@@ -24,15 +24,36 @@ appGUI::appGUI()
     setWindowIcon(QIcon(":report/icon_win.png"));
 
     dialogList = NULL;
+    saveDialog = NULL;
 }
 
 void appGUI::loadPathToDoc(const QString &type)
 {
+    QSettings settings("HKEY_CURRENT_USER\\Software\\GMCAutomationTool",
+             QSettings::NativeFormat);
+
+    QString diff_path(tr(""));
+
+    if ( type == "oldPDDB" )
+    {
+        diff_path = settings.value("Old_PDDB_path").toString();
+    }
+    else if (type == "newPDDB")
+    {
+       diff_path = settings.value("New_PDDB_path").toString();
+    }
+    else if ( type == "oldGMC" )
+    {
+        diff_path = settings.value("GMC_path").toString();
+    }
+
     QString filePath = QFileDialog::getOpenFileName(
                 this,
                 tr("Open file"),
-                "",
+                diff_path,
                 tr("XML (*.xml)"));
+
+
     if (filePath.length() > 0)
     {
         std::string stdFilePath = filePath.toStdString();
@@ -42,6 +63,7 @@ void appGUI::loadPathToDoc(const QString &type)
             oldPDDBPath = stdFilePath;
             oldPDDBdoc = make_shared<PDDBDocument>(oldPDDBPath);
             setLabel(oldPDDBLabel, "Old PDDB   ||   "+getFileName(oldPDDBPath));
+            settings.setValue("Old_PDDB_path", filePath);
             comparePDDB();
             compare();
         }
@@ -51,6 +73,7 @@ void appGUI::loadPathToDoc(const QString &type)
             newPDDBPath = stdFilePath;
             newPDDBdoc = make_shared<PDDBDocument>(newPDDBPath);
             setLabel(newPDDBLabel, "New PDDB   ||   "+getFileName(newPDDBPath));
+            settings.setValue("New_PDDB_path", filePath);
             comparePDDB();
             compare();
         }
@@ -59,6 +82,7 @@ void appGUI::loadPathToDoc(const QString &type)
             oldGMCPath = stdFilePath;
             oldGMCdoc = make_shared<GMCDocument>(oldGMCPath);
             setLabel(oldGMCLabel, "Old GMC   ||   "+getFileName(oldGMCPath));
+            settings.setValue("GMC_path", filePath);
             compare();
         }
     }
@@ -94,56 +118,77 @@ void appGUI::closeDistNameDialog()
     dialogList->close();
 }
 
+void appGUI::acceptReportSettings()
+{
+    reportSettings = new ReportSetting(templatePath, toBeSorted);
+    qDebug() << QString::fromStdString(templatePath) << " " << toBeSorted;
+    saveDialog->close();
+    save();
+}
+
+void appGUI::cancelReportSettings()
+{
+    templatePath = "";
+    toBeSorted = false;
+    saveDialog->close();
+}
+
+void appGUI::loadTemplatePath()
+{
+    QString openPath = QFileDialog::getOpenFileName(
+                this,
+                tr("Open Report file"),
+                tr(oldGMCPath.c_str()),
+                tr("HTML (*.html)"));
+    templatePath = openPath.toStdString();
+}
+
+void appGUI::setToBeSort(bool val)
+{
+    toBeSorted = val;
+}
+
 void appGUI::save()
 {
-    if (!(oldPDDBPath.empty() || newPDDBPath.empty() || oldGMCPath.empty()))
+
+    QString savePath = QFileDialog::getSaveFileName(
+                this,
+                tr("Save file"),
+                tr(oldGMCPath.c_str()),
+                tr("XML (*.xml)"));
+    if (savePath.length() > 0)
     {
-        QString savePath = QFileDialog::getSaveFileName(
-                    this,
-                    tr("Save file"),
-                    tr(oldGMCPath.c_str()),
-                    tr("XML (*.xml)"));
-        if (savePath.length() > 0)
+        newGMCdoc = make_shared<GMCDocument>(oldGMCdoc.get());
+        auto report = GMCWriter::reactToAllIncluded(newGMCdoc.get(), actions);
+        GMCWriter::updateVersionInGmc(newGMCdoc.get(), newPDDBdoc->getReleaseVersion(), newPDDBdoc->getReleaseName());
+        if (XmlWriter::save(newGMCdoc.get()->getXMLDocument(), savePath.toStdString()))
         {
-            newGMCdoc = make_shared<GMCDocument>(oldGMCdoc.get());
-            auto report = GMCWriter::reactToAllIncluded(newGMCdoc.get(), actions);
-            GMCWriter::updateVersionInGmc(newGMCdoc.get(), newPDDBdoc->getReleaseVersion(), newPDDBdoc->getReleaseName());
-            if (XmlWriter::save(newGMCdoc.get()->getXMLDocument(), savePath.toStdString()))
-            {
-                QDir d = QFileInfo(savePath).absoluteDir();
-                QString fName = QFileInfo(savePath).fileName();
-                QString logoPath = d.absolutePath() + "/logo.png";
-                QString reportPath = savePath;
-                reportPath += ".html";
-                ReportUtilities::saveLogo(logoPath.toStdString());
-                ReportUtilities::generateReport(report, reportPath.toStdString(),
-                                                getFileName(oldPDDBPath), getFileName(newPDDBPath),
-                                                getFileName(oldGMCPath), fName.toStdString(), newPDDBdoc->getReleaseName());
-                QMessageBox::information(this, tr("Saving file"),
-                                               tr("Success !         "),
-                                               QMessageBox::Ok);
-            }
-            else
-            {
-                QMessageBox::warning(this, tr("Saving file"),
-                                               tr("Failed!          "),
-                                               QMessageBox::Ok);
-            }
+            QDir d = QFileInfo(savePath).absoluteDir();
+            QString fName = QFileInfo(savePath).fileName();
+            QString logoPath = d.absolutePath() + "/logo.png";
+            QString reportPath = savePath;
+            reportPath += ".html";
+            ReportUtilities::saveLogo(logoPath.toStdString());
+            ReportUtilities::generateReport(report, reportPath.toStdString(),
+                                            getFileName(oldPDDBPath), getFileName(newPDDBPath),
+                                            getFileName(oldGMCPath), fName.toStdString(), newPDDBdoc->getReleaseName());
+            QMessageBox::information(this, tr("Saving file"),
+                                           tr("Success !         "),
+                                           QMessageBox::Ok);
+        }
+        else
+        {
+            QMessageBox::warning(this, tr("Saving file"),
+                                           tr("Failed!          "),
+                                           QMessageBox::Ok);
         }
     }
-    else
-    {
-        QMessageBox::warning(this, tr("Saving file"),
-                                       tr("PDDB or GMC files not loaded"),
-                                       QMessageBox::Ok);
-    }
+
 }
 
 void appGUI::help()
 {
     helpDialog * dialog = new helpDialog();
-
-
 }
 
 
@@ -200,7 +245,7 @@ void appGUI::onGMCRClick(const QPoint &pos)
                 } else if ( setDistName == selectedItem )
                 {
                     currAction = &actions[i];
-                    choiceDistName();
+                    createDistNameDialog();
                 }
             }
         }
@@ -247,7 +292,7 @@ void appGUI::setGMCHint(QModelIndex index)
     GMCResultView->setToolTip(GMCResultModel->data(index, Qt::DisplayRole).toString());
 }
 
-void appGUI::choiceDistName()
+void appGUI::createDistNameDialog()
 {
     if (currAction != NULL)
     {
@@ -373,16 +418,6 @@ void appGUI::comparePDDB()
         headerView->setHidden(false);
         PDDBResultView->setMouseTracking(true);
 
-        connect(PDDBResultView,
-                SIGNAL(clicked(QModelIndex)),
-                this,
-                SLOT(showSelectedPDDBResult()));
-
-        connect(PDDBResultView,
-                SIGNAL(entered(QModelIndex)),
-                this,
-                SLOT(setPDDBHint(QModelIndex)));
-
         PDDBResultView->show();
         statusBar()->showMessage(tr("Ready"));
 
@@ -492,8 +527,8 @@ void appGUI::changeUserInteraction(gmcResultItem *item)
 
 void appGUI::showSelectedPDDBResult()
 {
-
-    statusBar()->showMessage(tr("Filling boxes"));
+    qDebug() << "PDDB";
+    statusBar()->showMessage(tr("Filling boxes PDDB"));
     QModelIndex index = PDDBResultView->currentIndex();
     int currIntexRow = index.row();
     resultItem * r = PDDBResultModel->getItemFromRow(currIntexRow);
@@ -531,7 +566,8 @@ void appGUI::showSelectedGMCResult(QModelIndex index)
 {
     if (index.column() != 0)
     {
-        statusBar()->showMessage(tr("Filling boxes"));
+        qDebug() << " GMC ";
+        statusBar()->showMessage(tr("Filling boxes GMC"));
         //QModelIndex index = GMCResultView->currentIndex();
 
         int currIntexRow = index.row();
@@ -754,6 +790,70 @@ void appGUI::createGMCTextDock()
     newGMCLabel->setFont(font);
 }
 
+void appGUI::createSaveDialog()
+{
+    if (!(oldPDDBPath.empty() || newPDDBPath.empty() || oldGMCPath.empty()))
+    {
+        if (saveDialog != NULL)
+        {
+            delete saveDialog;
+        }
+
+        saveDialog = new QDialog();
+        saveDialog->setModal(true);
+        saveDialog->setWindowTitle(tr("Save options"));
+
+        QVBoxLayout * mainLayout = new QVBoxLayout();
+
+        QVBoxLayout * radioButtonLayout = new QVBoxLayout();
+        QRadioButton * genNewRadio = new QRadioButton(tr("Generate new raport"));
+        QRadioButton * genFromTamplateRadio = new QRadioButton(tr("Generate raport from template"));
+
+        radioButtonLayout->addWidget(genNewRadio);
+        radioButtonLayout->addWidget(genFromTamplateRadio);
+
+        QHBoxLayout * loadTemplateLayout = new QHBoxLayout();
+        QLabel * pathLine = new QLabel(tr("Path here"));
+        QPushButton * loadPathButton = new QPushButton(tr("Open file"));
+
+        connect(loadPathButton, SIGNAL(clicked(bool)), this, SLOT(loadTemplatePath()));
+
+        loadTemplateLayout->addWidget(pathLine);
+        loadTemplateLayout->addWidget(loadPathButton);
+
+        QVBoxLayout * checkboxLayout = new QVBoxLayout();
+        QCheckBox * toSort = new QCheckBox(tr("Sort Managed Object"));
+
+        connect(toSort, SIGNAL(clicked(bool)), this, SLOT(setToBeSort(bool)));
+
+        checkboxLayout->addWidget(toSort);
+
+        QHBoxLayout * buttonsLayout = new QHBoxLayout();
+        QPushButton * acceptButton = new QPushButton(tr("Accept"));
+        QPushButton * cancelButton = new QPushButton(tr("Cancel"));
+
+        connect(acceptButton, SIGNAL(clicked(bool)), this, SLOT(acceptReportSettings()));
+        connect(cancelButton, SIGNAL(clicked(bool)), this, SLOT(cancelReportSettings()));
+
+        buttonsLayout->addWidget(acceptButton);
+        buttonsLayout->addWidget(cancelButton);
+
+        mainLayout->addLayout(radioButtonLayout);
+        mainLayout->addLayout(loadTemplateLayout);
+        mainLayout->addLayout(checkboxLayout);
+        mainLayout->addLayout(buttonsLayout);
+
+        saveDialog->setLayout(mainLayout);
+        saveDialog->show();
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("Saving file"),
+                                       tr("PDDB or GMC files not loaded"),
+                                       QMessageBox::Ok);
+    }
+}
+
 void appGUI::setConnections()
 {
     GMCResultView->setMouseTracking(true);
@@ -772,6 +872,17 @@ void appGUI::setConnections()
             SIGNAL(entered(QModelIndex)),
             this,
             SLOT(setGMCHint(QModelIndex)));
+
+    connect(PDDBResultView,
+            SIGNAL(clicked(QModelIndex)),
+            this,
+            SLOT(showSelectedPDDBResult()));
+
+    connect(PDDBResultView,
+            SIGNAL(entered(QModelIndex)),
+            this,
+            SLOT(setPDDBHint(QModelIndex)));
+
 }
 
 std::string appGUI::getFileName(string path)
@@ -810,7 +921,7 @@ void appGUI::createActions()
     saveFileAct = new QAction(tr("Save file"), this);
     saveFileAct->setShortcut(QKeySequence::Save);
     saveFileAct->setStatusTip(tr("Save current file"));
-    connect(saveFileAct, SIGNAL(triggered(bool)), this, SLOT(save()));
+    connect(saveFileAct, SIGNAL(triggered(bool)), this, SLOT(createSaveDialog()));
 
     displayHelpAct = new QAction(tr("&Help"), this);
     displayHelpAct->setStatusTip(tr("Help"));
@@ -928,22 +1039,22 @@ void appGUI::createPDDBDescriptionDock()
 
 }
 
-std::vector<QString> appGUI::parseXmlByEndLine(std::string XML)
-{
-    std::string delimiter = "\n";
-    std::vector<QString> result;
-    std::string::size_type pos = 0;
-    std::string::size_type prev = 0;
+//std::vector<QString> appGUI::parseXmlByEndLine(std::string XML)
+//{
+//    std::string delimiter = "\n";
+//    std::vector<QString> result;
+//    std::string::size_type pos = 0;
+//    std::string::size_type prev = 0;
 
-    while ((pos = XML.find(delimiter, prev)) != std::string::npos)
-    {
-        result.push_back(QString::fromStdString(XML.substr(prev, pos - prev)));
-        prev = pos + 1;
-    }
-    result.push_back(QString::fromStdString(XML.substr(prev)));
+//    while ((pos = XML.find(delimiter, prev)) != std::string::npos)
+//    {
+//        result.push_back(QString::fromStdString(XML.substr(prev, pos - prev)));
+//        prev = pos + 1;
+//    }
+//    result.push_back(QString::fromStdString(XML.substr(prev)));
 
-    return result;
-}
+//    return result;
+//}
 
 vector<GMCAction> * appGUI::getActions()
 {
