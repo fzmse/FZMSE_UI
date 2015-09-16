@@ -209,9 +209,34 @@ void appGUI::save()
             QString reportPath = savePath;
             reportPath += ".html";
             ReportUtilities::saveLogo(logoPath.toStdString());
-            ReportUtilities::generateReport(report, reportPath.toStdString(),
-                                            getFileName(oldPDDBPath), getFileName(newPDDBPath),
-                                            getFileName(oldGMCPath), fName.toStdString(), newPDDBdoc->getReleaseName());
+
+            if ( reportSettings.getPath() != "" )
+            {
+                QFile outFile(QString::fromStdString(reportSettings.getPath()));
+                if ( outFile.open(QIODevice::ReadOnly | QIODevice::Text ) )
+                {
+                    QTextStream in(&outFile);
+                    QString templateText = in.readAll();
+
+                    outFile.close();
+                    ReportUtilities::generateReportFromExisting(templateText.toStdString(), report, reportPath.toStdString(),
+                                                    getFileName(oldPDDBPath), getFileName(newPDDBPath),
+                                                    getFileName(oldGMCPath), fName.toStdString(), newPDDBdoc->getReleaseName());
+                }
+                else
+                {
+                    QMessageBox::information(this, tr("Saving file"),
+                                                   tr("Falied to generate report! Couldn't open report template file         "),
+                                                   QMessageBox::Ok);
+                }
+            }
+            else
+            {
+
+                ReportUtilities::generateReport(report, reportPath.toStdString(),
+                                                getFileName(oldPDDBPath), getFileName(newPDDBPath),
+                                                getFileName(oldGMCPath), fName.toStdString(), newPDDBdoc->getReleaseName());
+            }
             QMessageBox::information(this, tr("Saving file"),
                                            tr("Success !         "),
                                            QMessageBox::Ok);

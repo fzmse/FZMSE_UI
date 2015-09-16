@@ -52,7 +52,7 @@ inline QString generateAddedHTML(vector<ReportEntry> entries, bool withHeader = 
     std::string header = "";
     if ( withHeader )
     {
-        header += "\n<span class=\"table_header\">Added</span>";
+        header += "\n<div class=\"div_spacer20px\"></div><span class=\"table_header\">Added</span>";
         header += "\n<div class=\"div_spacer5px\"></div> ";
         header +=  "\n<div  style=\"display:table; border: 2px solid black; width: 100%;\">";
 
@@ -97,7 +97,7 @@ inline QString generateAddedHTML(vector<ReportEntry> entries, bool withHeader = 
 
     if ( result.length() > 0 )
     {
-        return QString::fromStdString(header) + result + "\n<div class=\"div_spacer20px\"></div> \n";
+        return QString::fromStdString(header) + result + "\n";
     }
 
     return "";
@@ -109,7 +109,7 @@ inline QString generateRemovedHTML(vector<ReportEntry> entries, bool withHeader 
     std::string header = "";
     if ( withHeader )
     {
-        header += "\n<span class=\"table_header\">Removed</span>";
+        header += "\n<div class=\"div_spacer20px\"></div><span class=\"table_header\">Removed</span>";
         header += "\n<div class=\"div_spacer5px\"></div> ";
         header +=  "\n<div  style=\"display:table; border: 2px solid black; width: 100%;\">";
 
@@ -147,7 +147,7 @@ inline QString generateRemovedHTML(vector<ReportEntry> entries, bool withHeader 
 
     if ( result.length() > 0 )
     {
-        return QString::fromStdString(header) + result + "\n<div class=\"div_spacer20px\"></div> \n";
+        return QString::fromStdString(header) + result + "\n";
     }
 
     return "";
@@ -159,7 +159,7 @@ inline QString generateModifiedHTML(vector<ReportEntry> entries, bool withHeader
     std::string header = "";
     if ( withHeader )
     {
-        header += "\n<span class=\"table_header\">Modified</span>";
+        header += "\n<div class=\"div_spacer20px\"></div><span class=\"table_header\">Modified</span>";
         header += "\n<div class=\"div_spacer5px\"></div> ";
         header +=  "\n<div  style=\"display:table; border: 2px solid black; width: 100%;\">";
 
@@ -210,7 +210,7 @@ inline QString generateModifiedHTML(vector<ReportEntry> entries, bool withHeader
 
     if ( result.length() > 0 )
     {
-        return QString::fromStdString(header) + result + "\n<div class=\"div_spacer20px\"></div> \n";
+        return QString::fromStdString(header) + result + "\n";
     }
 
     return "";
@@ -276,13 +276,13 @@ bool ReportUtilities::generateReportFromExisting( std::string reportTemplate, ve
 
         const QString END_TABLE_SECTION = "<div class=\"div_spacer40px\"></div>";
 
-        const QString ADDED_SECTION = "<span class=\"table_header\">Added</span>";
+        const QString ADDED_SECTION = "<div class=\"div_spacer20px\"></div><span class=\"table_header\">Added</span>";
         const int ADDED_SECTION_END = getIndexOfEndOfString(transformedText, ADDED_SECTION);
 
-        const QString MODIFIED_SECTION = "<span class=\"table_header\">Modified</span>";
+        const QString MODIFIED_SECTION = "<div class=\"div_spacer20px\"></div><span class=\"table_header\">Modified</span>";
         const int MODIFIED_SECTION_END = getIndexOfEndOfString(transformedText, MODIFIED_SECTION);
 
-        const QString REMOVED_SECTION = "<span class=\"table_header\">Removed</span>";
+        const QString REMOVED_SECTION = "<div class=\"div_spacer20px\"></div><span class=\"table_header\">Removed</span>";
         const int REMOVED_SECTION_END = getIndexOfEndOfString(transformedText, REMOVED_SECTION);
 
         bool addedSectionExists = (ADDED_SECTION_END > 0);
@@ -296,48 +296,55 @@ bool ReportUtilities::generateReportFromExisting( std::string reportTemplate, ve
             posToInsertAdd = DIFFERENCES_SECTION_END;
         else
         {
-            if ( modifiedSectionExists )
+            if ( removedSectionExists )
+                            posToInsertAdd = transformedText.indexOf(REMOVED_SECTION);
+            else if ( modifiedSectionExists )
                 posToInsertAdd = transformedText.indexOf(MODIFIED_SECTION);
-            else if ( removedSectionExists )
-                posToInsertAdd = transformedText.indexOf(REMOVED_SECTION);
             else
             {
                 posToInsertAdd = transformedText.indexOf(END_TABLE_SECTION);
             }
         }
         transformedText.insert(posToInsertAdd, addTableContentHTML);
+        if ( addTableContentHTML != "" )
+            addedSectionExists = true;
 
 
         // MODIFY INSERT
-        QString modifyTableContentHTML = generateAddedHTML(entries, !modifiedSectionExists);
+        QString modifyTableContentHTML = generateModifiedHTML(entries, !modifiedSectionExists);
         int posToInsertModify = -1;
-        if ( modifiedSectionExists == false )
+        posToInsertModify = transformedText.indexOf(END_TABLE_SECTION);
+        transformedText.insert(posToInsertModify, modifyTableContentHTML);
+        if ( modifyTableContentHTML != "" )
+            modifiedSectionExists = true;
+
+
+        // REMOVE INSERT
+        QString removeTableContentHTML  = generateRemovedHTML(entries, !removedSectionExists);
+        int posToInsertRemove = -1;
+        if ( removedSectionExists == false)
         {
             if ( addedSectionExists == false )
-                posToInsertModify = DIFFERENCES_SECTION_END;
+                posToInsertRemove = DIFFERENCES_SECTION_END;
             else
             {
-                if ( removedSectionExists )
-                    posToInsertModify = transformedText.indexOf(REMOVED_SECTION);
+                if ( modifiedSectionExists )
+                    posToInsertRemove = transformedText.indexOf(MODIFIED_SECTION);
                 else
-                    posToInsertModify = transformedText.indexOf(END_TABLE_SECTION);
+                    posToInsertRemove = transformedText.indexOf(END_TABLE_SECTION);
             }
         }
         else
         {
-            if ( removedSectionExists )
-                posToInsertModify = transformedText.indexOf(REMOVED_SECTION);
+            if ( modifiedSectionExists == false )
+                posToInsertRemove = transformedText.indexOf(END_TABLE_SECTION);
             else
-                posToInsertModify = transformedText.indexOf(END_TABLE_SECTION);
+                posToInsertRemove = transformedText.indexOf(MODIFIED_SECTION);
+
         }
-        transformedText.insert(posToInsertModify, modifyTableContentHTML);
-
-
-        // REMOVE INSERT
-        QString removeTableContentHTML  = generateAddedHTML(entries, !removedSectionExists);
-        int posToInsertRemove = -1;
-        posToInsertRemove = posToInsertModify = transformedText.indexOf(END_TABLE_SECTION);
         transformedText.insert(posToInsertRemove, removeTableContentHTML);
+        if ( removeTableContentHTML != "" )
+            removedSectionExists = true;
 
 
         outFile.write(transformedText.toStdString().c_str());
