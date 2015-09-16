@@ -206,6 +206,9 @@ void resultItem::setData()
                 case PDDBManagedObjectCompareResult::SimpleTypeValue:
                     specification.append("SimpleType value changed, ");
                 break;
+                case PDDBManagedObjectCompareResult::EnumerationChanged:
+                    specification.append("Value Enumeration changed, ");
+                break;
                 case PDDBManagedObjectCompareResult::SimpleTypeValue_RangeChanged:
                     specification.append("Range Changed, ");
                 break;

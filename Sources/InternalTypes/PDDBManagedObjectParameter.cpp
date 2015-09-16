@@ -322,6 +322,21 @@ std::vector<PDDBManagedObjectCompareResult> PDDBManagedObjectParameter::compareT
             if ( ((PDDBSimpleTypeValue*)p1DefValue)->getEvaluatedValue().compare( ((PDDBSimpleTypeValue*)p2DefValue)->getEvaluatedValue() ) )
                 changes.push_back(PDDBManagedObjectCompareResult::SimpleTypeValue);
 
+            if (  ((PDDBSimpleTypeValue*)p1DefValue)->getEnums().size() != ((PDDBSimpleTypeValue*)p2DefValue)->getEnums().size() )
+                changes.push_back(PDDBManagedObjectCompareResult::EnumerationChanged);
+            else
+            {
+                auto firstEnums = ((PDDBSimpleTypeValue*)p1DefValue)->getEnums();
+                auto secondEnums = ((PDDBSimpleTypeValue*)p2DefValue)->getEnums();
+
+                for ( int i = 0; i < firstEnums.size(); i ++ )
+                    if ( firstEnums[i].first != secondEnums[i].first || firstEnums[i].second != secondEnums[i].second  )
+                    {
+                        changes.push_back(PDDBManagedObjectCompareResult::EnumerationChanged);
+                        break;
+                    }
+            }
+
             if ( ((PDDBSimpleTypeValue*)p1DefValue)->getRange().size() > 0 && ((PDDBSimpleTypeValue*)p2DefValue)->getRange().size() > 0 )
             {
                 if ( ((PDDBSimpleTypeValue*)p1DefValue)->getRange()[0].first.compare( ((PDDBSimpleTypeValue*)p2DefValue)->getRange()[0].first ) != 0 ||

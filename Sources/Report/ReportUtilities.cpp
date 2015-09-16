@@ -46,27 +46,30 @@ bool ReportUtilities::saveLogo(string filename)
     return false;
 }
 
-inline QString generateAddedHTML(vector<ReportEntry> entries)
+inline QString generateAddedHTML(vector<ReportEntry> entries, bool withHeader = true)
 {
     QString result = "";
     std::string header = "";
-    header += "\n<span class=\"table_header\">Added</span>";
-    header += "\n<div class=\"div_spacer5px\"></div> ";
-    header +=  "\n<div  style=\"display:table; border: 2px solid black; width: 100%;\">";
+    if ( withHeader )
+    {
+        header += "\n<span class=\"table_header\">Added</span>";
+        header += "\n<div class=\"div_spacer5px\"></div> ";
+        header +=  "\n<div  style=\"display:table; border: 2px solid black; width: 100%;\">";
 
-    header +=      "\n<!-- Header table definition -->";
-    header +=      "\n<div style=\"width: 35%; word-wrap: break-word; display:table-cell;  \">";
-    header +=          "\n<span class=\"table_entryHeader\">Parameter</span>";
-    header +=      "\n</div>";
-    header +=      "\n<div style=\"width: 25%; word-wrap: break-word;  display:table-cell;  border-left: 2px solid black;\">";
-    header +=          "\n<span class=\"table_entryHeader\">Default value</span>";
-    header +=      "\n</div>";
-    header +=      "\n<div style=\"width: 40%; word-wrap: break-word;  display:table-cell;  border-left: 2px solid black; \">";
-    header +=          "\n<span class=\"table_entryHeader\">Reason</span>";
-    header +=      "\n</div>";
-    header +=      "\n<div style=\"clear: left;\"></div>";
+        header +=      "\n<!-- Header table definition -->";
+        header +=      "\n<div style=\"width: 35%; word-wrap: break-word; display:table-cell;  \">";
+        header +=          "\n<span class=\"table_entryHeader\">Parameter</span>";
+        header +=      "\n</div>";
+        header +=      "\n<div style=\"width: 25%; word-wrap: break-word;  display:table-cell;  border-left: 2px solid black;\">";
+        header +=          "\n<span class=\"table_entryHeader\">Default value</span>";
+        header +=      "\n</div>";
+        header +=      "\n<div style=\"width: 40%; word-wrap: break-word;  display:table-cell;  border-left: 2px solid black; \">";
+        header +=          "\n<span class=\"table_entryHeader\">Reason</span>";
+        header +=      "\n</div>";
+        header +=      "\n<div style=\"clear: left;\"></div>";
 
-    header += "\n</div>\n\n";
+        header += "\n</div>\n\n";
+    }
 
 
     for ( vector<ReportEntry>::iterator it = entries.begin(); it != entries.end(); it ++  )
@@ -100,25 +103,27 @@ inline QString generateAddedHTML(vector<ReportEntry> entries)
     return "";
 }
 
-inline QString generateRemovedHTML(vector<ReportEntry> entries)
+inline QString generateRemovedHTML(vector<ReportEntry> entries, bool withHeader = true)
 {
     QString result = "";
     std::string header = "";
-    header += "\n<span class=\"table_header\">Removed</span>";
-    header += "\n<div class=\"div_spacer5px\"></div> ";
-    header +=  "\n<div  style=\"display:table; border: 2px solid black; width: 100%;\">";
+    if ( withHeader )
+    {
+        header += "\n<span class=\"table_header\">Removed</span>";
+        header += "\n<div class=\"div_spacer5px\"></div> ";
+        header +=  "\n<div  style=\"display:table; border: 2px solid black; width: 100%;\">";
 
-    header +=      "\n<!-- Header table definition -->";
-    header +=      "\n<div style=\"width: 60%; word-wrap: break-word; display:table-cell;  \">";
-    header +=          "\n<span class=\"table_entryHeader\">Parameter</span>";
-    header +=      "\n</div>";
-    header +=      "\n<div style=\"width: 40%; word-wrap: break-word;  display:table-cell;  border-left: 2px solid black; \">";
-    header +=          "\n<span class=\"table_entryHeader\">Reason</span>";
-    header +=      "\n</div>";
-    header +=      "\n<div style=\"clear: left;\"></div>";
+        header +=      "\n<!-- Header table definition -->";
+        header +=      "\n<div style=\"width: 60%; word-wrap: break-word; display:table-cell;  \">";
+        header +=          "\n<span class=\"table_entryHeader\">Parameter</span>";
+        header +=      "\n</div>";
+        header +=      "\n<div style=\"width: 40%; word-wrap: break-word;  display:table-cell;  border-left: 2px solid black; \">";
+        header +=          "\n<span class=\"table_entryHeader\">Reason</span>";
+        header +=      "\n</div>";
+        header +=      "\n<div style=\"clear: left;\"></div>";
 
-    header += "\n</div>\n\n";
-
+        header += "\n</div>\n\n";
+    }
 
     for ( vector<ReportEntry>::iterator it = entries.begin(); it != entries.end(); it ++  )
     {
@@ -148,30 +153,33 @@ inline QString generateRemovedHTML(vector<ReportEntry> entries)
     return "";
 }
 
-inline QString generateModifiedHTML(vector<ReportEntry> entries)
+inline QString generateModifiedHTML(vector<ReportEntry> entries, bool withHeader = true)
 {
     QString result = "";
     std::string header = "";
-    header += "\n<span class=\"table_header\">Modified</span>";
-    header += "\n<div class=\"div_spacer5px\"></div> ";
-    header +=  "\n<div  style=\"display:table; border: 2px solid black; width: 100%;\">";
+    if ( withHeader )
+    {
+        header += "\n<span class=\"table_header\">Modified</span>";
+        header += "\n<div class=\"div_spacer5px\"></div> ";
+        header +=  "\n<div  style=\"display:table; border: 2px solid black; width: 100%;\">";
 
-    header +=      "\n<!-- Header table definition -->";
-    header +=      "\n<div style=\"width: 35%; word-wrap: break-word; display:table-cell;  \">";
-    header +=          "\n<span class=\"table_entryHeader\">Parameter</span>";
-    header +=      "\n</div>";
-    header +=      "\n<div style=\"width: 20%; word-wrap: break-word;  display:table-cell;  border-left: 2px solid black;\">";
-    header +=          "\n<span class=\"table_entryHeader\">Old value</span>";
-    header +=      "\n</div>";
-    header +=      "\n<div style=\"width: 20%; word-wrap: break-word;  display:table-cell;  border-left: 2px solid black;\">";
-    header +=          "\n<span class=\"table_entryHeader\">New value</span>";
-    header +=      "\n</div>";
-    header +=      "\n<div style=\"width: 25%; word-wrap: break-word;  display:table-cell;  border-left: 2px solid black; \">";
-    header +=          "\n<span class=\"table_entryHeader\">Reason</span>";
-    header +=      "\n</div>";
-    header +=      "\n<div style=\"clear: left;\"></div>";
+        header +=      "\n<!-- Header table definition -->";
+        header +=      "\n<div style=\"width: 35%; word-wrap: break-word; display:table-cell;  \">";
+        header +=          "\n<span class=\"table_entryHeader\">Parameter</span>";
+        header +=      "\n</div>";
+        header +=      "\n<div style=\"width: 20%; word-wrap: break-word;  display:table-cell;  border-left: 2px solid black;\">";
+        header +=          "\n<span class=\"table_entryHeader\">Old value</span>";
+        header +=      "\n</div>";
+        header +=      "\n<div style=\"width: 20%; word-wrap: break-word;  display:table-cell;  border-left: 2px solid black;\">";
+        header +=          "\n<span class=\"table_entryHeader\">New value</span>";
+        header +=      "\n</div>";
+        header +=      "\n<div style=\"width: 25%; word-wrap: break-word;  display:table-cell;  border-left: 2px solid black; \">";
+        header +=          "\n<span class=\"table_entryHeader\">Reason</span>";
+        header +=      "\n</div>";
+        header +=      "\n<div style=\"clear: left;\"></div>";
 
-    header += "\n</div>\n\n";
+        header += "\n</div>\n\n";
+    }
 
 
     for ( vector<ReportEntry>::iterator it = entries.begin(); it != entries.end(); it ++  )
@@ -244,4 +252,105 @@ bool ReportUtilities::generateReport( vector<ReportEntry> entries, string filena
     }
     return false;
 }
+
+inline int getIndexOfEndOfString(QString text, QString textToFind)
+{
+    int posDiffSection = text.indexOf(textToFind);
+    if ( posDiffSection >= 0 )
+        posDiffSection += textToFind.length();
+
+    return posDiffSection;
+}
+
+
+bool ReportUtilities::generateReportFromExisting( std::string reportTemplate, vector<ReportEntry> entries, string filename, string oldPDDBName, string newPDDBName, string oldGMCName, string newGMCName, string pddbRelease)
+{
+    QFile outFile(QString::fromStdString(filename));
+    if ( outFile.open(QIODevice::WriteOnly | QIODevice::Text ) )
+    {
+
+        auto transformedText = QString::fromStdString(reportTemplate);
+
+        const QString DIFFERENCES_SECTION = "<div id=\"differences_section\">";
+        const int DIFFERENCES_SECTION_END = getIndexOfEndOfString(transformedText, DIFFERENCES_SECTION);
+
+        const QString END_TABLE_SECTION = "<div class=\"div_spacer40px\"></div>";
+
+        const QString ADDED_SECTION = "<span class=\"table_header\">Added</span>";
+        const int ADDED_SECTION_END = getIndexOfEndOfString(transformedText, ADDED_SECTION);
+
+        const QString MODIFIED_SECTION = "<span class=\"table_header\">Modified</span>";
+        const int MODIFIED_SECTION_END = getIndexOfEndOfString(transformedText, MODIFIED_SECTION);
+
+        const QString REMOVED_SECTION = "<span class=\"table_header\">Removed</span>";
+        const int REMOVED_SECTION_END = getIndexOfEndOfString(transformedText, REMOVED_SECTION);
+
+        bool addedSectionExists = (ADDED_SECTION_END > 0);
+        bool modifiedSectionExists = (MODIFIED_SECTION_END > 0);
+        bool removedSectionExists = (REMOVED_SECTION_END > 0);
+
+        // ADD INSERT
+        QString addTableContentHTML = generateAddedHTML(entries, !addedSectionExists);
+        int posToInsertAdd = -1;
+        if ( addedSectionExists == false )
+            posToInsertAdd = DIFFERENCES_SECTION_END;
+        else
+        {
+            if ( modifiedSectionExists )
+                posToInsertAdd = transformedText.indexOf(MODIFIED_SECTION);
+            else if ( removedSectionExists )
+                posToInsertAdd = transformedText.indexOf(REMOVED_SECTION);
+            else
+            {
+                posToInsertAdd = transformedText.indexOf(END_TABLE_SECTION);
+            }
+        }
+        transformedText.insert(posToInsertAdd, addTableContentHTML);
+
+
+        // MODIFY INSERT
+        QString modifyTableContentHTML = generateAddedHTML(entries, !modifiedSectionExists);
+        int posToInsertModify = -1;
+        if ( modifiedSectionExists == false )
+        {
+            if ( addedSectionExists == false )
+                posToInsertModify = DIFFERENCES_SECTION_END;
+            else
+            {
+                if ( removedSectionExists )
+                    posToInsertModify = transformedText.indexOf(REMOVED_SECTION);
+                else
+                    posToInsertModify = transformedText.indexOf(END_TABLE_SECTION);
+            }
+        }
+        else
+        {
+            if ( removedSectionExists )
+                posToInsertModify = transformedText.indexOf(REMOVED_SECTION);
+            else
+                posToInsertModify = transformedText.indexOf(END_TABLE_SECTION);
+        }
+        transformedText.insert(posToInsertModify, modifyTableContentHTML);
+
+
+        // REMOVE INSERT
+        QString removeTableContentHTML  = generateAddedHTML(entries, !removedSectionExists);
+        int posToInsertRemove = -1;
+        posToInsertRemove = posToInsertModify = transformedText.indexOf(END_TABLE_SECTION);
+        transformedText.insert(posToInsertRemove, removeTableContentHTML);
+
+
+        outFile.write(transformedText.toStdString().c_str());
+        outFile.flush();
+
+        outFile.close();
+
+        auto str = outFile.errorString();
+        return true;
+    }
+    return false;
+}
+
+
+
 

@@ -122,7 +122,7 @@ void GMCAction::buildDistNameFromBase(std::string distNameBase)
     if ( this->actionType == Add && this->actionScope == ManagedObject )
     {
         // calculate addon
-        PDDBManagedObject * mocPDDB = (PDDBManagedObject*)this->compareResult.getSecondElement();
+        PDDBManagedObject * mocPDDB = (PDDBManagedObject*)this->getItem();
         string className = mocPDDB->getClassName();
         string resultString = "";
         PDDBManagedObjectParameter * par = mocPDDB->getMocIdParameter();

@@ -20,4 +20,8 @@ public:
     static bool generateReport( std::vector<ReportEntry> entries, std::string filename,
                                 std::string oldPDDBName, std::string newPDDBName,
                                 std::string oldGMCName, std::string newGMCName, std::string pddbRelease);
+
+    static bool generateReportFromExisting( std::string reportTemplate, std::vector<ReportEntry> entries, std::string filename,
+                                std::string oldPDDBName, std::string newPDDBName,
+                                std::string oldGMCName, std::string newGMCName, std::string pddbRelease);
 };

@@ -155,6 +155,9 @@ inline std::string getDifferencesText(std::vector<InternalTypes::PDDBManagedObje
                     case PDDBManagedObjectCompareResult::SimpleTypeValue:
                         lineMessage += "SimpleType value changed, ";
                     break;
+                    case PDDBManagedObjectCompareResult::EnumerationChanged:
+                        lineMessage += "Value Enumeration changed, ";
+                    break;
                     case PDDBManagedObjectCompareResult::SimpleTypeValue_RangeChanged:
                         lineMessage += "Range Changed, ";
                     break;

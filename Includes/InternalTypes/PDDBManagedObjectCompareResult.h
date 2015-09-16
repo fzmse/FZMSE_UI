@@ -51,7 +51,8 @@ namespace InternalTypes
             VendorSpecific,
             CreationPriority,
             MoMinOccurs,
-            RelatedParameters
+            RelatedParameters,
+            EnumerationChanged
         };
 
         PDDBManagedObjectCompareResult( DifferenceType t, DifferenceScope s, DifferenceOrigin o,
