@@ -156,8 +156,13 @@ void appGUI::loadTemplatePath()
 
     settings.setValue("Raport_path", openPath);
 
-    pathLine->setText(openPath);
-    acceptButton->setEnabled(true);
+    if ( openPath == "" && pathLine->text() == "")
+        acceptButton->setEnabled(false);
+    else if ( openPath != "")
+    {
+        pathLine->setText(openPath);
+        acceptButton->setEnabled(true);
+    }
 
     templatePath = openPath.toStdString();
 }
@@ -173,6 +178,7 @@ void appGUI::radioNewRaport(bool val)
     {
         pathLine->setEnabled(false);
         loadPathButton->setEnabled(false);
+        acceptButton->setEnabled(true);
     }
     else
     {
@@ -862,10 +868,10 @@ void appGUI::createSaveDialog()
         if (saveDialog != NULL)
         {
             delete saveDialog;
-            delete loadPathButton;
-            delete genNewRadio;
-            delete acceptButton;
-            delete cancelButton;
+//            delete loadPathButton;
+//            delete genNewRadio;
+//            delete acceptButton;
+//            delete cancelButton;
         }
 
         saveDialog = new QDialog();
