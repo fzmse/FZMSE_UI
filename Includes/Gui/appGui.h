@@ -18,6 +18,7 @@ class appGUI;
 #include "Includes/Report/ReportUtilities.h"
 #include "Includes/Gui/helpdialog.h"
 #include "Report/reportsettings.h"
+#include "Gui/fixsettings.h"
 #include <QtWidgets>
 #include <cstring>
 
@@ -54,8 +55,7 @@ public:
     vector<InternalTypes::GMCAction> * getActions();
 
 private slots:
-    void createSaveDialog();
-    void help();
+    void about();
     void clean();
     void compare();
     void showSelectedPDDBResult();
@@ -70,8 +70,14 @@ private slots:
     void acceptReportSettings();
     void cancelReportSettings();
     void loadTemplatePath();
+    void loadFixPath();
     void setToBeSort(bool);
+    void setFixWithSort(bool);
     void radioNewRaport(bool);
+    void createSaveDialog();
+    void createFixDialog();
+    void accFixFile();
+    void canFixFile();
 
 private:
     void createActions();
@@ -112,7 +118,7 @@ private:
     QGroupBox * centralButtonSubGroup;
 
     QMenu * fileMenu;
-    QMenu * helpMenu;
+    QMenu * aboutMenu;
     QMenu * viewMenu;
 
     QToolBar * fileToolBar;
@@ -121,7 +127,8 @@ private:
     QAction * openNewPDDBAct;
     QAction * openOldGMCAct;
     QAction * saveFileAct;
-    QAction * displayHelpAct;
+    QAction * openFixAction;
+    QAction * displayAboutAct;
     QAction * addToGMC;
     QAction * delFromGMC;
     QAction * setDistName;
@@ -140,12 +147,15 @@ private:
     QTreeView * PDDBResultView;
     resultItemModel * PDDBResultModel;
 
+
+    //DistName list dialog
     QDialog * dialogList;
     QStringListModel * distListModel;
     QString currDist;
     InternalTypes::GMCAction * currAction;
     QListView * distListView;
 
+    //Save settings dialog
     QDialog * saveDialog;
     std::string templatePath;
     bool toBeSorted;
@@ -156,6 +166,15 @@ private:
     QPushButton * loadPathButton;
     QPushButton * acceptButton;
     QPushButton * cancelButton;
+
+    //Fix files dialog
+    QDialog * fixDialog;
+    bool fixWithSort;
+    std::string fixFilePath;
+    QPushButton * accFixButton;
+    QPushButton * canFixButton;
+    QLineEdit * pathFixLine;
+    FixSetting fixSettings;
 
     QMenu* contextMenu;
 

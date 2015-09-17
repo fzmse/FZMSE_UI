@@ -25,9 +25,13 @@ appGUI::appGUI()
 
     dialogList = NULL;
     saveDialog = NULL;
+    fixDialog = NULL;
 
     toBeSorted = false;
     templatePath = "";
+
+    fixWithSort = false;
+    fixFilePath = "";
 }
 
 void appGUI::loadPathToDoc(const QString &type)
@@ -167,9 +171,30 @@ void appGUI::loadTemplatePath()
     templatePath = openPath.toStdString();
 }
 
+void appGUI::loadFixPath()
+{
+    QString openPath = QFileDialog::getOpenFileName(
+                this,
+                tr("Open file to fix"),
+                "",
+                tr("XML (*.xml)"));
+
+    if ( openPath != "")
+    {
+        pathFixLine->setText(openPath);
+        accFixButton->setEnabled(true);
+    }
+    fixFilePath = openPath.toStdString();
+}
+
 void appGUI::setToBeSort(bool val)
 {
     toBeSorted = val;
+}
+
+void appGUI::setFixWithSort(bool val)
+{
+    fixWithSort = val;
 }
 
 void appGUI::radioNewRaport(bool val)
@@ -257,7 +282,7 @@ void appGUI::save()
 
 }
 
-void appGUI::help()
+void appGUI::about()
 {
     helpDialog * dialog = new helpDialog();
 }
@@ -864,10 +889,6 @@ void appGUI::createSaveDialog()
         if (saveDialog != NULL)
         {
             delete saveDialog;
-//            delete loadPathButton;
-//            delete genNewRadio;
-//            delete acceptButton;
-//            delete cancelButton;
         }
 
         saveDialog = new QDialog();
@@ -931,6 +952,77 @@ void appGUI::createSaveDialog()
                                        tr("PDDB or GMC files not loaded"),
                                        QMessageBox::Ok);
     }
+}
+
+void appGUI::createFixDialog()
+{
+    if (fixDialog != NULL)
+    {
+        delete fixDialog;
+
+    }
+    fixDialog = new QDialog();
+    fixDialog->setModal(true);
+    fixDialog->setWindowTitle(tr("Fix files"));
+    fixDialog->setMinimumWidth(300);
+    QVBoxLayout * mainLayout = new QVBoxLayout();
+
+    QHBoxLayout * loadPathFileLayout = new QHBoxLayout();
+    QPushButton * loadPathButton = new QPushButton(tr("Open file"));
+    pathFixLine = new QLineEdit();
+
+    pathFixLine->setReadOnly(true);
+
+    loadPathFileLayout->addWidget(pathFixLine);
+    loadPathFileLayout->addWidget(loadPathButton);
+
+    connect(loadPathButton, SIGNAL(clicked(bool)), this, SLOT(loadFixPath()));
+
+    QVBoxLayout * checkBoxLayout = new QVBoxLayout();
+    QCheckBox * toSort = new QCheckBox(tr("Sort Managed Objects"));
+
+    connect(toSort, SIGNAL(clicked(bool)), this, SLOT(setFixWithSort(bool)));
+
+    checkBoxLayout->addWidget(toSort);
+
+    QHBoxLayout * buttonsLayout = new QHBoxLayout();
+    accFixButton = new QPushButton(tr("Fix"));
+    canFixButton = new QPushButton(tr("Cancel"));
+
+    accFixButton->setEnabled(false);
+
+    connect(accFixButton, SIGNAL(clicked(bool)), this, SLOT(accFixFile()));
+    connect(canFixButton, SIGNAL(clicked(bool)), this, SLOT(canFixFile()));
+
+    buttonsLayout->addWidget(accFixButton);
+    buttonsLayout->addWidget(canFixButton);
+
+    mainLayout->addLayout(loadPathFileLayout);
+    mainLayout->addLayout(checkBoxLayout);
+    mainLayout->addLayout(buttonsLayout);
+
+    fixDialog->setLayout(mainLayout);
+    fixDialog->show();
+
+}
+
+void appGUI::accFixFile()
+{
+    fixSettings = FixSetting(fixFilePath, fixWithSort);
+    // TU FUNCKJA DO ZAPISU
+    fixDialog->close();
+    qDebug() << QString::fromStdString(fixFilePath) << fixWithSort;
+    fixFilePath = "";
+    fixWithSort = false;
+}
+
+void appGUI::canFixFile()
+{
+    fixFilePath = "";
+    fixWithSort = false;
+
+    fixDialog->close();
+
 }
 
 void appGUI::setConnections()
@@ -1002,9 +1094,12 @@ void appGUI::createActions()
     saveFileAct->setStatusTip(tr("Save current file"));
     connect(saveFileAct, SIGNAL(triggered(bool)), this, SLOT(createSaveDialog()));
 
-    displayHelpAct = new QAction(tr("&Help"), this);
-    displayHelpAct->setStatusTip(tr("Help"));
-    connect(displayHelpAct, SIGNAL(triggered(bool)), this, SLOT(help()));
+    displayAboutAct = new QAction(tr("&About"), this);
+    displayAboutAct->setStatusTip(tr("About"));
+    connect(displayAboutAct, SIGNAL(triggered(bool)), this, SLOT(about()));
+
+    openFixAction = new QAction(tr("Fix file"), this);
+    connect(openFixAction, SIGNAL(triggered(bool)), this, SLOT(createFixDialog()));
 
     addToGMC = new QAction(tr("Include in GMC"), this);
 
@@ -1028,8 +1123,8 @@ void appGUI::createMenus()
 
     menuBar()->addSeparator();
 
-    helpMenu = menuBar()->addMenu(tr("&Help"));
-    helpMenu->addAction(displayHelpAct);
+    aboutMenu = menuBar()->addMenu(tr("&About"));
+    aboutMenu->addAction(displayAboutAct);
 }
 
 void appGUI::createToolBar()
@@ -1045,6 +1140,11 @@ void appGUI::createToolBar()
     fileToolBar->addAction(openNewPDDBAct);
     fileToolBar->addAction(openOldGMCAct);
     fileToolBar->addAction(saveFileAct);
+
+    fileToolBar->addSeparator();
+
+    fileToolBar->addAction(openFixAction);
+
     viewMenu->addAction(fileToolBar->toggleViewAction());
 }
 
@@ -1114,23 +1214,6 @@ void appGUI::createPDDBDescriptionDock()
     PDDBDescriptionDock->setWidget(new QTextEdit );
 
 }
-
-//std::vector<QString> appGUI::parseXmlByEndLine(std::string XML)
-//{
-//    std::string delimiter = "\n";
-//    std::vector<QString> result;
-//    std::string::size_type pos = 0;
-//    std::string::size_type prev = 0;
-
-//    while ((pos = XML.find(delimiter, prev)) != std::string::npos)
-//    {
-//        result.push_back(QString::fromStdString(XML.substr(prev, pos - prev)));
-//        prev = pos + 1;
-//    }
-//    result.push_back(QString::fromStdString(XML.substr(prev)));
-
-//    return result;
-//}
 
 vector<GMCAction> * appGUI::getActions()
 {
