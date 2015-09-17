@@ -1009,7 +1009,10 @@ void appGUI::createFixDialog()
 void appGUI::accFixFile()
 {
     fixSettings = FixSetting(fixFilePath, fixWithSort);
-    // TU FUNCKJA DO ZAPISU
+
+    tinyxml2::XMLDocument * doc = XmlWrapper::loadDocument(fixSettings.getPath());
+    XmlWriter::save(doc, fixSettings.getPath(), fixSettings.isToBeSorted());
+
     fixDialog->close();
     qDebug() << QString::fromStdString(fixFilePath) << fixWithSort;
     fixFilePath = "";
