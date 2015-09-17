@@ -598,7 +598,6 @@ void appGUI::changeUserInteraction(gmcResultItem *item)
 
 void appGUI::showSelectedPDDBResult()
 {
-    qDebug() << "PDDB";
     statusBar()->showMessage(tr("Filling boxes PDDB"));
     QModelIndex index = PDDBResultView->currentIndex();
     int currIntexRow = index.row();
@@ -637,7 +636,6 @@ void appGUI::showSelectedGMCResult(QModelIndex index)
 {
     if (index.column() != 0)
     {
-        qDebug() << " GMC ";
         statusBar()->showMessage(tr("Filling boxes GMC"));
         //QModelIndex index = GMCResultView->currentIndex();
 
@@ -805,9 +803,7 @@ void appGUI::createGMCTextDock()
     xmlHighlighterNewGMC = make_shared<XMLHighlighter>(newGMCTextEdit->document());
 
     oldGMCTextEdit->setMaximumHeight(this->height() * 0.2);
-    oldGMCTextEdit->setMinimumWidth(400);
     newGMCTextEdit->setMaximumHeight(this->height() * 0.2);
-    newGMCTextEdit->setMinimumWidth(400);
 
     connect(oldGMCTextEdit->verticalScrollBar(),
             SIGNAL(valueChanged(int)),
@@ -1011,13 +1007,10 @@ void appGUI::createActions()
     connect(displayHelpAct, SIGNAL(triggered(bool)), this, SLOT(help()));
 
     addToGMC = new QAction(tr("Include in GMC"), this);
-    //connect(addToGMC, SIGNAL(triggered(bool)), this, SLOT(includeInGMC(true)));
 
     delFromGMC = new QAction(tr("Exclude from GMC"), this);
-    //connect(delToGMC, SIGNAL(triggered(bool)), this, SLOT(includeInGMC(false)));
 
     setDistName = new QAction(tr("Setup MOC distName in GMC"), this);
-    //connect(setDistName, SIGNAL(triggered(bool)), this, SLOT(choiceDistName(GMCAction)));
 
     selectClicked = new QAction(tr("Confirm selection"), this);
 }
@@ -1041,7 +1034,7 @@ void appGUI::createMenus()
 
 void appGUI::createToolBar()
 {
-    fileToolBar = new QToolBar(tr("&File"));
+    fileToolBar = new QToolBar(tr("&File tool bar"));
     addToolBar(Qt::LeftToolBarArea, fileToolBar);
     fileToolBar->setIconSize(QSize(48, 48));
     openOldPDDBAct->setIcon(QIcon(":/report/opic.png"));
@@ -1052,7 +1045,7 @@ void appGUI::createToolBar()
     fileToolBar->addAction(openNewPDDBAct);
     fileToolBar->addAction(openOldGMCAct);
     fileToolBar->addAction(saveFileAct);
-
+    viewMenu->addAction(fileToolBar->toggleViewAction());
 }
 
 void appGUI::createStatusBar()
