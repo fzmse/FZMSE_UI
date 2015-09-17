@@ -55,7 +55,7 @@ public:
 
 private slots:
     void createSaveDialog();
-    void help();
+    void about();
     void clean();
     void compare();
     void showSelectedPDDBResult();
@@ -112,7 +112,7 @@ private:
     QGroupBox * centralButtonSubGroup;
 
     QMenu * fileMenu;
-    QMenu * helpMenu;
+    QMenu * aboutMenu;
     QMenu * viewMenu;
 
     QToolBar * fileToolBar;
@@ -121,7 +121,7 @@ private:
     QAction * openNewPDDBAct;
     QAction * openOldGMCAct;
     QAction * saveFileAct;
-    QAction * displayHelpAct;
+    QAction * displayAboutAct;
     QAction * addToGMC;
     QAction * delFromGMC;
     QAction * setDistName;

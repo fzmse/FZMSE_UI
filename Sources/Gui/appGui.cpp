@@ -257,7 +257,7 @@ void appGUI::save()
 
 }
 
-void appGUI::help()
+void appGUI::about()
 {
     helpDialog * dialog = new helpDialog();
 }
@@ -1002,9 +1002,9 @@ void appGUI::createActions()
     saveFileAct->setStatusTip(tr("Save current file"));
     connect(saveFileAct, SIGNAL(triggered(bool)), this, SLOT(createSaveDialog()));
 
-    displayHelpAct = new QAction(tr("&Help"), this);
-    displayHelpAct->setStatusTip(tr("Help"));
-    connect(displayHelpAct, SIGNAL(triggered(bool)), this, SLOT(help()));
+    displayAboutAct = new QAction(tr("&About"), this);
+    displayAboutAct->setStatusTip(tr("About"));
+    connect(displayAboutAct, SIGNAL(triggered(bool)), this, SLOT(about()));
 
     addToGMC = new QAction(tr("Include in GMC"), this);
 
@@ -1028,8 +1028,8 @@ void appGUI::createMenus()
 
     menuBar()->addSeparator();
 
-    helpMenu = menuBar()->addMenu(tr("&Help"));
-    helpMenu->addAction(displayHelpAct);
+    aboutMenu = menuBar()->addMenu(tr("&About"));
+    aboutMenu->addAction(displayAboutAct);
 }
 
 void appGUI::createToolBar()
@@ -1114,23 +1114,6 @@ void appGUI::createPDDBDescriptionDock()
     PDDBDescriptionDock->setWidget(new QTextEdit );
 
 }
-
-//std::vector<QString> appGUI::parseXmlByEndLine(std::string XML)
-//{
-//    std::string delimiter = "\n";
-//    std::vector<QString> result;
-//    std::string::size_type pos = 0;
-//    std::string::size_type prev = 0;
-
-//    while ((pos = XML.find(delimiter, prev)) != std::string::npos)
-//    {
-//        result.push_back(QString::fromStdString(XML.substr(prev, pos - prev)));
-//        prev = pos + 1;
-//    }
-//    result.push_back(QString::fromStdString(XML.substr(prev)));
-
-//    return result;
-//}
 
 vector<GMCAction> * appGUI::getActions()
 {
