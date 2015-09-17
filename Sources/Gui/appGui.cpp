@@ -207,7 +207,7 @@ void appGUI::save()
         newGMCdoc = make_shared<GMCDocument>(oldGMCdoc.get());
         auto report = GMCWriter::reactToAllIncluded(newGMCdoc.get(), actions);
         GMCWriter::updateVersionInGmc(newGMCdoc.get(), newPDDBdoc->getReleaseVersion(), newPDDBdoc->getReleaseName());
-        if (XmlWriter::save(newGMCdoc.get()->getXMLDocument(), savePath.toStdString()))
+        if (XmlWriter::save(newGMCdoc.get()->getXMLDocument(), savePath.toStdString(), reportSettings.isToBeSorted()))
         {
             QDir d = QFileInfo(savePath).absoluteDir();
             QString fName = QFileInfo(savePath).fileName();
@@ -900,12 +900,12 @@ void appGUI::createSaveDialog()
         loadTemplateLayout->addWidget(pathLine);
         loadTemplateLayout->addWidget(loadPathButton);
 
-//        QVBoxLayout * checkboxLayout = new QVBoxLayout();
-//        QCheckBox * toSort = new QCheckBox(tr("Sort Managed Object"));
+        QVBoxLayout * checkboxLayout = new QVBoxLayout();
+        QCheckBox * toSort = new QCheckBox(tr("Sort Managed Object"));
 
-//        connect(toSort, SIGNAL(clicked(bool)), this, SLOT(setToBeSort(bool)));
+        connect(toSort, SIGNAL(clicked(bool)), this, SLOT(setToBeSort(bool)));
 
-//        checkboxLayout->addWidget(toSort);
+        checkboxLayout->addWidget(toSort);
 
         QHBoxLayout * buttonsLayout = new QHBoxLayout();
         acceptButton = new QPushButton(tr("Save"));
@@ -919,7 +919,7 @@ void appGUI::createSaveDialog()
 
         mainLayout->addLayout(radioButtonLayout);
         mainLayout->addLayout(loadTemplateLayout);
-        //mainLayout->addLayout(checkboxLayout);
+        mainLayout->addLayout(checkboxLayout);
         mainLayout->addLayout(buttonsLayout);
 
         saveDialog->setLayout(mainLayout);
