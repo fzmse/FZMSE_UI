@@ -113,10 +113,6 @@ void XmlWriter::sortMocs(tinyxml2::XMLDocument * doc)
     while( XMLElement * smallestElement = pickSmallestElementFromNotYetFound(elems, &found))
     {
         found.push_back(smallestElement);
-        std::cout << XmlElementReader::getAttributeByName(smallestElement, "class") <<
-                  "   ->   " <<
-                  XmlElementReader::getAttributeByName(smallestElement, "distName") <<
-                  std::endl;
     }
 
     bool allSorted = elems.size() == found.size();
