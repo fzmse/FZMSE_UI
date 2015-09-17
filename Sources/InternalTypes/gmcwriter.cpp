@@ -50,7 +50,7 @@ void GMCWriter::insertParameterSimpleType(GMCDocument * gmc, GMCManagedObject * 
             n->SetText(value.c_str());
             XmlWriter::insertAfter( insertAfter, n);
         }
-
+        gmc->reinitialize();
     }
 }
 
@@ -428,7 +428,7 @@ vector<ReportEntry> GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action
                         }
 
                         insertParameterSimpleType(gmc, (*it), p->getName(), ((PDDBSimpleTypeValue*)val)->getEvaluatedValueForAdd() );
-                        gmc->reinitialize();
+
                     }
                     else
                     {
@@ -456,6 +456,7 @@ vector<ReportEntry> GMCWriter::reactToAction(GMCDocument * gmc, GMCAction action
                         gmc->reinitialize();
 
                     }
+                    break;
                 }
             }
             else
