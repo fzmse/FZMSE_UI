@@ -40,23 +40,29 @@ void appGUI::loadPathToDoc(const QString &type)
              QSettings::NativeFormat);
 
     QString diff_path(tr(""));
+    QString openType(tr(""));
 
     if ( type == "oldPDDB" )
     {
         diff_path = settings.value("Old_PDDB_path").toString();
+        openType.append("Old PDDB file");
     }
     else if (type == "newPDDB")
     {
        diff_path = settings.value("New_PDDB_path").toString();
+       openType.append("New PDDB File");
     }
     else if ( type == "oldGMC" )
     {
         diff_path = settings.value("GMC_path").toString();
+        openType.append("Old GMC File");
     }
+
+
 
     QString filePath = QFileDialog::getOpenFileName(
                 this,
-                tr("Open file"),
+                openType,
                 diff_path,
                 tr("XML (*.xml)"));
 
@@ -221,7 +227,7 @@ void appGUI::save()
 
     QString savePath = QFileDialog::getSaveFileName(
                 this,
-                tr("Save file"),
+                tr("Save New GMC file"),
                 settings.value("New_GMC_path").toString(),
                 tr("XML (*.xml)"));
 
@@ -1017,6 +1023,10 @@ void appGUI::accFixFile()
     qDebug() << QString::fromStdString(fixFilePath) << fixWithSort;
     fixFilePath = "";
     fixWithSort = false;
+
+    QMessageBox::information(this, tr("Fixing file"),
+                                   tr("Success !         "),
+                                   QMessageBox::Ok);
 }
 
 void appGUI::canFixFile()
@@ -1139,6 +1149,7 @@ void appGUI::createToolBar()
     openNewPDDBAct->setIcon(QIcon(":/report/npic.png"));
     openOldGMCAct->setIcon(QIcon(":/report/ogic.png"));
     saveFileAct->setIcon(QIcon(":/report/sic.png"));
+    openFixAction->setIcon(QIcon(":/report/fixic.png"));
     fileToolBar->addAction(openOldPDDBAct);
     fileToolBar->addAction(openNewPDDBAct);
     fileToolBar->addAction(openOldGMCAct);
