@@ -28,7 +28,7 @@ tinyxml2::XMLElement * XmlWriter::insertChild(tinyxml2::XMLElement * element, ti
 
 bool XmlWriter::save(tinyxml2::XMLDocument * doc, std::string filename, bool sort)
 {
-    if ( sortMocs )
+    if ( sort )
         sortMocs(doc);
     tinyxml2::XMLError err = doc->SaveFile(filename.c_str());
     if ( err == tinyxml2::XMLError::XML_SUCCESS || err == tinyxml2::XMLError::XML_NO_ERROR )
