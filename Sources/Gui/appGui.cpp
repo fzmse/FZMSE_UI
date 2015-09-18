@@ -454,6 +454,25 @@ void appGUI::createDistNameDialog()
 
 void appGUI::setHzVectors()
 {
+    shared_ptr<GMCDocument> gmc = make_shared<GMCDocument>(hzSettings.getPath());
+    if ( gmc->getDocType() == "TDD" )
+    {
+
+    }
+    else if ( gmc->getDocType() == "FDD" )
+    {
+        if ( hzSettings.getCellType() == "Indoor" )
+        {
+            shared_ptr<FDDIndoorTable> fdd = make_shared<FDDIndoorTable>("fdd_indoor.csv");
+            hzVect = fdd->getHertzList();
+        }
+        else if ( hzSettings.getCellType() == "Outdoor" )
+        {
+            shared_ptr<FDDOutdoorTable> fdd = make_shared<FDDOutdoorTable>("fdd_outdoor.csv");
+            hzVect = fdd->getHertzList();
+        }
+    }
+
     // Tu funckja z
 //    hzSettings.getCellType();
 //    hzSettings.getPath();

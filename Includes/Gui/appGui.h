@@ -22,6 +22,10 @@ class appGUI;
 #include "Gui/hzSettings.h"
 #include <QtWidgets>
 #include <cstring>
+#include "Includes/InternalTypes/FDDIndoorTable.h"
+#include "Includes/InternalTypes/FDDOutdoorTable.h"
+#include "Includes/InternalTypes/TDDTable.h"
+
 
 class QLabel;
 class QAction;
