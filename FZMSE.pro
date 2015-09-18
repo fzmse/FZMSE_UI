@@ -69,7 +69,8 @@ SOURCES += main.cpp \
     Sources/Report/ReportEntry.cpp \
     Sources/Gui/helpdialog.cpp \
     Sources/Report/reportsettings.cpp \
-    Sources/Gui/fixsetting.cpp
+    Sources/Gui/fixsetting.cpp \
+    Sources/Gui/hzSettings.cpp
 
 
 HEADERS  += \
@@ -115,7 +116,8 @@ HEADERS  += \
     Includes/Report/ReportEntry.h \
     Includes/Gui/helpdialog.h \
     Includes/Report/reportsettings.h \
-    Includes/Gui/fixsettings.h
+    Includes/Gui/fixsettings.h \
+    Includes/Gui/hzSettings.h
 
 FORMS    += mainwindow.ui
 

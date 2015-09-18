@@ -19,6 +19,7 @@ class appGUI;
 #include "Includes/Gui/helpdialog.h"
 #include "Report/reportsettings.h"
 #include "Gui/fixsettings.h"
+#include "Gui/hzSettings.h"
 #include <QtWidgets>
 #include <cstring>
 
@@ -38,6 +39,7 @@ class QHBoxLayout;
 class QVBoxLayout;
 class QPoint;
 class QSettings;
+class QComboBox;
 
 class appGUI : public QMainWindow
 {
@@ -76,8 +78,15 @@ private slots:
     void radioNewRaport(bool);
     void createSaveDialog();
     void createFixDialog();
+    void createHzDialog();
     void accFixFile();
     void canFixFile();
+    void setCellType(QString);
+    void setHz(QString);
+    void setTddFrameConfCB(QString);
+    void setTddSpecSubfConfCB(QString);
+
+
 
 private:
     void createActions();
@@ -105,6 +114,9 @@ private:
 
     void createDistNameDialog();
 
+    void setHzVectors();
+    void setHzCB();
+
     QVBoxLayout * verCentralLayout;
     QWidget * centralWid;
 
@@ -128,6 +140,7 @@ private:
     QAction * openOldGMCAct;
     QAction * saveFileAct;
     QAction * openFixAction;
+    QAction * openHzAction;
     QAction * displayAboutAct;
     QAction * addToGMC;
     QAction * delFromGMC;
@@ -157,9 +170,9 @@ private:
 
     //Save settings dialog
     QDialog * saveDialog;
+    ReportSetting reportSettings;
     std::string templatePath;
     bool toBeSorted;
-    ReportSetting reportSettings;
     QRadioButton * genNewRadio;
     QRadioButton * genFromTamplateRadio;
     QLineEdit * pathLine;
@@ -169,12 +182,27 @@ private:
 
     //Fix files dialog
     QDialog * fixDialog;
+    FixSetting fixSettings;
     bool fixWithSort;
     std::string fixFilePath;
     QPushButton * accFixButton;
     QPushButton * canFixButton;
     QLineEdit * pathFixLine;
-    FixSetting fixSettings;
+
+    //Hz settings dialog
+    QDialog * hzDialog;
+    HzSettings hzSettings;
+    QPushButton * accHzButton;
+    QPushButton * canHzButton;
+    QComboBox * cellTypeCB;
+    QComboBox * hzCB;
+    std::vector<std::string> hzVect;
+    std::vector<std::string> tddFrameConfVect;
+    std::vector<std::string> tddSpecSubfConfVect;
+    //  TDD
+    QComboBox * tddFrameConfCB;
+    QComboBox * tddSpecSubfConfCB;
+
 
     QMenu* contextMenu;
 

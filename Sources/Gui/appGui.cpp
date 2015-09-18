@@ -26,6 +26,7 @@ appGUI::appGUI()
     dialogList = NULL;
     saveDialog = NULL;
     fixDialog = NULL;
+    hzDialog = NULL;
 
     toBeSorted = false;
     templatePath = "";
@@ -448,6 +449,36 @@ void appGUI::createDistNameDialog()
 
         dialogList->setLayout(dialogLayout);
         dialogList->show();
+    }
+}
+
+void appGUI::setHzVectors()
+{
+    // Tu funckja z
+//    hzSettings.getCellType();
+//    hzSettings.getPath();
+    // Przypisujemy do vektorow
+//    hzVect;
+//    tddFrameConfVect;
+//    tddSpecSubfConfVect;
+    setHzCB();
+}
+
+void appGUI::setHzCB()
+{
+    hzCB->clear();
+    tddFrameConfCB->clear();
+    tddSpecSubfConfCB->clear();
+
+    for ( vector<string>::iterator it = hzVect.begin(); it != hzVect.end(); it++)
+        hzCB->addItem(QString::fromStdString(*it));
+
+    if ( !(tddFrameConfVect.empty() &&  tddSpecSubfConfVect.empty()) )
+    {
+        for ( vector<string>::iterator it = tddFrameConfVect.begin(); it != tddFrameConfVect.end(); it++)
+            tddFrameConfCB->addItem(QString::fromStdString(*it));
+        for ( vector<string>::iterator it = tddSpecSubfConfVect.begin(); it != tddSpecSubfConfVect.end(); it++)
+            tddSpecSubfConfCB->addItem(QString::fromStdString(*it));
     }
 }
 
@@ -901,7 +932,7 @@ void appGUI::createSaveDialog()
         saveDialog->setModal(true);
         saveDialog->setWindowTitle(tr("Save options"));
         saveDialog->setMinimumWidth(300);
-        QVBoxLayout * mainLayout = new QVBoxLayout();
+        QVBoxLayout * mainLayout = new QVBoxLayout(saveDialog);
 
         QVBoxLayout * radioButtonLayout = new QVBoxLayout();
         genNewRadio = new QRadioButton(tr("Generate new raport"));
@@ -971,7 +1002,7 @@ void appGUI::createFixDialog()
     fixDialog->setModal(true);
     fixDialog->setWindowTitle(tr("Fix files"));
     fixDialog->setMinimumWidth(300);
-    QVBoxLayout * mainLayout = new QVBoxLayout();
+    QVBoxLayout * mainLayout = new QVBoxLayout(fixDialog);
 
     QHBoxLayout * loadPathFileLayout = new QHBoxLayout();
     QPushButton * loadPathButton = new QPushButton(tr("Open file"));
@@ -1012,6 +1043,83 @@ void appGUI::createFixDialog()
 
 }
 
+void appGUI::createHzDialog()
+{
+    QString filePath = QFileDialog::getOpenFileName(
+                this,
+                "Open GMC file",
+                "",
+                tr("XML (*.xml)"));
+
+    if (filePath.length() > 0)
+    {
+
+        if ( hzDialog != NULL )
+        {
+            delete hzDialog;
+        }
+
+        hzDialog = new QDialog();
+        hzDialog->setModal(true);
+        hzDialog->setWindowTitle(tr("Channel Bandwidth Settings"));
+        hzDialog->setMinimumWidth(300);
+
+        hzSettings = HzSettings(filePath.toStdString(), "Indoor");
+
+        QGridLayout * mainLayout = new QGridLayout(hzDialog);
+        QLabel * cellTypeLab = new QLabel(tr("Cell Type "));
+        cellTypeCB = new QComboBox();
+
+        cellTypeCB->addItem("Indoor");
+        cellTypeCB->addItem("Outdoor");
+
+        connect(cellTypeCB, SIGNAL(currentIndexChanged(QString)), this, SLOT(setCellType(QString)));
+
+        QLabel * hzLab = new QLabel(tr("MHz "));
+        hzCB = new QComboBox();
+
+        connect(hzCB, SIGNAL(currentIndexChanged(QString)), this, SLOT(setHz(QString)));
+
+        mainLayout->addWidget(cellTypeLab, 0, 0);
+        mainLayout->addWidget(cellTypeCB, 0, 1);
+        mainLayout->addWidget(hzLab, 1, 0);
+        mainLayout->addWidget(hzCB, 1, 1);
+
+        accHzButton = new QPushButton(tr("Apply"));
+        canHzButton = new QPushButton(tr("Cancel"));
+
+        bool isTDD = true;
+
+        if ( isTDD )
+        {
+            QLabel * tddFrameLab = new QLabel(tr("TDD Frame Conf "));
+            tddFrameConfCB = new QComboBox();
+
+            connect(tddFrameConfCB, SIGNAL(currentIndexChanged(QString)), this, SLOT(setTddFrameConfCB(QString)));
+
+            QLabel * tddSpecLab = new QLabel(tr("TDD Spec Subf Conf "));
+            tddSpecSubfConfCB = new QComboBox();
+
+            connect(tddSpecSubfConfCB, SIGNAL(currentIndexChanged(QString)), this, SLOT(setTddSpecSubfConfCB(QString)));
+
+            mainLayout->addWidget(tddFrameLab, 2, 0);
+            mainLayout->addWidget(tddFrameConfCB, 2, 1);
+            mainLayout->addWidget(tddSpecLab, 3, 0);
+            mainLayout->addWidget(tddSpecSubfConfCB, 3, 1);
+
+            mainLayout->addWidget(accHzButton, 4, 0);
+            mainLayout->addWidget(canHzButton, 4, 1);
+        }
+        else
+        {
+            mainLayout->addWidget(accHzButton, 2, 0);
+            mainLayout->addWidget(canHzButton, 2, 1);
+        }
+        hzDialog->setLayout(mainLayout);
+        hzDialog->show();
+    }
+}
+
 void appGUI::accFixFile()
 {
     fixSettings = FixSetting(fixFilePath, fixWithSort);
@@ -1035,6 +1143,35 @@ void appGUI::canFixFile()
     fixWithSort = false;
 
     fixDialog->close();
+
+}
+
+void appGUI::setCellType(QString val)
+{
+
+    hzSettings.setCellType(val.toStdString());
+    setHzVectors();
+
+}
+
+void appGUI::setHz(QString val)
+{
+
+    hzSettings.setHz(val.toStdString());
+
+}
+
+void appGUI::setTddFrameConfCB(QString val)
+{
+
+    hzSettings.setFrameConf(val.toStdString());
+
+}
+
+void appGUI::setTddSpecSubfConfCB(QString val)
+{
+
+    hzSettings.setSpecSubfConf(val.toStdString());
 
 }
 
@@ -1114,6 +1251,9 @@ void appGUI::createActions()
     openFixAction = new QAction(tr("Fix file"), this);
     connect(openFixAction, SIGNAL(triggered(bool)), this, SLOT(createFixDialog()));
 
+    openHzAction = new QAction(tr("GMC select variant"), this);
+    connect(openHzAction, SIGNAL(triggered(bool)), this, SLOT(createHzDialog()));
+
     addToGMC = new QAction(tr("Include in GMC"), this);
 
     delFromGMC = new QAction(tr("Exclude from GMC"), this);
@@ -1150,11 +1290,12 @@ void appGUI::createToolBar()
     openOldGMCAct->setIcon(QIcon(":/report/ogic.png"));
     saveFileAct->setIcon(QIcon(":/report/sic.png"));
     openFixAction->setIcon(QIcon(":/report/fixic.png"));
+    openHzAction->setIcon(QIcon(":/report/hzic.png"));
     fileToolBar->addAction(openOldPDDBAct);
     fileToolBar->addAction(openNewPDDBAct);
     fileToolBar->addAction(openOldGMCAct);
     fileToolBar->addAction(saveFileAct);
-
+    fileToolBar->addAction(openHzAction);
     fileToolBar->addSeparator();
 
     fileToolBar->addAction(openFixAction);

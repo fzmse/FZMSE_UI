@@ -14,5 +14,6 @@
         <file>report/icon_window.ico</file>
         <file>report/icon_win.png</file>
         <file>report/fixic.png</file>
+        <file>report/hzic.png</file>
     </qresource>
 </RCC>
