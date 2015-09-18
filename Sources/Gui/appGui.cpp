@@ -1248,7 +1248,7 @@ void appGUI::createActions()
     displayAboutAct->setStatusTip(tr("About"));
     connect(displayAboutAct, SIGNAL(triggered(bool)), this, SLOT(about()));
 
-    openFixAction = new QAction(tr("Fix file"), this);
+    openFixAction = new QAction(tr("Format file"), this);
     connect(openFixAction, SIGNAL(triggered(bool)), this, SLOT(createFixDialog()));
 
     openHzAction = new QAction(tr("GMC select variant"), this);

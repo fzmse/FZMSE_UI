@@ -19,6 +19,8 @@ GMCDocument::GMCDocument(std::string fileName)
 {
     this->doc = XmlWrapper::loadDocument(fileName);
 
+    this->docType = resolveDocType();
+
     this->managedObjects = retrieveManagedObjects();
 }
 
@@ -40,6 +42,30 @@ GMCDocument::~GMCDocument()
         delete (*it);
     delete doc;
 }
+
+std::string GMCDocument::resolveDocType()
+{
+    std::string result = "";
+    XMLElement * el = XmlReader::getFirstElementWithSpecificNameAndAttribute((XMLElement*)doc, "log");
+    if ( el != NULL )
+    {
+        std::string appVersion = XmlElementReader::getAttributeByName(el, "appVersion");
+        if ( appVersion.size() > 0 )
+        {
+            if ( appVersion[0] == 'T' )
+                result = "TDD";
+            else if ( appVersion[0] == 'F' )
+                result = "FDD";
+        }
+    }
+    return result;
+}
+
+std::string GMCDocument::getDocType()
+{
+    return this->docType;
+}
+
 
 std::vector<GMCManagedObject*> GMCDocument::getManagedObjects()
 {

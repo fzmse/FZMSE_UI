@@ -1,0 +1,33 @@
+;;;;GMC Recommended Values;;;
+MO Class;Location in the Structure;Parameter Name;Abbreviated Name;5 MHz;10 MHz (Default GMC);15 MHz;20 MHz
+LNCEL;;Additional active UE with reason radio reason handover;addAUeRrHo;14;18;24;28
+LNCEL;;Additional active UE with reason time critical handover;addAUeTcHo;18;24;30;36
+LNCEL;;Add emergency sessions;addEmergencySessions;36;48;60;72
+LNCEL;;Add number DRB radioReasHo;addNumDrbRadioReasHo;42;54;72;84
+LNCEL;;Add number DRB timeCriticalHo;addNumDrbTimeCriticalHo;54;72;90;108
+LNCEL;;Add number QCI1 DRB for radioReasHo;addNumQci1DrbRadioReasHo;14;18;24;28
+LNCEL;;Add number QCI1 DRB for timeCriticalHo;addNumQci1DrbTimeCriticalHo;18;24;30;36
+LNCEL;;Downlink channel bandwidth;dlChBw;5 MHz;10 Mhz;15 Mhz;20 MHz
+LNCEL;;EARFCN downlink;earfcnDL;HW Dependant;HW Dependant;HW Dependant;HW Dependant
+LNCEL;;EARFCN uplink;earfcnUL;HW Dependant;HW Dependant;HW Dependant;HW Dependant
+LNCEL;;Max number act DRB;maxNumActDrb;972;1296;1620;1944
+LNCEL;;Maximum number of active UEs;maxNumActUE;324;432;540;648
+LNCEL;;Max number QCI1 DRBs (GBRs);maxNumQci1Drb;164;352;440;528
+LNCEL;;Maximum number of RRC connections;maxNumRrc;324;432;540;648
+LNCEL;;Maximum number RRC emergency;maxNumRrcEmergency;360;480;600;720
+LNCEL;;Maximum amount of users per TTI in DL;maxNumUeDl;7;14;17;20
+LNCEL;;Maximum amount of users per TTI in UL;maxNumUeUl;7;14;17;20
+LNCEL;;ACK/NACK offset;n1PucchAn;18;36;36;36
+LNCEL;;PUCCH bandwidth for CQI;nCqiRb;3;4;5;6
+LNCEL;;PRACH configuration index;prachFreqOff;3;5;6;7
+LNCEL;;Maximum number of PRBs assigned in downlink;redBwMaxRbDl;25;50;75;100
+LNCEL;;Uplink channel bandwidth;ulChBw;5 MHz;10 MHz;15 MHz;20 MHz
+LNCEL;redBwUlConfig;Restricted PRB assignment in uplink configuration;redBwRbUlConfig;25;50;75;100
+LNCEL;;​P​R​A​C​H​ cyclic​ shift;PrachCs;4;4;4;4
+LNCEL;;Cell type;CellType;Small;Small;Small;Small
+LNCEL;;Maximum​ output​ power;pMax;370;370;370;370
+LNCEL;;Nominal​ power​ for​ ​U​E​ ​P​U​C​C​H​ ​T​X​ power​ calculation;p0NomPucch;-116;-116;-116;-116
+LNCEL;ulpcPucchConfig;Lower​ ​R​S​S​I​ threshold​ for​ ​P​U​C​C​H​ power​ command​ decision;ulpcLowlevCch;-115;-115;-115;-115
+LNCEL;ulpcPucchConfig;​Upper​ ​R​S​S​I​ threshold​ for​ ​P​U​C​C​H​ power​ command​ decision;ulpcUplevCch;-113;-113;-113;-113
+LNCEL;ulpcPucchConfig;​Lower​ ​R​S​S​I​ threshold​ for​ ​P​U​S​C​H​ power​ command​ decision;ulpcLowlevSch;-100;-100;-100;-100
+LNCEL;;Preamble​ initial​ received​ target​ power;ulpcIniPrePwr;-96;-96;-96;-96
