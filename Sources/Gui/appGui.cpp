@@ -461,22 +461,45 @@ void appGUI::setHzVectors()
 //    hzVect;
 //    tddFrameConfVect;
 //    tddSpecSubfConfVect;
+    hzVect.clear();
+    hzVect.push_back("Test");
+    hzVect.push_back("Test1");
+    hzVect.push_back("Test2");
+    hzVect.push_back("Test3");
+
+    tddFrameConfVect.clear();
+    tddFrameConfVect.push_back("frame");
+    tddFrameConfVect.push_back("frame1");
+    tddFrameConfVect.push_back("frame2");
+
+    tddSpecSubfConfVect.clear();
+    tddSpecSubfConfVect.push_back("spec");
+    tddSpecSubfConfVect.push_back("spec1");
+    tddSpecSubfConfVect.push_back("spec2");
+    tddSpecSubfConfVect.push_back("spec3");
+    tddSpecSubfConfVect.push_back("spec4");
+    tddSpecSubfConfVect.push_back("spec5");
+    tddSpecSubfConfVect.push_back("spec6");
+
     setHzCB();
 }
 
 void appGUI::setHzCB()
 {
     hzCB->clear();
-    tddFrameConfCB->clear();
-    tddSpecSubfConfCB->clear();
+
 
     for ( vector<string>::iterator it = hzVect.begin(); it != hzVect.end(); it++)
         hzCB->addItem(QString::fromStdString(*it));
 
-    if ( !(tddFrameConfVect.empty() &&  tddSpecSubfConfVect.empty()) )
+    if ( isTDD )
     {
+        tddFrameConfCB->clear();
+        tddSpecSubfConfCB->clear();
+
         for ( vector<string>::iterator it = tddFrameConfVect.begin(); it != tddFrameConfVect.end(); it++)
             tddFrameConfCB->addItem(QString::fromStdString(*it));
+
         for ( vector<string>::iterator it = tddSpecSubfConfVect.begin(); it != tddSpecSubfConfVect.end(); it++)
             tddSpecSubfConfCB->addItem(QString::fromStdString(*it));
     }
@@ -1002,27 +1025,24 @@ void appGUI::createFixDialog()
     fixDialog->setModal(true);
     fixDialog->setWindowTitle(tr("Fix files"));
     fixDialog->setMinimumWidth(300);
-    QVBoxLayout * mainLayout = new QVBoxLayout(fixDialog);
+    QGridLayout * mainLayout = new QGridLayout(fixDialog);
 
-    QHBoxLayout * loadPathFileLayout = new QHBoxLayout();
     QPushButton * loadPathButton = new QPushButton(tr("Open file"));
     pathFixLine = new QLineEdit();
 
     pathFixLine->setReadOnly(true);
 
-    loadPathFileLayout->addWidget(pathFixLine);
-    loadPathFileLayout->addWidget(loadPathButton);
+    mainLayout->addWidget(pathFixLine, 0, 0, 1, 4);
+    mainLayout->addWidget(loadPathButton, 0, 4);
 
     connect(loadPathButton, SIGNAL(clicked(bool)), this, SLOT(loadFixPath()));
 
-    QVBoxLayout * checkBoxLayout = new QVBoxLayout();
     QCheckBox * toSort = new QCheckBox(tr("Sort Managed Objects"));
 
     connect(toSort, SIGNAL(clicked(bool)), this, SLOT(setFixWithSort(bool)));
 
-    checkBoxLayout->addWidget(toSort);
+    mainLayout->addWidget(toSort, 1, 0);
 
-    QHBoxLayout * buttonsLayout = new QHBoxLayout();
     accFixButton = new QPushButton(tr("Fix"));
     canFixButton = new QPushButton(tr("Cancel"));
 
@@ -1031,12 +1051,8 @@ void appGUI::createFixDialog()
     connect(accFixButton, SIGNAL(clicked(bool)), this, SLOT(accFixFile()));
     connect(canFixButton, SIGNAL(clicked(bool)), this, SLOT(canFixFile()));
 
-    buttonsLayout->addWidget(accFixButton);
-    buttonsLayout->addWidget(canFixButton);
-
-    mainLayout->addLayout(loadPathFileLayout);
-    mainLayout->addLayout(checkBoxLayout);
-    mainLayout->addLayout(buttonsLayout);
+    mainLayout->addWidget(accFixButton, 2, 0, 1, 1);
+    mainLayout->addWidget(canFixButton, 2, 2, 1, 3);
 
     fixDialog->setLayout(mainLayout);
     fixDialog->show();
@@ -1053,6 +1069,7 @@ void appGUI::createHzDialog()
 
     if (filePath.length() > 0)
     {
+        shared_ptr<GMCDocument> doc = make_shared<GMCDocument>(filePath.toStdString());
 
         if ( hzDialog != NULL )
         {
@@ -1072,7 +1089,6 @@ void appGUI::createHzDialog()
 
         cellTypeCB->addItem("Indoor");
         cellTypeCB->addItem("Outdoor");
-
         connect(cellTypeCB, SIGNAL(currentIndexChanged(QString)), this, SLOT(setCellType(QString)));
 
         QLabel * hzLab = new QLabel(tr("MHz "));
@@ -1088,8 +1104,10 @@ void appGUI::createHzDialog()
         accHzButton = new QPushButton(tr("Apply"));
         canHzButton = new QPushButton(tr("Cancel"));
 
-        bool isTDD = true;
+        connect(accHzButton, SIGNAL(clicked(bool)), this, SLOT(accHzFile()));
+        connect(canHzButton, SIGNAL(clicked(bool)), this, SLOT(canHzFile()));
 
+        isTDD = doc->getDocType()=="TDD";
         if ( isTDD )
         {
             QLabel * tddFrameLab = new QLabel(tr("TDD Frame Conf "));
@@ -1115,6 +1133,9 @@ void appGUI::createHzDialog()
             mainLayout->addWidget(accHzButton, 2, 0);
             mainLayout->addWidget(canHzButton, 2, 1);
         }
+
+        setHzVectors();
+
         hzDialog->setLayout(mainLayout);
         hzDialog->show();
     }
@@ -1173,6 +1194,23 @@ void appGUI::setTddSpecSubfConfCB(QString val)
 
     hzSettings.setSpecSubfConf(val.toStdString());
 
+}
+
+void appGUI::accHzFile()
+{
+    shared_ptr<GMCDocument> doc = make_shared<GMCDocument>(hzSettings.getPath());
+    // tutaj do DOC dajemy settings
+
+    qDebug() << QString::fromStdString(hzSettings.getCellType()) << QString::fromStdString(hzSettings.getFrameConf()) << QString::fromStdString(hzSettings.getHz()) << QString::fromStdString(hzSettings.getSpecSubfConf());
+
+    hzDialog->close();
+}
+
+void appGUI::canHzFile()
+{
+    isTDD = false;
+
+    hzDialog->close();
 }
 
 void appGUI::setConnections()

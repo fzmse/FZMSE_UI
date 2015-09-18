@@ -85,6 +85,8 @@ private slots:
     void setHz(QString);
     void setTddFrameConfCB(QString);
     void setTddSpecSubfConfCB(QString);
+    void accHzFile();
+    void canHzFile();
 
 
 
@@ -199,6 +201,7 @@ private:
     std::vector<std::string> hzVect;
     std::vector<std::string> tddFrameConfVect;
     std::vector<std::string> tddSpecSubfConfVect;
+    bool isTDD;
     //  TDD
     QComboBox * tddFrameConfCB;
     QComboBox * tddSpecSubfConfCB;
