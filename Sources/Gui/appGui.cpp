@@ -480,25 +480,7 @@ void appGUI::setHzVectors()
 //    hzVect;
 //    tddFrameConfVect;
 //    tddSpecSubfConfVect;
-    hzVect.clear();
-    hzVect.push_back("Test");
-    hzVect.push_back("Test1");
-    hzVect.push_back("Test2");
-    hzVect.push_back("Test3");
 
-    tddFrameConfVect.clear();
-    tddFrameConfVect.push_back("frame");
-    tddFrameConfVect.push_back("frame1");
-    tddFrameConfVect.push_back("frame2");
-
-    tddSpecSubfConfVect.clear();
-    tddSpecSubfConfVect.push_back("spec");
-    tddSpecSubfConfVect.push_back("spec1");
-    tddSpecSubfConfVect.push_back("spec2");
-    tddSpecSubfConfVect.push_back("spec3");
-    tddSpecSubfConfVect.push_back("spec4");
-    tddSpecSubfConfVect.push_back("spec5");
-    tddSpecSubfConfVect.push_back("spec6");
 
     setHzCB();
 }
