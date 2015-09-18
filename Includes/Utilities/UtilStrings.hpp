@@ -29,5 +29,6 @@ inline std::vector<std::string> strSplit(std::string text, std::string delimiter
         results.push_back(token);
         s.erase(0, pos + delimiter.length());
     }
+    results.push_back(s);
     return results;
 }

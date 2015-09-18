@@ -2,14 +2,21 @@
 
 #include "Csv/CSVParser.h"
 
-class FDDIndoorTable : public CSVTable
+namespace InternalTypes
 {
-public:
-    FDDIndoorTable( std::string filename );
-    std::vector<std::string> getHertzList();
-    std::vector<CSVRow*> getParameterRows();
-protected:
+    class FDDIndoorTable : public CSVTable
+    {
+    public:
+        FDDIndoorTable( std::string filename );
+        std::vector<std::string> getHertzList();
+        std::vector<CSVRow*> getParameterRows();
 
-    std::vector<std::string> hertzList();
-    std::vector<CSVRow*> parameterRows();
-};
+    protected:
+
+        std::vector<CSVRow *> resolveParameterRows();
+        std::vector<std::string> resolveHertzList();
+
+        std::vector<std::string> hertzList;
+        std::vector<CSVRow*> parameterRows;
+    };
+}

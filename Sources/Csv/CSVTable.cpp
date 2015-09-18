@@ -63,3 +63,17 @@ std::vector<CSVRow *> CSVTable::buildRows(std::vector<std::string> rawData)
     }
     return result;
  }
+
+ CSVRow * CSVTable::getRowByColValue(int colIndex, std::string value)
+ {
+     CSVRow * r = NULL;
+     for ( std::vector<CSVRow*>::iterator it = this->rows.begin(); it != this->rows.end(); it ++)
+     {
+         if ( (*it)->getCell(colIndex) == value )
+         {
+             r = *it;
+             break;
+         }
+     }
+     return r;
+ }

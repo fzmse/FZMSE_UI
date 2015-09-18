@@ -11,9 +11,6 @@ using namespace std;
 
 TEST(CSVParser, BuildCSVTable)
 {
-    CSVTable * table = CSVParser::createTableFrom(dir + "UT/TestFiles/CSV/tdd.csv");
-    if ( table != NULL )
-        cout << table->toString();
+    CSVTable * table = CSVParser::createTableFrom(dir + "UT/TestFiles/CSV/fdd_indoor.csv");
     delete table;
-
 }

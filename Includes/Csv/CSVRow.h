@@ -11,6 +11,7 @@ public:
     CSVRow(std::string rowString);
     std::string getCell(int index);
     std::vector<std::string> getCells();
+    std::string toString();
 protected:
     std::vector<std::string> buildCells(std::string raw);
     std::vector<std::string> cells;

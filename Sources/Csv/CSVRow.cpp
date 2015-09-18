@@ -27,3 +27,14 @@ std::vector<std::string> CSVRow::getCells()
 {
     return this->cells;
 }
+
+std::string CSVRow::toString()
+{
+   std::string result = "";
+   for ( int u = 0; u < this->cells.size(); u ++ )
+   {
+       result += this->cells[u];
+       result += "\t";
+   }
+   return result;
+}

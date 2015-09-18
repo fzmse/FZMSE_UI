@@ -14,9 +14,13 @@ public:
     std::vector<CSVRow*> getRows();
     std::string getCell(int row, int column);
     std::string toString();
+
+    CSVRow * getRowByColValue(int colIndex, std::string value);
 protected:
     std::vector<CSVRow *> buildRows(std::vector<std::string> rawData);
 
     std::vector<CSVRow*> rows;
     std::vector<std::string> rawData;
+
+
 };
