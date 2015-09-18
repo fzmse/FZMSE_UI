@@ -1,0 +1,33 @@
+;GMC Recommended Values;;;
+Abbreviated Name;5 MHz;10 MHz (Default GMC);15 MHz;20 MHz
+addAUeRrHo;8;11;13;16
+addAUeTcHo;10;13;17;20
+addEmergencySessions;24;30;36;40
+addNumDrbRadioReasHo;24;32;40;48
+addNumDrbTimeCriticalHo;30;40;50;60
+addNumQci1DrbRadioReasHo;8;11;13;16
+addNumQci1DrbTimeCriticalHo;10;13;17;20
+dlChBw;5 MHz;10 Mhz;15 Mhz;20 MHz
+earfcnDL;HW Dependant;HW Dependant;HW Dependant;HW Dependant
+earfcnUL;HW Dependant;HW Dependant;HW Dependant;HW Dependant
+maxNumActDrb;288;630;972;1080
+maxNumActUE;96;210;324;360
+maxNumQci1Drb;96;210;324;360
+maxNumRrc;96;210;324;360
+maxNumRrcEmergency;120;240;360;400
+maxNumUeDl;4;7;9;10
+maxNumUeUl;4;7;9;10
+n1PucchAn;18;36;36;36
+nCqiRb;1;2;3;4
+prachFreqOff;2;3;4;6
+redBwMaxRbDl;25;50;75;100
+ulChBw;5 MHz;10 MHz;15 MHz;20 MHz
+redBwRbUlConfig;25;50;75;100
+PrachCs;1;1;1;1
+CellType;Very Small;Very Small;Very Small;Very Small
+pMax;240;240;240;240
+p0NomPucch;-110;-110;-110;-110
+ulpcLowlevCch;-112;-112;-112;-112
+ulpcUplevCch;-110;-110;-110;-110
+ulpcLowlevSch;-97;-97;-97;-97
+ulpcIniPrePwr;-94;-94;-94;-94

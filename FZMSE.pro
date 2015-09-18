@@ -69,7 +69,14 @@ SOURCES += main.cpp \
     Sources/Report/ReportEntry.cpp \
     Sources/Gui/helpdialog.cpp \
     Sources/Report/reportsettings.cpp \
-    Sources/Gui/fixsetting.cpp
+    Sources/Gui/fixsetting.cpp \
+    Sources/Csv/CSVParser.cpp \
+    UT/Doubles/Sources/Csv/CSVParserTest.cpp \
+    Sources/Csv/CSVTable.cpp \
+    Sources/Csv/CSVRow.cpp \
+    Sources/InternalTypes/FDDIndoorTable.cpp \
+    Sources/InternalTypes/FDDOutdoorTable.cpp \
+    Sources/InternalTypes/TDDTable.cpp
 
 
 HEADERS  += \
@@ -115,7 +122,13 @@ HEADERS  += \
     Includes/Report/ReportEntry.h \
     Includes/Gui/helpdialog.h \
     Includes/Report/reportsettings.h \
-    Includes/Gui/fixsettings.h
+    Includes/Gui/fixsettings.h \
+    Includes/Csv/CSVParser.h \
+    Includes/Csv/CSVTable.h \
+    Includes/Csv/CSVRow.h \
+    Includes/InternalTypes/FDDIndoorTable.h \
+    Includes/InternalTypes/FDDOutdoorTable.h \
+    Includes/InternalTypes/TDDTable.h
 
 FORMS    += mainwindow.ui
 
@@ -160,6 +173,9 @@ DISTFILES += \
     Includes/Gui/lineTextEdit \
     UT/TestFiles/PDDB/pddb1507_mychanges.xml \
     UT/TestFiles/PDDB/f13.xml \
-    FZMSE.rc
+    FZMSE.rc \
+    UT/TestFiles/CSV/fdd_indoor.csv \
+    UT/TestFiles/CSV/fdd_outdoor.csv \
+    UT/TestFiles/CSV/tdd.csv
 
 RESOURCES += appresources.qrc

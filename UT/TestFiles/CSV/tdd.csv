@@ -1,0 +1,32 @@
+Flexi Zone Outdoor Micro;;;;;;;;Flexi Zone Indoor Pico;;;;;;;;
+Parameter;20MHz;;;;10MHz;;;;20MHz;;;;10MHz;;;
+;07-lut;07-sty;05-lut;05-sty;07-lut;07-sty;05-lut;05-sty;07-lut;07-sty;05-lut;05-sty;07-lut;07-sty;05-lut;05-sty
+addAUeRrHo;18;18;18;18;6;6;6;6;6;6;6;6;5;5;5;5
+addAUeTcHo;24;24;24;24;8;8;8;8;8;8;8;8;6;6;6;6
+addEmergencySessions;24;24;24;24;16;16;16;16;16;16;16;16;12;12;12;12
+addNumDrbRadioReasHo;54;54;54;54;18;18;18;18;18;18;18;18;15;15;15;15
+addNumDrbTimeCriticalHo;72;72;72;72;24;24;24;24;24;24;24;24;18;18;18;18
+addNumQci1DrbRadioReasHo;18;18;18;18;12;12;12;12;6;6;6;6;5;5;5;5
+addNumQci1DrbTimeCriticalHo;24;24;24;24;16;16;16;16;8;8;8;8;6;6;6;6
+cellSrPeriod;20ms;20ms;20ms;20ms;20ms;20ms;20ms;20ms;20ms;20ms;20ms;20ms;20ms;20ms;20ms;20ms
+cellType;small;small;small;small;small;small;small;small;very_small;very_small;very_small;very_small;very_small;very_small;very_small;very_small
+chBw (MHz);20MHz;20MHz;20MHz;20MHz;10MHz;10MHz;10MHz;10MHz;20MHz;20MHz;20MHz;20MHz;10MHz;10MHz;10MHz;10MHz
+maxCrRa4Dl;12;12;12;12;18;18;18;18;12;12;12;12;18;18;18;18
+maxNumActDrb;648;648;648;648;432;432;432;432;432;432;432;432;324;324;324;324
+maxNumActUE;216;216;216;216;144;144;144;144;144;144;144;144;108;108;108;108
+maxNumCaConfUeDc;50;50;50;50;20;20;20;20;20;20;20;20;20;20;20;20
+maxNumQci1Drb;36;36;36;36;48;48;48;48;144;144;144;144;108;108;108;108
+maxNumRrc;216;216;216;216;144;144;144;144;144;144;144;144;108;108;108;108
+maxNumRrcEmergency;240;240;240;240;160;160;160;160;160;160;160;160;120;120;120;120
+maxNumUeDl;12;12;12;12;8;8;8;8;6;6;6;6;4;4;4;4
+maxNumUeDlDwPTS;8;8;0;0;6;6;0;0;4;4;0;0;3;3;0;0
+maxNumUeUl;12;12;12;12;8;8;8;8;6;6;6;6;4;4;4;4
+n1PucchAn;108;108;108;108;108;108;108;108;36;36;36;36;36;36;36;36
+nCqiRb;10;5;10;5;10;5;10;5;2;1;2;1;2;1;2;1
+pMax;370;370;370;370;370;370;370;370;240;240;240;240;240;240;240;240
+prachFreqOff;11;6;11;6;9;5;9;5;6;3;6;3;4;2;4;2
+prsConfigurationIndex;153;153;153;153;159;159;159;159;153;153;153;153;159;159;159;159
+redBwMaxRbDl;100;100;100;100;50;50;50;50;100;100;100;100;50;50;50;50
+redBwMaxRbUl;100;100;100;100;50;50;50;50;100;100;100;100;50;50;50;50
+tddFrameConf;2;1;2;1;2;1;2;1;2;1;2;1;2;1;2;1
+tddSpecSubfConf;7;7;5;5;7;7;5;5;7;7;5;5;7;7;5;5

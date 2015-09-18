@@ -30,6 +30,7 @@ namespace InternalTypes
         std::vector<GMCManagedObject * > getMocsByClassName(std::string name);
 
         std::vector<std::string> getDistNames();
+        std::string getDocType();
 
         static std::pair< std::string, std::string> resolveGMCCompareText(GMCDocument * original, GMCDocument * modified, GMCAction action);
         static std::vector<GMCAction> resolveGMCActions( PDDBDocument * oldPDDB, PDDBDocument * newPDDB, GMCDocument * gmc, std::vector<PDDBManagedObjectCompareResult> * compareResults );
@@ -37,10 +38,14 @@ namespace InternalTypes
     protected:
         static std::vector<GMCAction> resolveGMCActionsPostProcessing( PDDBDocument * oldPDDB, PDDBDocument * newPDDB, GMCDocument * gmc, std::vector<PDDBManagedObjectCompareResult> * compareResults, std::vector<GMCAction> actionsPost );
 
+        std::string resolveDocType();
+
         std::vector<GMCManagedObject*> retrieveManagedObjects();
 
         std::vector<GMCManagedObject*> managedObjects;
 
         tinyxml2::XMLDocument * doc;
+
+        std::string docType;
     };
 }
