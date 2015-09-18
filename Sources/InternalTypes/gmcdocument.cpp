@@ -63,7 +63,7 @@ std::string GMCDocument::resolveDocType()
 
 std::string GMCDocument::getDocType()
 {
-
+    return this->docType;
 }
 
 
