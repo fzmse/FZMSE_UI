@@ -180,14 +180,17 @@ void appGUI::loadTemplatePath()
 
 void appGUI::loadFixPath()
 {
+    QSettings settings("HKEY_CURRENT_USER\\Software\\GMCAutomationTool",
+             QSettings::NativeFormat);
     QString openPath = QFileDialog::getOpenFileName(
                 this,
                 tr("Open file to fix"),
-                "",
+                settings.value("GMC_Fix_Path").toString(),
                 tr("XML (*.xml)"));
 
     if ( openPath != "")
     {
+        settings.setValue("GMC_Fix_Path", openPath);
         pathFixLine->setText(openPath);
         accFixButton->setEnabled(true);
     }
@@ -457,7 +460,10 @@ void appGUI::setHzVectors()
     shared_ptr<GMCDocument> gmc = make_shared<GMCDocument>(hzSettings.getPath());
     if ( gmc->getDocType() == "TDD" )
     {
-
+        shared_ptr<TDDTable> tdd = make_shared<TDDTable>("tdd.csv");
+        hzVect = tdd->getHertzList();
+        tddFrameConfVect = tdd->getFrameConf();
+        tddSpecSubfConfVect = tdd->getSpecSubfConf();
     }
     else if ( gmc->getDocType() == "FDD" )
     {
@@ -1062,10 +1068,14 @@ void appGUI::createFixDialog()
 
 void appGUI::createHzDialog()
 {
+
+    QSettings settings("HKEY_CURRENT_USER\\Software\\GMCAutomationTool",
+             QSettings::NativeFormat);
+
     QString filePath = QFileDialog::getOpenFileName(
                 this,
                 "Open GMC file",
-                "",
+                settings.value("GMC_Variant_Path").toString(),
                 tr("XML (*.xml)"));
 
     if (filePath.length() > 0)
@@ -1201,10 +1211,53 @@ void appGUI::accHzFile()
 {
     shared_ptr<GMCDocument> doc = make_shared<GMCDocument>(hzSettings.getPath());
     // tutaj do DOC dajemy settings
+    QSettings settings("HKEY_CURRENT_USER\\Software\\GMCAutomationTool",
+             QSettings::NativeFormat);
 
-    qDebug() << QString::fromStdString(hzSettings.getCellType()) << QString::fromStdString(hzSettings.getFrameConf()) << QString::fromStdString(hzSettings.getHz()) << QString::fromStdString(hzSettings.getSpecSubfConf());
 
-    hzDialog->close();
+
+    if (hzSettings.getPath().length() > 0)
+    {
+        settings.setValue("GMC_Variant_Path", QString::fromStdString(hzSettings.getPath()));
+    }
+
+
+    if ( doc->getDocType() == "TDD" )
+    {
+        shared_ptr<TDDTable> tdd = make_shared<TDDTable>("tdd.csv");
+        GMCWriter::applyGMCVariantForTDD(tdd.get(), doc.get(), hzSettings.getCellType(),
+                                         hzSettings.getHz(), hzSettings.getFrameConf(), hzSettings.getSpecSubfConf());
+    }
+    else if ( doc->getDocType() == "FDD" )
+    {
+        if ( hzSettings.getCellType() == "Indoor" )
+        {
+            shared_ptr<FDDIndoorTable> fdd = make_shared<FDDIndoorTable>("fdd_indoor.csv");
+            GMCWriter::applyGMCVariantForFDDIndoor(fdd.get(), doc.get(), hzSettings.getHz());
+        }
+        else if ( hzSettings.getCellType() == "Outdoor" )
+        {
+            shared_ptr<FDDOutdoorTable> fdd = make_shared<FDDOutdoorTable>("fdd_outdoor.csv");
+            GMCWriter::applyGMCVariantForFDDOutdoor(fdd.get(), doc.get(), hzSettings.getHz());
+        }
+    }
+
+    if (XmlWriter::save(doc->getXMLDocument(), hzSettings.getPath()) )
+    {
+        hzDialog->close();
+        QMessageBox::information(this, tr("GMC Variant"),
+                                       tr("Success !                                           "),
+                                       QMessageBox::Ok);
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("GMC Apply Variant"),
+                                       tr("Could not save file. Check if the file is available for save     "),
+                                       QMessageBox::Ok);
+    }
+
+
+
 }
 
 void appGUI::canHzFile()

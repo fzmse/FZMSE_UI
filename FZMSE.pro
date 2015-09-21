@@ -78,7 +78,8 @@ SOURCES += main.cpp \
     Sources/InternalTypes/FDDIndoorTable.cpp \
     Sources/InternalTypes/FDDOutdoorTable.cpp \
     Sources/InternalTypes/TDDTable.cpp \
-    UT/Doubles/Sources/InternalTypes/fddindoortabletest.cpp
+    UT/Doubles/Sources/InternalTypes/fddindoortabletest.cpp \
+    UT/Doubles/Sources/InternalTypes/tddtabletest.cpp
 
 
 HEADERS  += \

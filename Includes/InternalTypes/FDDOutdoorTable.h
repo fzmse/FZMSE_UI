@@ -10,6 +10,7 @@ namespace InternalTypes
         FDDOutdoorTable( std::string filename );
         std::vector<std::string> getHertzList();
         std::vector<CSVRow*> getParameterRows();
+        CSVRow * getParameterRowByName(std::string s);
 
     protected:
 

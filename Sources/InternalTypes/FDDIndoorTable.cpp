@@ -49,3 +49,12 @@ std::vector<std::string> FDDIndoorTable::resolveHertzList()
 
     return hertzList;
 }
+CSVRow * FDDIndoorTable::getParameterRowByName(std::string s)
+{
+    for ( vector<CSVRow*>::iterator it = this->rows.begin(); it != this->rows.end(); it ++)
+    {
+        if ( (*it)->getCell(0) == s )
+            return *it;
+    }
+    return NULL;
+}

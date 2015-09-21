@@ -2,6 +2,8 @@
 #include <string>
 #include "InternalTypes/gmcdocument.h"
 
+#include "Csv/CSVTable.h"
+
 class HzSettings
 {
 private:
@@ -10,6 +12,7 @@ private:
     std::string hz;
     std::string frameConf;
     std::string specSubfConf;
+
 
 public:
     HzSettings();

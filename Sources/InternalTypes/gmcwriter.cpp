@@ -236,6 +236,16 @@ void GMCWriter::modifyParameterSimpleType(GMCDocument * gmc, GMCManagedObjectPar
     }
 }
 
+inline void modifyParameterSimpleTypeFromSameGmc(GMCDocument * gmc, GMCManagedObjectParameter * par,
+                                      std::string value)
+{
+    GMCManagedObjectParameter * p = par;
+    if ( p != NULL )
+    {
+        p->getElement()->SetText(value.c_str()); // TODO
+    }
+}
+
 
 void GMCWriter::modifyParameterComplexType(GMCDocument * gmc, GMCManagedObjectParameter * complexPar,
                                        std::string name, std::string value)
@@ -244,6 +254,17 @@ void GMCWriter::modifyParameterComplexType(GMCDocument * gmc, GMCManagedObjectPa
 
     GMCManagedObject * m = gmc->getManagedObjectByClassName(parMoc->getClassName());
     GMCManagedObjectParameter * mPar = m->getParameterByName(complexPar->getName());
+    vector<XMLElement * > matches = XmlReader::getElementsWithSpecificNameAndAttribute(mPar->getElement(), "p", "name", name);
+    for ( vector<XMLElement * >::iterator it = matches.begin(); it != matches.end(); it ++ )
+    {
+        (*it)->SetText(value.c_str()); // TODO
+    }
+}
+
+inline void modifyParameterComplexTypeFromSameGmc(GMCDocument * gmc, GMCManagedObjectParameter * complexPar,
+                                       std::string name, std::string value)
+{
+    GMCManagedObjectParameter * mPar = complexPar;
     vector<XMLElement * > matches = XmlReader::getElementsWithSpecificNameAndAttribute(mPar->getElement(), "p", "name", name);
     for ( vector<XMLElement * >::iterator it = matches.begin(); it != matches.end(); it ++ )
     {
@@ -697,5 +718,157 @@ void GMCWriter::updateVersionInGmc(GMCDocument * gmc, std::string version, std::
     {
         XMLElement * e = *it;
         e->SetAttribute("version", version.c_str());
+    }
+}
+
+
+void GMCWriter::applyGMCVariantForTDD(TDDTable * tdd, GMCDocument * doc,
+                                  std::string type, std::string hz, std::string frameConf, std::string specSubfConf )
+{
+    // Find column
+    int columnIndex = -1;
+    std::string cellType = type == "Indoor" ? "very_small" : "small";
+    CSVRow * cellTypeRow = tdd->getParameterRowByName("cellType");
+    CSVRow * hzRow = tdd->getParameterRowByName("chBw (MHz)");
+    CSVRow * frameConfRow = tdd->getParameterRowByName("tddFrameConf");
+    CSVRow * specSubfConfRow = tdd->getParameterRowByName("tddSpecSubfConf");
+
+    if ( cellTypeRow == NULL || hzRow == NULL || frameConfRow == NULL || specSubfConfRow == NULL )
+        return;
+
+    int cellsCount = cellTypeRow->getCells().size();
+
+    for ( int i = 1; i < cellsCount; i ++ )
+    {
+        if ( cellTypeRow->getCell(i) == cellType &&
+             hzRow->getCell(i) == hz &&
+             frameConfRow->getCell(i) == frameConf &&
+             specSubfConfRow->getCell(i) == specSubfConf)
+        {
+            columnIndex = i;
+            break;
+        }
+    }
+    if ( columnIndex == -1 )
+        return;
+
+    // Apply changes to LNCEL
+    vector<GMCManagedObject*> mocs = doc->getMocsByClassName("LNCEL");
+    for ( vector<GMCManagedObject*>::iterator it = mocs.begin(); it != mocs.end(); it ++ )
+    {
+        vector<CSVRow*> parameterRows = tdd->getParameterRows();
+        for ( vector<CSVRow*>::iterator itParRow = parameterRows.begin(); itParRow != parameterRows.end(); itParRow ++ )
+        {
+            GMCManagedObject * m = *it;
+            CSVRow * parRow = *itParRow;
+            GMCManagedObjectParameter * p = m->getParameterByName(parRow->getCell(0));
+            if ( p != NULL )
+            {
+                modifyParameterSimpleTypeFromSameGmc(doc, p, parRow->getCell(columnIndex));
+            }
+        }
+    }
+
+}
+
+void GMCWriter::applyGMCVariantForFDDOutdoor(FDDOutdoorTable * fdd, GMCDocument * doc, std::string hz )
+{
+    // Find column
+    int columnIndex = -1;
+    CSVRow * hzRow = fdd->getParameterRowByName("dlChBw");
+
+    if ( hzRow == NULL  )
+        return;
+
+    int cellsCount = hzRow->getCells().size();
+
+    for ( int i = 1; i < cellsCount; i ++ )
+    {
+        if ( hzRow->getCell(i) == hz )
+        {
+            columnIndex = i;
+            break;
+        }
+    }
+    if ( columnIndex == -1 )
+        return;
+
+    // Apply changes to LNCEL
+    vector<GMCManagedObject*> mocs = doc->getMocsByClassName("LNCEL");
+    for ( vector<GMCManagedObject*>::iterator it = mocs.begin(); it != mocs.end(); it ++ )
+    {
+        vector<CSVRow*> parameterRows = fdd->getParameterRows();
+        for ( vector<CSVRow*>::iterator itParRow = parameterRows.begin(); itParRow != parameterRows.end(); itParRow ++ )
+        {
+            GMCManagedObject * m = *it;
+            CSVRow * parRow = *itParRow;
+            GMCManagedObjectParameter * p = m->getParameterByName(parRow->getCell(3));
+            if ( p != NULL )
+            {
+                if ( parRow->getCell(3) != "earfcnDL" && parRow->getCell(3) != "earfcnUL" )
+                {
+                    if ( parRow->getCell(1) != "" )
+                    {
+                        GMCManagedObjectParameter * compPar = m->getParameterByName(parRow->getCell(1));
+                        if ( compPar != NULL )
+                            modifyParameterComplexTypeFromSameGmc(doc, compPar, parRow->getCell(3), parRow->getCell(columnIndex));
+                    }
+                    else
+                    {
+                        if ( XmlElementReader::getName(p->getElement()) == "p" )
+                            modifyParameterSimpleTypeFromSameGmc(doc, p, parRow->getCell(columnIndex));
+                    }
+                }
+            }
+        }
+    }
+}
+
+void GMCWriter::applyGMCVariantForFDDIndoor(FDDIndoorTable * fdd, GMCDocument * doc, std::string hz )
+{
+    // Find column
+    int columnIndex = -1;
+    CSVRow * hzRow = fdd->getParameterRowByName("dlChBw");
+
+    if ( hzRow == NULL  )
+        return;
+
+    int cellsCount = hzRow->getCells().size();
+
+    for ( int i = 1; i < cellsCount; i ++ )
+    {
+        if ( hzRow->getCell(i) == hz )
+        {
+            columnIndex = i;
+            break;
+        }
+    }
+    if ( columnIndex == -1 )
+        return;
+
+    // Apply changes to LNCEL
+    vector<GMCManagedObject*> mocs = doc->getMocsByClassName("LNCEL");
+    for ( vector<GMCManagedObject*>::iterator it = mocs.begin(); it != mocs.end(); it ++ )
+    {
+        vector<CSVRow*> parameterRows = fdd->getParameterRows();
+        for ( vector<CSVRow*>::iterator itParRow = parameterRows.begin(); itParRow != parameterRows.end(); itParRow ++ )
+        {
+            GMCManagedObject * m = *it;
+            CSVRow * parRow = *itParRow;
+            GMCManagedObjectParameter * p = m->getParameterByName(parRow->getCell(0));
+            if ( p != NULL )
+            {
+                if ( parRow->getCell(0) != "earfcnDL" && parRow->getCell(0) != "earfcnUL" )
+                {
+                    if ( parRow->getCell(0) == "redBwRbUlConfig" )
+                        modifyParameterComplexTypeFromSameGmc(doc, p, "redBwMaxRbUl", parRow->getCell(columnIndex));
+                    else
+                    {
+                        if ( XmlElementReader::getName(p->getElement()) == "p" )
+                            modifyParameterSimpleTypeFromSameGmc(doc, p, parRow->getCell(columnIndex));
+                    }
+                }
+            }
+        }
     }
 }

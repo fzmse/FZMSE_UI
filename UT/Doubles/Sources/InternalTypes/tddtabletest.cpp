@@ -1,9 +1,7 @@
-
 #include <gtest/gtest.h>
 #include <memory>
 
-#include "Includes/InternalTypes/FDDIndoorTable.h"
-#include "Includes/InternalTypes/FDDOutdoorTable.h"
+#include "Includes/InternalTypes/TDDTable.h"
 
 static std::string dir = "D:/Projects/FZMSE/FZMSE/";
 
@@ -12,9 +10,9 @@ using namespace std;
 using namespace InternalTypes;
 
 
-TEST(CSVParser, ParseIndoorTable)
+TEST(CSVParser, ParseTDDTable)
 {
-    FDDOutdoorTable * table = new FDDOutdoorTable(dir + "UT/TestFiles/CSV/fdd_outdoor.csv");
+    TDDTable * table = new TDDTable(dir + "UT/TestFiles/CSV/tdd.csv");
     auto hertz = table->getHertzList();
     auto parameters = table->getParameterRows();
 

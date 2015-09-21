@@ -25,6 +25,7 @@ class appGUI;
 #include "Includes/InternalTypes/FDDIndoorTable.h"
 #include "Includes/InternalTypes/FDDOutdoorTable.h"
 #include "Includes/InternalTypes/TDDTable.h"
+#include "Includes/InternalTypes/GMCWriter.h"
 
 
 class QLabel;
@@ -238,6 +239,7 @@ private:
     shared_ptr<InternalTypes::PDDBDocument> newPDDBdoc;
     shared_ptr<InternalTypes::GMCDocument> oldGMCdoc;
     shared_ptr<InternalTypes::GMCDocument> newGMCdoc;
+
 
     std::string getFileName(std::string path);
     std::vector<InternalTypes::PDDBManagedObjectCompareResult> differences;

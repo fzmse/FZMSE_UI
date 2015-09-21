@@ -49,3 +49,13 @@ std::vector<std::string> FDDOutdoorTable::resolveHertzList()
 
     return hertzList;
 }
+
+CSVRow * FDDOutdoorTable::getParameterRowByName(std::string s)
+{
+    for ( vector<CSVRow*>::iterator it = this->rows.begin(); it != this->rows.end(); it ++)
+    {
+        if ( (*it)->getCell(3) == s )
+            return *it;
+    }
+    return NULL;
+}

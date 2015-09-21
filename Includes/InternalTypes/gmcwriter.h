@@ -14,6 +14,10 @@
 #include "InternalTypes/pddbsimpletypevalue.h"
 #include "InternalTypes/PDDBComplexTypeValue.h"
 
+#include "TDDTable.h"
+#include "FDDIndoorTable.h"
+#include "FDDOutdoorTable.h"
+
 namespace InternalTypes
 {
     class GMCWriter
@@ -42,5 +46,10 @@ namespace InternalTypes
         static std::vector<ReportEntry> reactToAll( GMCDocument * gmc, std::vector<GMCAction> actions);
 
         static void updateVersionInGmc(GMCDocument * gmc, std::string version, std::string releaseName);
+
+        static void applyGMCVariantForTDD(TDDTable * tdd, GMCDocument * doc,
+                                          std::string type, std::string hz, std::string frameConf, std::string specSubfConf );
+        static void applyGMCVariantForFDDOutdoor(FDDOutdoorTable * tdd, GMCDocument * doc, std::string hz );
+        static void applyGMCVariantForFDDIndoor(FDDIndoorTable * tdd, GMCDocument * doc, std::string hz );
     };
 }
