@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<QtHelpProject version="1.0">
+    <namespace>help.qt.helpexample</namespace>
+    <virtualFolder>doc</virtualFolder>
+    <filterSection>
+        <toc>
+            <section title="GMC Automation Tool" ref="index.html">
+					<section title="Old PDDB" ref="oldPDDB.html"/>
+					<section title="New PDDB" ref="newPDDB.html"/>
+            </section>
+        </toc>
+        <keywords>
+
+        </keywords>
+        <files>
+            <file>index.html</file>
+			<file>oldPDDB.html</file>
+			<file>newPDDB.html</file>
+        </files>
+    </filterSection>
+</QtHelpProject>

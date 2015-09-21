@@ -3,6 +3,10 @@
 class appGUI;
 
 #include <QMainWindow>
+#include "QtHelp/QHelpEngine.h"
+#include "QtHelp/QHelpContentWidget.h"
+#include "QtHelp/qhelpindexwidget.h"
+#include "QtHelp/qhelpsearchquerywidget.h"
 #include "Xml/XmlReader.h"
 #include "Xml/XmlElementReader.h"
 #include "Xml/XmlWrapper.h"
@@ -16,10 +20,11 @@ class appGUI;
 #include "Includes/Gui/xmlhighlighter.h"
 #include "Includes/InternalTypes/PDDBManagedObjectCompareResult.h"
 #include "Includes/Report/ReportUtilities.h"
-#include "Includes/Gui/helpdialog.h"
+#include "Includes/Gui/helpItem.h"
 #include "Report/reportsettings.h"
 #include "Gui/fixsettings.h"
 #include "Gui/hzSettings.h"
+#include "Gui/helpbrowser.h"
 #include <QtWidgets>
 #include <cstring>
 #include "Includes/InternalTypes/FDDIndoorTable.h"
@@ -44,6 +49,8 @@ class QVBoxLayout;
 class QPoint;
 class QSettings;
 class QComboBox;
+class QHelpEngine;
+class QUrl;
 
 class appGUI : public QMainWindow
 {
@@ -61,7 +68,6 @@ public:
     vector<InternalTypes::GMCAction> * getActions();
 
 private slots:
-    void about();
     void clean();
     void compare();
     void showSelectedPDDBResult();
@@ -83,6 +89,7 @@ private slots:
     void createSaveDialog();
     void createFixDialog();
     void createHzDialog();
+    void createHelpDialog();
     void accFixFile();
     void canFixFile();
     void setCellType(QString);
@@ -147,7 +154,7 @@ private:
     QAction * saveFileAct;
     QAction * openFixAction;
     QAction * openHzAction;
-    QAction * displayAboutAct;
+    QAction * displayHelpAct;
     QAction * addToGMC;
     QAction * delFromGMC;
     QAction * setDistName;
@@ -210,6 +217,11 @@ private:
     QComboBox * tddFrameConfCB;
     QComboBox * tddSpecSubfConfCB;
 
+    //Help
+    QDialog * helpDialog;
+    QObjectList * helpList;
+    QListView * helpView;
+    QTextEdit * helpDesctibtion;
 
     QMenu* contextMenu;
 
