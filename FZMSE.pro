@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui help
 
 QMAKE_CXXFLAGS += -std=c++11
 
@@ -67,7 +67,6 @@ SOURCES += main.cpp \
     Sources/InternalTypes/GMCWriter.cpp \
     Sources/Report/ReportUtilities.cpp \
     Sources/Report/ReportEntry.cpp \
-    Sources/Gui/helpdialog.cpp \
     Sources/Report/reportsettings.cpp \
     Sources/Gui/fixsetting.cpp \
     Sources/Gui/hzSettings.cpp \
@@ -79,7 +78,9 @@ SOURCES += main.cpp \
     Sources/InternalTypes/FDDOutdoorTable.cpp \
     Sources/InternalTypes/TDDTable.cpp \
     UT/Doubles/Sources/InternalTypes/fddindoortabletest.cpp \
-    UT/Doubles/Sources/InternalTypes/tddtabletest.cpp
+    UT/Doubles/Sources/InternalTypes/tddtabletest.cpp \
+    Sources/Gui/helpItem.cpp \
+    Sources/Gui/helpbrowser.cpp
 
 
 HEADERS  += \
@@ -123,7 +124,6 @@ HEADERS  += \
     Includes/InternalTypes/GMCWriter.h \
     Includes/Report/ReportUtilities.h \
     Includes/Report/ReportEntry.h \
-    Includes/Gui/helpdialog.h \
     Includes/Report/reportsettings.h \
     Includes/Gui/fixsettings.h \
     Includes/Gui/hzSettings.h \
@@ -132,7 +132,9 @@ HEADERS  += \
     Includes/Csv/CSVRow.h \
     Includes/InternalTypes/FDDIndoorTable.h \
     Includes/InternalTypes/FDDOutdoorTable.h \
-    Includes/InternalTypes/TDDTable.h
+    Includes/InternalTypes/TDDTable.h \
+    Includes/Gui/helpItem.h \
+    Includes/Gui/helpbrowser.h
 
 FORMS    += mainwindow.ui
 

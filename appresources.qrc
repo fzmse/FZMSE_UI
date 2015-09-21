@@ -15,5 +15,10 @@
         <file>report/icon_win.png</file>
         <file>report/fixic.png</file>
         <file>report/hzic.png</file>
+        <file>Sources/Help/help.qch</file>
+        <file>Sources/Help/help.qhc</file>
+        <file>Sources/Help/help.qhcp</file>
+        <file>Sources/Help/help.qhp</file>
+        <file>Sources/Help/index.html</file>
     </qresource>
 </RCC>

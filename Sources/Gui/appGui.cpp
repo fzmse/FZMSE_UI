@@ -27,6 +27,7 @@ appGUI::appGUI()
     saveDialog = NULL;
     fixDialog = NULL;
     hzDialog = NULL;
+    helpDialog = NULL;
 
     toBeSorted = false;
     templatePath = "";
@@ -292,11 +293,6 @@ void appGUI::save()
 
 }
 
-void appGUI::about()
-{
-    helpDialog * dialog = new helpDialog();
-}
-
 
 void appGUI::clean()
 {
@@ -485,6 +481,7 @@ void appGUI::setHzVectors()
     // Przypisujemy do vektorow
 //    hzVect;
 //    tddFrameConfVect;
+
 //    tddSpecSubfConfVect;
 
 
@@ -494,7 +491,6 @@ void appGUI::setHzVectors()
 void appGUI::setHzCB()
 {
     hzCB->clear();
-
 
     for ( vector<string>::iterator it = hzVect.begin(); it != hzVect.end(); it++)
         hzCB->addItem(QString::fromStdString(*it));
@@ -1089,7 +1085,7 @@ void appGUI::createHzDialog()
 
         hzDialog = new QDialog();
         hzDialog->setModal(true);
-        hzDialog->setWindowTitle(tr("Channel Bandwidth Settings"));
+        hzDialog->setWindowTitle(tr("GMC settings"));
         hzDialog->setMinimumWidth(300);
 
         hzSettings = HzSettings(filePath.toStdString(), "Indoor");
@@ -1150,6 +1146,43 @@ void appGUI::createHzDialog()
         hzDialog->setLayout(mainLayout);
         hzDialog->show();
     }
+}
+
+void appGUI::createHelpDialog()
+{
+    QHelpEngine* helpEngine = new QHelpEngine(QApplication::applicationDirPath() +
+                                              "/Help/help.qhc");
+    helpEngine->setupData();
+
+    QTabWidget* tWidget = new QTabWidget;
+    tWidget->setMaximumWidth(200);
+    tWidget->addTab(helpEngine->contentWidget(), "Contents");
+    tWidget->addTab(helpEngine->indexWidget(), "Index");
+
+    HelpBrowser *textViewer = new HelpBrowser(helpEngine);
+    textViewer->setSource(
+                QUrl("qthelp://help.qt.helpexample/doc/index.html"));
+
+
+    connect(helpEngine->contentWidget(),
+            SIGNAL(linkActivated(QUrl)),
+            textViewer, SLOT(setSource(QUrl)));
+
+    connect(helpEngine->indexWidget(),
+            SIGNAL(linkActivated(QUrl, QString)),
+            textViewer, SLOT(setSource(QUrl)));
+
+    QSplitter *horizSplitter = new QSplitter(Qt::Horizontal);
+    horizSplitter->insertWidget(0, tWidget);
+    horizSplitter->insertWidget(1, textViewer);
+
+    helpDialog = new QDialog();
+    QVBoxLayout * mainLayout = new QVBoxLayout(helpDialog);
+    mainLayout->addWidget(horizSplitter);
+
+    helpDialog->setLayout(mainLayout);
+    helpDialog->show();
+
 }
 
 void appGUI::accFixFile()
@@ -1267,6 +1300,7 @@ void appGUI::canHzFile()
     hzDialog->close();
 }
 
+
 void appGUI::setConnections()
 {
     GMCResultView->setMouseTracking(true);
@@ -1336,9 +1370,9 @@ void appGUI::createActions()
     saveFileAct->setStatusTip(tr("Save current file"));
     connect(saveFileAct, SIGNAL(triggered(bool)), this, SLOT(createSaveDialog()));
 
-    displayAboutAct = new QAction(tr("&About"), this);
-    displayAboutAct->setStatusTip(tr("About"));
-    connect(displayAboutAct, SIGNAL(triggered(bool)), this, SLOT(about()));
+    displayHelpAct = new QAction(tr("&Help"), this);
+    displayHelpAct->setStatusTip(tr("Help"));
+    connect(displayHelpAct, SIGNAL(triggered(bool)), this, SLOT(createHelpDialog()));
 
     openFixAction = new QAction(tr("Format file"), this);
     connect(openFixAction, SIGNAL(triggered(bool)), this, SLOT(createFixDialog()));
@@ -1368,8 +1402,8 @@ void appGUI::createMenus()
 
     menuBar()->addSeparator();
 
-    aboutMenu = menuBar()->addMenu(tr("&About"));
-    aboutMenu->addAction(displayAboutAct);
+    aboutMenu = menuBar()->addMenu(tr("&Help"));
+    aboutMenu->addAction(displayHelpAct);
 }
 
 void appGUI::createToolBar()
