@@ -1248,7 +1248,7 @@ void appGUI::accFixFile()
     fixSettings = FixSetting(fixFilePath, fixWithSort, fixWithSortPara);
 
     tinyxml2::XMLDocument * doc = XmlWrapper::loadDocument(fixSettings.getPath());
-    XmlWriter::save(doc, fixSettings.getPath(), fixSettings.isToBeSorted());
+    XmlWriter::save(doc, fixSettings.getPath(), fixSettings.isToBeSorted(), fixSettings.isToBeSortedPara());
     fixDialog->close();
     fixFilePath = "";
     fixWithSort = false;
