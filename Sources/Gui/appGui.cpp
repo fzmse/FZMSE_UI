@@ -33,6 +33,7 @@ appGUI::appGUI()
     templatePath = "";
 
     fixWithSort = false;
+    fixWithSortPara = false;
     fixFilePath = "";
 }
 
@@ -59,8 +60,6 @@ void appGUI::loadPathToDoc(const QString &type)
         diff_path = settings.value("GMC_path").toString();
         openType.append("Old GMC File");
     }
-
-
 
     QString filePath = QFileDialog::getOpenFileName(
                 this,
@@ -206,6 +205,11 @@ void appGUI::setToBeSort(bool val)
 void appGUI::setFixWithSort(bool val)
 {
     fixWithSort = val;
+}
+
+void appGUI::setFixWithSortPara(bool val)
+{
+    fixWithSortPara = val;
 }
 
 void appGUI::radioNewRaport(bool val)
@@ -474,16 +478,6 @@ void appGUI::setHzVectors()
             hzVect = fdd->getHertzList();
         }
     }
-
-    // Tu funckja z
-//    hzSettings.getCellType();
-//    hzSettings.getPath();
-    // Przypisujemy do vektorow
-//    hzVect;
-//    tddFrameConfVect;
-
-//    tddSpecSubfConfVect;
-
 
     setHzCB();
 }
@@ -961,8 +955,8 @@ void appGUI::createSaveDialog()
         QVBoxLayout * mainLayout = new QVBoxLayout(saveDialog);
 
         QVBoxLayout * radioButtonLayout = new QVBoxLayout();
-        genNewRadio = new QRadioButton(tr("Generate new raport"));
-        genFromTamplateRadio = new QRadioButton(tr("Generate raport from template"));
+        genNewRadio = new QRadioButton(tr("Generate new report"));
+        genFromTamplateRadio = new QRadioButton(tr("Generate report from template"));
 
         genNewRadio->setChecked(true);
 
@@ -1026,7 +1020,7 @@ void appGUI::createFixDialog()
     }
     fixDialog = new QDialog();
     fixDialog->setModal(true);
-    fixDialog->setWindowTitle(tr("Fix files"));
+    fixDialog->setWindowTitle(tr("Fix file"));
     fixDialog->setMinimumWidth(300);
     QGridLayout * mainLayout = new QGridLayout(fixDialog);
 
@@ -1041,10 +1035,13 @@ void appGUI::createFixDialog()
     connect(loadPathButton, SIGNAL(clicked(bool)), this, SLOT(loadFixPath()));
 
     QCheckBox * toSort = new QCheckBox(tr("Sort Managed Objects"));
+    QCheckBox * toSortPar = new QCheckBox(tr("Sort MOC Parameters"));
 
     connect(toSort, SIGNAL(clicked(bool)), this, SLOT(setFixWithSort(bool)));
+    connect(toSortPar, SIGNAL(clicked(bool)), this, SLOT(setFixWithSortPara(bool)));
 
     mainLayout->addWidget(toSort, 1, 0);
+    mainLayout->addWidget(toSortPar, 2, 0);
 
     accFixButton = new QPushButton(tr("Fix"));
     canFixButton = new QPushButton(tr("Cancel"));
@@ -1054,8 +1051,8 @@ void appGUI::createFixDialog()
     connect(accFixButton, SIGNAL(clicked(bool)), this, SLOT(accFixFile()));
     connect(canFixButton, SIGNAL(clicked(bool)), this, SLOT(canFixFile()));
 
-    mainLayout->addWidget(accFixButton, 2, 0, 1, 1);
-    mainLayout->addWidget(canFixButton, 2, 2, 1, 3);
+    mainLayout->addWidget(accFixButton, 3, 0, 1, 1);
+    mainLayout->addWidget(canFixButton, 3, 2, 1, 3);
 
     fixDialog->setLayout(mainLayout);
     fixDialog->show();
@@ -1150,14 +1147,18 @@ void appGUI::createHzDialog()
 
 void appGUI::createHelpDialog()
 {
+    // Update qhc
+    // qcollectiongenerator help.qhcp -o help.qhc
+
     QHelpEngine* helpEngine = new QHelpEngine(QApplication::applicationDirPath() +
                                               "/Help/help.qhc");
     helpEngine->setupData();
 
     QTabWidget* tWidget = new QTabWidget;
-    tWidget->setMaximumWidth(200);
-    tWidget->addTab(helpEngine->contentWidget(), "Contents");
-    tWidget->addTab(helpEngine->indexWidget(), "Index");
+    tWidget->setMaximumWidth(170);
+    tWidget->setMinimumHeight(400);
+    tWidget->addTab(helpEngine->contentWidget(), "Actions");
+    tWidget->addTab(helpEngine->indexWidget(), "Details");
 
     HelpBrowser *textViewer = new HelpBrowser(helpEngine);
     textViewer->setSource(
@@ -1169,7 +1170,7 @@ void appGUI::createHelpDialog()
             textViewer, SLOT(setSource(QUrl)));
 
     connect(helpEngine->indexWidget(),
-            SIGNAL(linkActivated(QUrl, QString)),
+            SIGNAL(linkActivated(QUrl,QString)),
             textViewer, SLOT(setSource(QUrl)));
 
     QSplitter *horizSplitter = new QSplitter(Qt::Horizontal);
@@ -1179,6 +1180,7 @@ void appGUI::createHelpDialog()
     helpDialog = new QDialog();
     QVBoxLayout * mainLayout = new QVBoxLayout(helpDialog);
     mainLayout->addWidget(horizSplitter);
+    helpDialog->setWindowTitle(tr("Help"));
 
     helpDialog->setLayout(mainLayout);
     helpDialog->show();
@@ -1187,15 +1189,14 @@ void appGUI::createHelpDialog()
 
 void appGUI::accFixFile()
 {
-    fixSettings = FixSetting(fixFilePath, fixWithSort);
+    fixSettings = FixSetting(fixFilePath, fixWithSort, fixWithSortPara);
 
     tinyxml2::XMLDocument * doc = XmlWrapper::loadDocument(fixSettings.getPath());
     XmlWriter::save(doc, fixSettings.getPath(), fixSettings.isToBeSorted());
-
     fixDialog->close();
-    qDebug() << QString::fromStdString(fixFilePath) << fixWithSort;
     fixFilePath = "";
     fixWithSort = false;
+    fixWithSortPara = false;
 
     QMessageBox::information(this, tr("Fixing file"),
                                    tr("Success !         "),
@@ -1206,38 +1207,30 @@ void appGUI::canFixFile()
 {
     fixFilePath = "";
     fixWithSort = false;
+    fixWithSortPara = false;
 
     fixDialog->close();
-
 }
 
 void appGUI::setCellType(QString val)
 {
-
     hzSettings.setCellType(val.toStdString());
     setHzVectors();
-
 }
 
 void appGUI::setHz(QString val)
 {
-
     hzSettings.setHz(val.toStdString());
-
 }
 
 void appGUI::setTddFrameConfCB(QString val)
 {
-
     hzSettings.setFrameConf(val.toStdString());
-
 }
 
 void appGUI::setTddSpecSubfConfCB(QString val)
 {
-
     hzSettings.setSpecSubfConf(val.toStdString());
-
 }
 
 void appGUI::accHzFile()
@@ -1372,6 +1365,7 @@ void appGUI::createActions()
 
     displayHelpAct = new QAction(tr("&Help"), this);
     displayHelpAct->setStatusTip(tr("Help"));
+    displayHelpAct->setShortcut(QKeySequence::HelpContents);
     connect(displayHelpAct, SIGNAL(triggered(bool)), this, SLOT(createHelpDialog()));
 
     openFixAction = new QAction(tr("Format file"), this);
@@ -1398,17 +1392,22 @@ void appGUI::createMenus()
     fileMenu->addAction(saveFileAct);
     fileMenu->addSeparator();
 
+    toolMenu = menuBar()->addMenu(tr("&Tools"));
+    toolMenu->addAction(openFixAction);
+    toolMenu->addAction(openHzAction);
+
+
     viewMenu = menuBar()->addMenu(tr("&View"));
 
     menuBar()->addSeparator();
 
-    aboutMenu = menuBar()->addMenu(tr("&Help"));
-    aboutMenu->addAction(displayHelpAct);
+    helpMenu = menuBar()->addMenu(tr("&Help"));
+    helpMenu->addAction(displayHelpAct);
 }
 
 void appGUI::createToolBar()
 {
-    fileToolBar = new QToolBar(tr("&File tool bar"));
+    fileToolBar = new QToolBar(tr("&Tool bar"));
     addToolBar(Qt::LeftToolBarArea, fileToolBar);
     fileToolBar->setIconSize(QSize(48, 48));
     openOldPDDBAct->setIcon(QIcon(":/report/opic.png"));
@@ -1421,9 +1420,10 @@ void appGUI::createToolBar()
     fileToolBar->addAction(openNewPDDBAct);
     fileToolBar->addAction(openOldGMCAct);
     fileToolBar->addAction(saveFileAct);
-    fileToolBar->addAction(openHzAction);
+
     fileToolBar->addSeparator();
 
+    fileToolBar->addAction(openHzAction);
     fileToolBar->addAction(openFixAction);
 
     viewMenu->addAction(fileToolBar->toggleViewAction());
@@ -1452,7 +1452,6 @@ void appGUI::createPDDBResultDock()
                                  "font-size: 13px;"
                                  "font-weight: bold;"
                                  "}");
-
 
 
     PDDBResultModel = new resultItemModel();
@@ -1550,7 +1549,7 @@ void appGUI::colorTextDifferences()
             moveToLine(bt_cur, j);
             if ( up_cur.block().text() ==  bt_cur.block().text() )
             {
-                repetedLines.push_back(std::pair<int, int>(i, j));
+                repetedLines.push_back(pair<int, int>(i, j));
                 second_doc_pos = j + 1;
                 break;
             }

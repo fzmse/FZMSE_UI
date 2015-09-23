@@ -5,17 +5,41 @@
     <filterSection>
         <toc>
             <section title="GMC Automation Tool" ref="index.html">
-					<section title="Old PDDB" ref="oldPDDB.html"/>
-					<section title="New PDDB" ref="newPDDB.html"/>
+					<section title="Creating new GMC" ref="CreateNewGMC.html"/>
+					<section title="Fix file" ref="FixFile.html"/>	
+					<section title="Setup GMC variant" ref="SetupGMCvar.html"/>
+					<section title="Setup MOC distName" ref="distName.html"/>
             </section>
         </toc>
         <keywords>
-
+			<keyword name="PDDB" ref="general.html"/>
+			<keyword name="GMC" ref="general.html"/>
+			<keyword name="toolbar" ref="icons.html"/>
         </keywords>
         <files>
             <file>index.html</file>
-			<file>oldPDDB.html</file>
-			<file>newPDDB.html</file>
-        </files>
+			<file>CreateNewGMC.html</file>
+			<file>SetupGMCvar.html</file>
+			<file>FixFile.html</file>
+			<file>general.html</file>
+			<file>icons.html</file>
+			<file>distName.html</file>
+			<file>images/GMC_logo.png</file>
+			<file>images/fixic.png</file>
+			<file>images/hzic.png</file>
+			<file>images/fdd_settings.jpg</file>
+			<file>images/tdd_settings.jpg</file>
+			<file>images/npic.png</file>
+			<file>images/opic.png</file>
+			<file>images/ogic.png</file>
+			<file>images/sic.png</file>
+			<file>images/add.png</file>
+			<file>images/alert.png</file>
+			<file>images/del.png</file>
+			<file>images/mod.png</file>
+			<file>images/dist_dialog.jpg</file>
+			<file>images/context_menu_GMC.jpg</file>
+			<file>images/fix_dialog.jpg</file>	
+			</files>
     </filterSection>
 </QtHelpProject>

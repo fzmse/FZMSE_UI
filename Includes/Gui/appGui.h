@@ -86,6 +86,7 @@ private slots:
     void loadFixPath();
     void setToBeSort(bool);
     void setFixWithSort(bool);
+    void setFixWithSortPara(bool);
     void radioNewRaport(bool);
     void createSaveDialog();
     void createFixDialog();
@@ -144,8 +145,9 @@ private:
     QGroupBox * centralButtonSubGroup;
 
     QMenu * fileMenu;
-    QMenu * aboutMenu;
+    QMenu * helpMenu;
     QMenu * viewMenu;
+    QMenu * toolMenu;
 
     QToolBar * fileToolBar;
 
@@ -198,6 +200,7 @@ private:
     QDialog * fixDialog;
     FixSetting fixSettings;
     bool fixWithSort;
+    bool fixWithSortPara;
     std::string fixFilePath;
     QPushButton * accFixButton;
     QPushButton * canFixButton;

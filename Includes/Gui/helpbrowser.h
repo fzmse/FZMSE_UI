@@ -2,6 +2,7 @@
 #include <QHelpEngine>
 #include <QDebug>
 
+
 class HelpBrowser : public QTextBrowser
 {
 public:

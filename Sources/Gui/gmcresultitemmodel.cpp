@@ -182,7 +182,7 @@ bool gmcResultItemModel::setData(const QModelIndex &index, const QVariant &value
         if (role == Qt::CheckStateRole)
         {
             changeIncludeInGMC(index);
-
+            return true;
         }
     }
     return false;
