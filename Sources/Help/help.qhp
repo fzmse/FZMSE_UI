@@ -12,16 +12,17 @@
             </section>
         </toc>
         <keywords>
-			<keyword name="PDDB" ref="general.html"/>
-			<keyword name="GMC" ref="general.html"/>
-			<keyword name="toolbar" ref="icons.html"/>
+			<keyword name="Tool bar icons" ref="icons.html"/>
+			<keyword name="PDDB Differences" ref="pddbDiff.html"/>
+			<keyword name="GMC Actions" ref="gmcAct.html"/>
         </keywords>
         <files>
             <file>index.html</file>
 			<file>CreateNewGMC.html</file>
 			<file>SetupGMCvar.html</file>
 			<file>FixFile.html</file>
-			<file>general.html</file>
+			<file>pddbDiff.html</file>
+			<file>gmcAct.html</file>
 			<file>icons.html</file>
 			<file>distName.html</file>
 			<file>images/GMC_logo.png</file>
@@ -40,6 +41,8 @@
 			<file>images/dist_dialog.jpg</file>
 			<file>images/context_menu_GMC.jpg</file>
 			<file>images/fix_dialog.jpg</file>	
+			<file>images/pddbDiff.jpg</file>
+			<file>images/gmc_act.jpg</file>
 			</files>
     </filterSection>
 </QtHelpProject>

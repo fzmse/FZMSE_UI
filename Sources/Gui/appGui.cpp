@@ -24,6 +24,7 @@ appGUI::appGUI()
     setWindowIcon(QIcon(":report/icon_win.png"));
 
     dialogList = NULL;
+    aboutDialog = NULL;
     saveDialog = NULL;
     fixDialog = NULL;
     hzDialog = NULL;
@@ -35,6 +36,7 @@ appGUI::appGUI()
     fixWithSort = false;
     fixWithSortPara = false;
     fixFilePath = "";
+    appVersion = "1.0";
 }
 
 void appGUI::loadPathToDoc(const QString &type)
@@ -1187,6 +1189,60 @@ void appGUI::createHelpDialog()
 
 }
 
+void appGUI::createAboutDialog()
+{
+    if ( aboutDialog != NULL )
+    {
+        delete aboutDialog;
+    }
+
+    aboutDialog = new QDialog();
+    aboutDialog->setWindowTitle(tr("About"));
+    aboutDialog->setMinimumWidth(300);
+
+    QVBoxLayout * aboutLayout = new QVBoxLayout(aboutDialog);
+
+    currRot = 0;
+    QPixmap pixLogo = QPixmap(":/report/icon_win.png");
+
+    logo = new QLabel();
+    logo->setPixmap(pixLogo);
+    logo->setAlignment(Qt::AlignHCenter);
+
+    QLabel * support = new QLabel(tr("Support"));
+    support->setStyleSheet("font-weight: bold;");
+    support->setAlignment(Qt::AlignHCenter);
+
+    QLabel * piotr = new QLabel(tr("<a href=\"mailto:piotr.kozuch@nokia.com\">Piotr Kożuch</a>"));
+    piotr->setTextFormat(Qt::RichText);
+    piotr->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    piotr->setOpenExternalLinks(true);
+    piotr->setAlignment(Qt::AlignHCenter);
+
+    QLabel * pawel = new QLabel(tr("<a href=\"mailto:pawel.fert@nokia.com\">Paweł Fert</a>"));
+    pawel->setTextFormat(Qt::RichText);
+    pawel->setTextInteractionFlags(Qt::TextBrowserInteraction);
+    pawel->setOpenExternalLinks(true);
+    pawel->setAlignment(Qt::AlignHCenter);
+
+    QString ver = QString(tr("Version : "));
+    ver.append(appVersion);
+    QLabel * verLab = new QLabel(ver);
+    verLab->setAlignment(Qt::AlignHCenter);
+
+    aboutLayout->addWidget(logo);
+    aboutLayout->addWidget(support);
+    aboutLayout->addWidget(piotr);
+    aboutLayout->addWidget(pawel);
+    aboutLayout->addWidget(verLab);
+
+    aboutDialog->setLayout(aboutLayout);
+    aboutDialog->show();
+    connect(aboutDialog, SIGNAL(finished(int)), this, SLOT(closeAbout()));
+
+
+}
+
 void appGUI::accFixFile()
 {
     fixSettings = FixSetting(fixFilePath, fixWithSort, fixWithSortPara);
@@ -1293,6 +1349,16 @@ void appGUI::canHzFile()
     hzDialog->close();
 }
 
+void appGUI::rotLogo()
+{
+
+}
+
+void appGUI::closeAbout()
+{
+
+}
+
 
 void appGUI::setConnections()
 {
@@ -1381,6 +1447,9 @@ void appGUI::createActions()
     setDistName = new QAction(tr("Setup MOC distName in GMC"), this);
 
     selectClicked = new QAction(tr("Confirm selection"), this);
+
+    openAboutAct = new QAction(tr("About"), this);
+    connect(openAboutAct, SIGNAL(triggered(bool)), this, SLOT(createAboutDialog()));
 }
 
 void appGUI::createMenus()
@@ -1403,6 +1472,7 @@ void appGUI::createMenus()
 
     helpMenu = menuBar()->addMenu(tr("&Help"));
     helpMenu->addAction(displayHelpAct);
+    helpMenu->addAction(openAboutAct);
 }
 
 void appGUI::createToolBar()

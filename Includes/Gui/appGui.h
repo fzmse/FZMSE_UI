@@ -92,6 +92,7 @@ private slots:
     void createFixDialog();
     void createHzDialog();
     void createHelpDialog();
+    void createAboutDialog();
     void accFixFile();
     void canFixFile();
     void setCellType(QString);
@@ -100,6 +101,8 @@ private slots:
     void setTddSpecSubfConfCB(QString);
     void accHzFile();
     void canHzFile();
+    void rotLogo();
+    void closeAbout();
 
 
 
@@ -158,6 +161,7 @@ private:
     QAction * openFixAction;
     QAction * openHzAction;
     QAction * displayHelpAct;
+    QAction * openAboutAct;
     QAction * addToGMC;
     QAction * delFromGMC;
     QAction * setDistName;
@@ -226,6 +230,12 @@ private:
     QObjectList * helpList;
     QListView * helpView;
     QTextEdit * helpDesctibtion;
+
+    //About
+    QDialog * aboutDialog;
+    QString appVersion;
+    QLabel * logo;
+    double currRot;
 
     QMenu* contextMenu;
 
